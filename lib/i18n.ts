@@ -104,232 +104,226 @@ export type TranslationSchema = NavbarTranslations;
 export const translations: Record<Locale, TranslationSchema> = {
   en: {
     navbar: {
-      logoSubtext: '(ROOT)',
-      story: 'The Story',
+      logoSubtext: '(ROOTS)',
+      story: 'Our Vision',
       howItWorks: 'How It Works',
-      technology: 'Technology',
-      joinWaitlist: 'Join Waitlist',
+      technology: 'AI Technology',
+      joinWaitlist: 'Preserve Memories Now',
       languageLabel: 'Language',
     },
     hero: {
-      tagline: 'A Digital Museum for Family Heritage',
-      subtitle: '(ROOT)',
-      headlineLine1: 'Memories are not just to be remembered,',
-      headlineHighlight: 'but to be relived.',
+      tagline: 'Dont let memories turn into regrets',
+      subtitle: '(ROOTS)',
+      headlineLine1: 'Half a world apart,',
+      headlineHighlight: 'yet souls still touch.',
       description:
-        'The first digital museum for family heritage in Vietnam. Preserve the voices, stories, and wisdom of your parents before they become whispers of the past.',
-      primaryButton: 'Explore the Vision',
-      secondaryButton: 'Watch Our Story',
+        'Turning miles of distance into moments of understanding. We help international students preserve the voices and untold chapters of their parents before time fades everything away.',
+      primaryButton: 'Start the Connection Journey',
+      secondaryButton: 'The Math of Time',
     },
     problem: {
-      sectionLabel: 'The Emotional Gap',
-      sectionTitle: "What We're Losing",
+      sectionLabel: 'The Harsh Truth',
+      sectionTitle: 'The Heartbreaking Math of Living Abroad',
       sectionDescription:
-        'Every day, precious memories slip away. The stories that shaped us, the voices that comforted us, the wisdom that guided us - all fading into silence.',
+        'Have you ever dared to calculate how many chances you truly have left to understand your parents before it is too late?',
       cards: [
         {
-          title: 'Surface-Level Connection',
+          title: 'The Finite Number 20',
           description:
-            'Daily calls exist, but emotional connection remains shallow. "Did you eat?" "How are you?" - the same questions, day after day.',
-          quote: "We talk every day, yet I barely know my father's dreams.",
-        },
-        {
-          title: 'Stories Fading Away',
-          description:
-            'Family stories, life lessons, and precious memories are being lost with each passing day. Once gone, they can never be recovered.',
-          quote: "My grandmother's recipes, her childhood stories... all lost.",
-        },
-        {
-          title: 'Tools, Not Treasures',
-          description:
-            "Zalo, Facebook - they're communication tools, not legacy preservers. Your family's heritage deserves more than a chat history.",
+            'If you visit once a year, you may only have 20 times left to share a meal with your parents. Every year that passes is an opportunity lost forever.',
           quote:
-            "Scrolling through old messages isn't the same as hearing her voice.",
+            'I was shocked to realize I had less than 30 days of actual time left with my parents for the rest of their lives.',
+        },
+        {
+          title: 'The "Familiar Stranger" Fear',
+          description:
+            'Zalo messages arrive, FaceTime calls connect, but you slowly lose touch with what your parents are truly thinking. You are losing them while they are still here.',
+          quote:
+            'The scariest thing is coming home and realizing I missed an entire vital chapter of my mothers life.',
+        },
+        {
+          title: 'The Empty Echo',
+          description:
+            'Messaging apps are just quick communication tools, not treasure chests. One day, you will crave to hear a piece of advice again, but there will only be silence.',
+          quote:
+            'Scrolling through old texts is not the same as hearing the warmth in my fathers voice.',
         },
       ],
       emotionalQuote:
-        'The greatest tragedy is not death, but what dies inside us while we live.',
-      emotionalAttribution: 'Norman Cousins',
+        'Our greatest mistake is thinking we still have plenty of time.',
+      emotionalAttribution: 'Life Philosophy',
     },
     solution: {
-      sectionLabel: 'The Phygital System',
-      sectionTitle: 'Where Physical Meets Digital',
+      sectionLabel: 'Be Proactive',
+      sectionTitle: 'ROOTS: A Shield Against Oblivion',
       sectionDescription:
-        'A seamless three-step journey that bridges generations through thoughtful design and intuitive technology.',
+        'Dont wait for your parents to tell their stories; be the one who asks. A "Phygital" journey to help you build your family legacy from afar.',
       steps: [
         {
-          title: 'Roots Cards',
-          subtitle: 'Physical Connection',
+          title: 'The "Memory Unlocking" Album',
+          subtitle: 'A gift of filial piety from abroad',
           description:
-            'A beautifully crafted deck of 50 guided questions designed to unlock natural storytelling between family members. No screens, no pressure - just meaningful conversations.',
+            'Send home a premium physical Album. Each page is a space for parents to place old photos and a unique QR code, removing all technology barriers.',
           features: [
-            '50 thoughtfully curated prompts',
-            'Designed for all ages',
-            'Bilingual: Vietnamese & English',
-            'Premium quality materials',
+            'Elegant design, evoking nostalgia',
+            'In-depth emotional prompts system',
+            'Easy to use for the elderly',
+            'A treasure to be passed through generations',
           ],
         },
         {
-          title: 'Roots App',
-          subtitle: 'Digital Capture',
+          title: 'Smart Storytelling Assistant',
+          subtitle: 'Making "I love you" easier to say',
           description:
-            'Scan the QR code on each card to record precious moments. Voice memos, video stories, or simple text - capture memories in the most natural way.',
+            'When scanning the QR, parents dont just record; they receive "Storytelling Prompts". We designed scripts to help even the most reserved parents open up naturally.',
           features: [
-            'Simple QR scan to record',
-            'Voice & video capture',
-            'No technical skills needed',
-            'Works offline',
+            'Ice-breaking conversation starters',
+            'Follow-up questions to dive deeper into emotions',
+            'Minimalist tap-to-talk interface',
+            'AI noise cancellation directly in the browser',
           ],
         },
         {
-          title: 'Family Vault',
-          subtitle: 'Legacy Preserved',
+          title: 'Eternal Digital Museum',
+          subtitle: 'The greatest asset you will ever own',
           description:
-            "AI-powered timeline that organizes your family's stories into a beautiful digital autobiography. Search, relive, and share across generations.",
+            'You take on the role of the "Curator". Arrange, edit, and store your parents life fragments into a vivid living timeline.',
           features: [
-            'AI-organized timeline',
-            'Voice-to-text transcription',
-            'Photo enhancement',
-            'Secure family sharing',
+            'Fully customizable timeline by you',
+            'AI transcribes voice into written memoirs',
+            'Restores old photos into emotional videos',
+            'Sharing mode for future generations',
           ],
         },
       ],
     },
     competitive: {
-      sectionLabel: 'Why ROOTS',
-      sectionTitle: 'Different By Design',
+      sectionLabel: 'Your Choice',
+      sectionTitle: 'Storing Junk or Preserving Legacy?',
       sectionDescription:
-        "We're not competing with Zalo or Facebook. We're creating an entirely new category: digital legacy preservation.",
+        'We dont create instant messages. We create keepsakes that live forever.',
       rootsTitle: 'ROOTS',
-      rootsSubtitle: 'Legacy Platform',
-      othersTitle: 'Zalo / Facebook',
-      othersSubtitle: 'Communication Apps',
+      rootsSubtitle: 'Heritage Preserver',
+      othersTitle: 'Communication Apps',
+      othersSubtitle: 'Raw Data Storage',
       comparisons: [
         {
-          feature: 'Purpose',
-          roots: 'Legacy & Heritage Preservation',
-          others: 'Communication & Social',
+          feature: 'Core Value',
+          roots: 'Empathy & Deep Connection',
+          others: 'Convenience & Speed',
         },
         {
-          feature: 'Depth',
-          roots: 'Meaningful life stories',
-          others: 'Daily updates & news',
+          feature: 'Outcome',
+          roots: 'A vivid living memoir',
+          others: 'Messy, easily lost chat logs',
         },
         {
-          feature: 'Format',
-          roots: 'Guided storytelling prompts',
-          others: 'Free-form messaging',
+          feature: 'Guidance',
+          roots: 'Scripts to help parents "open up"',
+          others: 'Waiting for random interactions',
         },
         {
-          feature: 'Privacy',
-          roots: 'Family-only, GDPR-compliant',
-          others: 'Public or semi-public',
+          feature: 'Access',
+          roots: 'Scan QR, use instantly on Web',
+          others: 'Mandatory App install & login',
         },
         {
           feature: 'Physical Element',
-          roots: 'Premium card deck included',
-          others: 'Digital only',
+          roots: 'Physical Album as a "trigger"',
+          others: 'Only superficial digital presence',
         },
         {
           feature: 'AI Features',
-          roots: 'Story organization & enhancement',
-          others: 'Ads & recommendations',
+          roots: 'Elevating and preserving heritage',
+          others: 'Entertainment content suggestions',
         },
       ],
       advantages: [
         {
-          title: 'Depth Over Convenience',
+          title: 'Depth Above All',
           description:
-            'While other apps optimize for quick messages, we optimize for meaningful conversations that last generations.',
+            'While other apps optimize for convenience, we optimize for enduring spiritual values.',
         },
         {
-          title: 'Elder-Friendly Design',
+          title: 'Understanding the Cultural Nuance',
           description:
-            'Physical cards remove the technology barrier, making it easy for parents and grandparents to participate naturally.',
+            'We know that Vietnamese parents often struggle to express love. Roots acts as the "narrator" to bridge the two generations.',
         },
         {
-          title: 'Privacy-First Architecture',
+          title: 'Sacred Privacy',
           description:
-            "Your family's emotional data is sacred. We never monetize, analyze, or share your stories. Ever.",
+            'Your family’s emotional data is unique. We promise never to commercialize or analyze your personal stories.',
         },
       ],
     },
     tech: {
-      sectionLabel: 'For Builders & Investors',
-      sectionTitle: 'Built for Scale',
+      sectionLabel: 'Core Features',
+      sectionTitle: 'Family Legacy Connection Solution',
       sectionDescription:
-        'Modern technology stack designed for security, scalability, and seamless user experience across generations.',
+        'The perfect combination of traditional physical Albums and modern technology to fully preserve life stories.',
       features: [
         {
-          title: 'Zalo Mini App (MVP)',
+          title: 'Phygital Bridge',
           description:
-            'Starting where your family already is. No new app downloads needed for initial adoption.',
-          status: 'Phase 1',
+            'Premium physical album with unique QR codes, helping parents easily take photos and record stories with a single touch.',
+          status: 'MVP',
         },
         {
-          title: 'Native Mobile App',
+          title: 'Memory Management System',
           description:
-            'Full-featured iOS and Android apps with offline support and advanced features.',
-          status: 'Phase 2',
-        },
-        {
-          title: 'Voice-to-Story AI',
-          description:
-            'Automatically transcribes voice recordings into beautifully formatted stories.',
-          status: 'AI-Powered',
-        },
-        {
-          title: 'Photo Enhancement',
-          description:
-            'AI reconstruction of old, damaged photos into vivid, emotional video memories.',
-          status: 'AI-Powered',
-        },
-        {
-          title: 'Smart Timeline',
-          description:
-            "AI-organized chronological view of your family's stories, searchable and browsable.",
-          status: 'AI-Powered',
-        },
-        {
-          title: 'Enterprise Security',
-          description:
-            'End-to-end encryption, GDPR compliance, and family-controlled access permissions.',
+            'Empowers the child as the "Editor-in-chief" to organize, tag, and add emotions to every fragment of their parents’ memories.',
           status: 'Core',
         },
+        {
+          title: 'Legacy Timeline',
+          description:
+            'Customizable timeline interface, connecting scattered stories into a continuous family narrative.',
+          status: 'Core',
+        },
+        {
+          title: 'Future Sharing Mode',
+          description:
+            'Set access for future generations, turning memories into a living "digital will" for children anywhere.',
+          status: 'Legacy',
+        },
       ],
-      marketLabel: 'Market Opportunity',
-      marketTitle: 'Why Now Is the Perfect Time',
+      marketLabel: 'Opportunity for the Expat Community',
+      marketTitle: 'Why the time to act is now',
       metrics: [
-        { value: '6M+', label: 'Vietnamese Diaspora Globally' },
-        { value: '89%', label: 'Want to Preserve Family Stories' },
-        { value: '67%', label: 'Regret Not Recording Parents' },
+        { value: '500k+', label: 'Vietnamese students worldwide' },
+        { value: '100%', label: 'Time cannot be reversed' },
+        {
+          value: '0',
+          label: 'Reason to delay any longer',
+        },
       ],
       marketText:
-        'The Vietnamese diaspora is growing, aging, and increasingly aware of the importance of preserving their heritage. The time to act is now - before another generation of stories is lost.',
+        'The Vietnamese expat community is growing and aging rapidly. Every day that passes is a family history page at risk of being lost forever. Don’t let yourself say "I wish I had".',
     },
     finalCta: {
-      quoteText: 'We are not just building a product.',
-      quoteHighlight: 'We are building a legacy.',
+      quoteText: 'Parents dont live forever with us,',
+      quoteHighlight: 'but their stories can.',
       visionText:
-        'Join thousands of Vietnamese families around the world who are choosing to preserve what matters most - the voices, stories, and wisdom of those they love.',
-      emailPlaceholder: 'Enter your email',
-      submitButton: 'Join the Journey',
-      successTitle: 'Thank you for joining us!',
-      successText: "We'll be in touch soon with updates on ROOTS.",
+        'Be the proactive child who holds onto the family warmth. Join ROOTS to start building your parents legacy today.',
+      emailPlaceholder: 'Your email address',
+      submitButton: 'I want to preserve memories',
+      successTitle: 'Thank you for valuing your family!',
+      successText:
+        'Information about the ROOTS Album will be sent to you soon.',
       secondaryCtas: [
-        'Download Press Kit',
-        'Partner With Us',
-        'Investor Relations',
+        'Study abroad community partnership',
+        'Become a partner',
+        'Investor relations',
       ],
     },
     footer: {
-      logoSubtext: '(ROOT)',
-      privacyPolicy: 'Privacy Policy',
-      termsOfService: 'Terms of Service',
-      contact: 'Contact',
-      madeWith: 'Made with',
-      inVietnam: 'in Vietnam',
-      tagline: 'Preserving yesterday, for tomorrow.',
+      logoSubtext: '(ROOTS)',
+      privacyPolicy: 'Legacy Privacy',
+      termsOfService: 'Terms of Responsibility',
+      contact: 'Expat Student Support',
+      madeWith: 'Built with the heartfelt concerns of children living afar',
+      inVietnam: 'in Vietnam & France',
+      tagline: 'Roots: Go far, to tell it close.',
     },
   },
   vi: {
@@ -396,21 +390,21 @@ export const translations: Record<Locale, TranslationSchema> = {
             'Bạn gửi về nhà một Album vật lý cao cấp. Mỗi trang là một không gian để cha mẹ lồng ảnh cũ và mã QR định danh, giúp xóa bỏ mọi rào cản công nghệ.',
           features: [
             'Thiết kế sang trọng, gợi nhắc hoài niệm',
-            '50 câu hỏi "đắt giá" khơi mở tâm hồn',
+            'Hệ thống câu hỏi khơi gợi cảm xúc chuyên sâu',
             'Dễ dàng sử dụng cho người cao tuổi',
             'Vật báu lưu truyền qua nhiều thế hệ',
           ],
         },
         {
-          title: 'Thu âm trực tiếp tức thì',
-          subtitle: 'Kể chuyện chỉ với một lần quét',
+          title: 'Trợ lý kể chuyện thông minh',
+          subtitle: 'Để lời thương không còn khó nói',
           description:
-            'Cha mẹ chỉ cần quét mã QR trên Album để mở giao diện thu âm trực tiếp trên trình duyệt. Không cần cài đặt, không cần đăng ký phức tạp - chỉ cần chạm và nói.',
+            'Khi quét QR, cha mẹ không chỉ thu âm mà còn nhận được các "Gợi ý kể chuyện". Chúng tôi thiết kế sẵn các kịch bản dẫn dắt giúp những người cha, người mẹ vốn ít bày tỏ tình cảm có thể mở lòng một cách tự nhiên nhất.',
           features: [
-            'Chụp ảnh và thu âm ngay trên trình duyệt',
-            'Giao diện tối giản cho người già',
-            'Công nghệ lọc nhiễu âm thanh AI trực tiếp',
-            'Tự động đồng bộ hóa vào bảo tàng số của bạn',
+            'Gợi ý cách bắt đầu câu chuyện "phá băng"',
+            'Câu hỏi phụ dẫn dắt cảm xúc đi sâu hơn',
+            'Giao diện chạm-để-nói tối giản',
+            'Lọc nhiễu âm thanh AI trực tiếp trên trình duyệt',
           ],
         },
         {
@@ -448,8 +442,8 @@ export const translations: Record<Locale, TranslationSchema> = {
           others: 'Dòng tin nhắn lộn xộn, dễ mất',
         },
         {
-          feature: 'Tính chủ động',
-          roots: 'Con dẫn dắt bố mẹ kể chuyện',
+          feature: 'Cách dẫn dắt',
+          roots: 'Kịch bản giúp bố mẹ "mở lòng"',
           others: 'Đợi chờ tương tác ngẫu nhiên',
         },
         {
@@ -475,9 +469,9 @@ export const translations: Record<Locale, TranslationSchema> = {
             'Trong khi các ứng dụng khác tối ưu cho sự tiện lợi, chúng tôi tối ưu cho những giá trị tinh thần trường tồn.',
         },
         {
-          title: 'Xóa bỏ rào cản thế hệ',
+          title: 'Thấu hiểu tâm lý người Việt',
           description:
-            'Album vật lý và Web-record giúp cha mẹ tham gia ngay lập tức mà không cần biết dùng ứng dụng phức tạp.',
+            'Chúng tôi hiểu cha mẹ Việt thường ngại nói lời yêu thương. Vì vậy, Roots đóng vai trò là "người dẫn chuyện" để kết nối hai thế hệ.',
         },
         {
           title: 'Quyền riêng tư thiêng liêng',
@@ -487,46 +481,34 @@ export const translations: Record<Locale, TranslationSchema> = {
       ],
     },
     tech: {
-      sectionLabel: 'Công nghệ phục vụ trái tim',
-      sectionTitle: 'Xây dựng cho sự vĩnh cửu',
+      sectionLabel: 'Tính năng cốt lõi',
+      sectionTitle: 'Giải pháp kết nối di sản gia đình',
       sectionDescription:
-        'Nền tảng hiện đại giúp tiếng nói của cha mẹ vang vọng đến 50 năm sau và xa hơn nữa.',
+        'Sự kết hợp hoàn hảo giữa Album vật lý truyền thống và công nghệ hiện đại, giúp lưu giữ những câu chuyện đời người một cách trọn vẹn nhất.',
       features: [
         {
-          title: 'Hệ thống Web-Recording trực tiếp',
+          title: 'Phygital Bridge',
           description:
-            'Công nghệ thu âm trên nền tảng web (WebRTC) tương thích hoàn hảo với mọi trình duyệt di động.',
-          status: 'Dành cho Cha Mẹ',
+            'Album vật lý cao cấp tích hợp mã QR định danh, giúp cha mẹ dễ dàng chụp ảnh và ghi âm kể chuyện chỉ với một cú chạm.',
+          status: 'MVP',
         },
         {
-          title: 'Hệ quản trị Di sản (Dashboard)',
+          title: 'Hệ thống Quản trị Ký ức',
           description:
-            'Công cụ dành cho du học sinh để sắp xếp, chú thích và quản lý bảo tàng gia đình từ xa.',
-          status: 'Dành cho Con',
+            'Cung cấp quyền "Tổng biên tập" cho người con để sắp xếp, gắn nhãn và thêm cảm xúc vào từng mảnh ghép ký ức của cha mẹ.',
+          status: 'Core',
         },
         {
-          title: 'AI Storyteller',
+          title: 'Legacy Timeline',
           description:
-            'Tự động chuyển bản ghi âm thành những trang hồi ký được trình bày đẹp mắt.',
-          status: 'AI',
+            'Giao diện dòng thời gian tùy chỉnh, ghép nối những đoạn kể chuyện rời rạc thành một mạch truyện xuyên suốt về gia tộc.',
+          status: 'Core',
         },
         {
-          title: 'Phục dựng hình ảnh',
+          title: 'Chế độ Chia sẻ Tương lai',
           description:
-            'Tái tạo ảnh cũ hư tổn thành những thước phim kỷ niệm sống động.',
-          status: 'AI',
-        },
-        {
-          title: 'Legacy Transfer',
-          description:
-            'Cơ chế chuyển giao quyền thừa kế bảo tàng số cho thế hệ mai sau.',
-          status: 'Bảo mật',
-        },
-        {
-          title: 'Mã hóa đầu cuối',
-          description:
-            'Đảm bảo di sản gia đình chỉ thuộc về những người được phép truy cập.',
-          status: 'Cốt Lõi',
+            'Thiết lập quyền truy cập cho thế hệ mai sau, biến ký ức thành một "di chúc số" sống động cho con cháu ở bất cứ đâu.',
+          status: 'Di sản',
         },
       ],
       marketLabel: 'Cơ hội cho cộng đồng xa xứ',
@@ -569,242 +551,227 @@ export const translations: Record<Locale, TranslationSchema> = {
   },
   fr: {
     navbar: {
-      logoSubtext: '(RACINES)',
-      story: 'Histoire',
-      howItWorks: 'Comment Ça Marche',
-      technology: 'Technologie',
-      joinWaitlist: "Rejoindre La Liste D'Attente",
+      logoSubtext: '(ROOTS)',
+      story: 'Notre Vision',
+      howItWorks: 'Fonctionnement',
+      technology: 'Technologie IA',
+      joinWaitlist: 'Préserver les Souvenirs',
       languageLabel: 'Langue',
     },
     hero: {
-      tagline: 'Un Musee Numerique Pour Le Patrimoine Familial',
-      subtitle: '(RACINES)',
-      headlineLine1:
-        'Les souvenirs ne sont pas faits seulement pour etre gardes,',
-      headlineHighlight: 'mais pour etre revus.',
+      tagline: 'Ne laissez pas les souvenirs devenir des regrets',
+      subtitle: '(ROOTS)',
+      headlineLine1: 'À l’autre bout du monde,',
+      headlineHighlight: 'mais les âmes se touchent toujours.',
       description:
-        "Le premier musee numerique du patrimoine familial au Vietnam. Preservez les voix, les histoires et la sagesse de vos parents avant qu'elles ne deviennent des murmures du passe.",
-      primaryButton: 'Explorer La Vision',
-      secondaryButton: 'Voir Notre Histoire',
+        'Transformer des milliers de kilomètres en moments de compréhension. Nous aidons les étudiants internationaux à préserver la voix et les chapitres inédits de leurs parents avant que le temps n’efface tout.',
+      primaryButton: 'Commencer le Voyage de Connexion',
+      secondaryButton: 'Le Calcul du Temps',
     },
     problem: {
-      sectionLabel: 'Le Fossé Emotionnel',
-      sectionTitle: 'Ce Que Nous Perdons',
+      sectionLabel: 'La Réalité Cruelle',
+      sectionTitle: 'Le Calcul Déchirant des Expatriés',
       sectionDescription:
-        'Chaque jour, des souvenirs precieux disparaissent. Les histoires qui nous ont formes, les voix qui nous ont consoles, la sagesse qui nous a guides - tout s efface dans le silence.',
+        'Avez-vous déjà osé calculer combien de chances il vous reste réellement pour comprendre vos parents avant qu’il ne soit trop tard ?',
       cards: [
         {
-          title: 'Connexion Superficielle',
+          title: 'Le Chiffre Fini 20',
           description:
-            'Les appels quotidiens existent, mais le lien emotionnel reste faible. "Tu as mange ?" "Comment vas-tu ?" - les memes questions, jour apres jour.',
+            'Si vous rentrez une fois par an, il ne vous reste peut-être que 20 repas à partager avec vos parents. Chaque année qui passe est une opportunité perdue à jamais.',
           quote:
-            'Nous parlons chaque jour, mais je connais a peine les reves de mon pere.',
+            'J’ai été choqué de réaliser qu’il me restait moins de 30 jours de temps réel avec mes parents pour le reste de leur vie.',
         },
         {
-          title: 'Histoires Qui S Effacent',
+          title: 'La Peur de "l’Étranger Familier"',
           description:
-            'Les histoires de famille, les lecons de vie et les souvenirs precieux se perdent de jour en jour. Une fois perdus, ils ne reviennent jamais.',
+            'Les messages Zalo arrivent, les appels FaceTime se connectent, mais vous perdez peu à peu le fil de ce que vos parents pensent vraiment. Vous les perdez alors qu’ils sont encore là.',
           quote:
-            'Les recettes de ma grand-mere, ses histoires d enfance... tout est perdu.',
+            'Le plus effrayant, c’est de rentrer à la maison et de réaliser que j’ai manqué tout un chapitre vital de la vie de ma mère.',
         },
         {
-          title: 'Des Outils, Pas Des Tresors',
+          title: 'L’Écho Vide',
           description:
-            'Zalo et Facebook sont des outils de communication, pas des gardiens d heritage. Le patrimoine de votre famille merite plus qu un historique de messages.',
+            'Les applications de messagerie ne sont que des outils de communication rapide, pas des coffres aux trésors. Un jour, vous rêverez d’entendre à nouveau un conseil, mais il n’y aura que le silence.',
           quote:
-            'Faire defiler de vieux messages ne remplace pas le son de sa voix.',
+            'Faire défiler de vieux SMS n’est pas la même chose que d’entendre la chaleur dans la voix de mon père.',
         },
       ],
       emotionalQuote:
-        'La plus grande tragedie n est pas la mort, mais ce qui meurt en nous pendant que nous vivons.',
-      emotionalAttribution: 'Norman Cousins',
+        'Notre plus grande erreur est de penser que nous avons encore beaucoup de temps.',
+      emotionalAttribution: 'Philosophie de Vie',
     },
     solution: {
-      sectionLabel: 'Le Systeme Phygital',
-      sectionTitle: 'La Rencontre Du Physique Et Du Numerique',
+      sectionLabel: 'Soyez Proactif',
+      sectionTitle: 'ROOTS : Un Bouclier Contre l’Oubli',
       sectionDescription:
-        'Un parcours fluide en trois etapes qui relie les generations grace a un design attentionne et une technologie intuitive.',
+        'N’attendez pas que vos parents racontent leurs histoires ; soyez celui qui demande. Un voyage "Phygital" pour vous aider à construire votre héritage familial à distance.',
       steps: [
         {
-          title: 'Cartes Roots',
-          subtitle: 'Connexion Physique',
+          title: 'L’Album "Déverrouilleur de Souvenirs"',
+          subtitle: 'Un cadeau de piété filiale venu d’ailleurs',
           description:
-            'Un jeu de 50 questions guidees, soigneusement concu pour declencher un storytelling naturel entre les membres de la famille. Aucun ecran, aucune pression - seulement des conversations profondes.',
+            'Envoyez à la maison un album physique premium. Chaque page est un espace pour que les parents y placent de vieilles photos et un code QR unique, supprimant toutes les barrières technologiques.',
           features: [
-            '50 questions soigneusement selectionnees',
-            'Concu pour tous les ages',
-            'Bilingue: vietnamien & anglais',
-            'Materiaux premium',
+            'Design élégant, évoquant la nostalgie',
+            'Système de questions suggestives approfondies',
+            'Facile à utiliser pour les personnes âgées',
+            'Un trésor à transmettre de génération en génération',
           ],
         },
         {
-          title: 'Application Roots',
-          subtitle: 'Capture Numerique',
+          title: 'Assistant Narratif Intelligent',
+          subtitle: 'Pour que les mots d’amour soient plus faciles à dire',
           description:
-            'Scannez le QR code de chaque carte pour enregistrer des moments precieux. Memo vocal, video ou texte - capturez les souvenirs de la facon la plus naturelle.',
+            'En scannant le QR, les parents ne font pas qu’enregistrer ; ils reçoivent des "Guides Narratifs". Nous avons conçu des scénarios pour aider les parents les plus réservés à s’ouvrir naturellement.',
           features: [
-            'Scan QR simple pour enregistrer',
-            'Capture vocale et video',
-            'Aucune competence technique requise',
-            'Fonctionne hors ligne',
+            'Amorceurs de conversation pour "briser la glace"',
+            'Questions de relance pour approfondir les émotions',
+            'Interface minimaliste "appuyer pour parler"',
+            'Suppression du bruit par IA directement dans le navigateur',
           ],
         },
         {
-          title: 'Coffre De Famille',
-          subtitle: 'Heritage Preserve',
+          title: 'Musée Numérique Éternel',
+          subtitle: 'Le plus grand atout que vous posséderez jamais',
           description:
-            'Une chronologie pilotee par l IA organise les histoires de votre famille en une magnifique autobiographie numerique. Recherchez, revivez et partagez entre generations.',
+            'Vous jouez le rôle de "Conservateur". Organisez, éditez et stockez les fragments de vie de vos parents dans une chronologie vivante et dynamique.',
           features: [
-            'Chronologie organisee par IA',
-            'Transcription voix vers texte',
-            'Amelioration photo',
-            'Partage familial securise',
+            'Chronologie entièrement personnalisable par vous',
+            'L’IA transcrit la voix en mémoires écrites',
+            'Restauration de vieilles photos en vidéos émotionnelles',
+            'Mode de partage pour les générations futures',
           ],
         },
       ],
     },
     competitive: {
-      sectionLabel: 'Pourquoi ROOTS',
-      sectionTitle: 'Concu Pour Etre Different',
+      sectionLabel: 'Votre Choix',
+      sectionTitle: 'Stocker des Déchets ou Préserver un Héritage ?',
       sectionDescription:
-        'Nous ne concurrencons pas Zalo ou Facebook. Nous creons une categorie entierement nouvelle: la preservation d heritage numerique.',
+        'Nous ne créons pas de messages instantanés. Nous créons des souvenirs qui vivent éternellement.',
       rootsTitle: 'ROOTS',
-      rootsSubtitle: 'Plateforme D Heritage',
-      othersTitle: 'Zalo / Facebook',
-      othersSubtitle: 'Applications De Communication',
+      rootsSubtitle: 'Préservateur d’Héritage',
+      othersTitle: 'Apps de Communication',
+      othersSubtitle: 'Stockage de Données Brutes',
       comparisons: [
         {
-          feature: 'Objectif',
-          roots: 'Preservation du patrimoine familial',
-          others: 'Communication & social',
+          feature: 'Valeur Fondamentale',
+          roots: 'Empathie & Connexion Profonde',
+          others: 'Commodité & Rapidité',
         },
         {
-          feature: 'Profondeur',
-          roots: 'Histoires de vie significatives',
-          others: 'Nouvelles et mises a jour quotidiennes',
+          feature: 'Résultat',
+          roots: 'Un mémoire vivant et vibrant',
+          others: 'Historiques de chat désordonnés et perdus',
         },
         {
-          feature: 'Format',
-          roots: 'Prompts guides de storytelling',
-          others: 'Messagerie libre',
+          feature: 'Guidage',
+          roots: 'Scénarios pour aider les parents à "s’ouvrir"',
+          others: 'Attente d’interactions aléatoires',
         },
         {
-          feature: 'Confidentialite',
-          roots: 'Familial uniquement, conforme au RGPD',
-          others: 'Public ou semi-public',
+          feature: 'Accès',
+          roots: 'Scanner le QR, utiliser instantanément sur le Web',
+          others: 'Installation d’App et connexion obligatoires',
         },
         {
-          feature: 'Element Physique',
-          roots: 'Jeu de cartes premium inclus',
-          others: 'Numerique uniquement',
+          feature: 'Élément Physique',
+          roots: 'Album physique comme "déclencheur"',
+          others: 'Présence numérique superficielle uniquement',
         },
         {
-          feature: 'Fonctionnalites IA',
-          roots: 'Organisation et enrichissement des histoires',
-          others: 'Publicites et recommandations',
+          feature: 'Fonctions IA',
+          roots: 'Sublimer et préserver l’héritage',
+          others: 'Suggestions de contenu de divertissement',
         },
       ],
       advantages: [
         {
-          title: 'La Profondeur Avant La Commodite',
+          title: 'La Profondeur Avant Tout',
           description:
-            'Alors que d autres applications optimisent les messages rapides, nous optimisons les conversations significatives qui traversent les generations.',
+            'Alors que d’autres apps optimisent pour la commodité, nous optimisons pour les valeurs spirituelles durables.',
         },
         {
-          title: 'Concu Pour Les Aines',
+          title: 'Comprendre les Nuances Culturelles',
           description:
-            'Les cartes physiques suppriment la barriere technologique et permettent aux parents et grands-parents de participer naturellement.',
+            'Nous savons que les parents vietnamiens ont souvent du mal à exprimer leur amour. Roots joue le rôle de "narrateur" pour lier les deux générations.',
         },
         {
-          title: 'Architecture Axee Sur La Confidentialite',
+          title: 'Confidentialité Sacrée',
           description:
-            'Les donnees emotionnelles de votre famille sont sacrees. Nous ne monetisons, n analysons et ne partageons jamais vos histoires.',
+            'Les données émotionnelles de votre famille sont uniques. Nous promettons de ne jamais commercialiser ni analyser vos histoires personnelles.',
         },
       ],
     },
     tech: {
-      sectionLabel: 'Pour Les Createurs Et Investisseurs',
-      sectionTitle: 'Concu Pour Passer A L Echelle',
+      sectionLabel: 'Fonctionnalités Clés',
+      sectionTitle: 'Solution de Connexion à l’Héritage Familial',
       sectionDescription:
-        'Une stack technologique moderne concue pour la securite, l evolutivite et une experience fluide entre les generations.',
+        'La combinaison parfaite entre albums physiques traditionnels et technologie moderne pour préserver pleinement les histoires de vie.',
       features: [
         {
-          title: 'Mini App Zalo (MVP)',
+          title: 'Pont Phygital',
           description:
-            'Nous commençons la ou votre famille est deja. Aucun nouveau telechargement requis pour l adoption initiale.',
-          status: 'Phase 1',
+            'Album physique premium avec codes QR uniques, permettant aux parents de prendre des photos et d’enregistrer des histoires d’un seul geste.',
+          status: 'MVP',
         },
         {
-          title: 'Application Mobile Native',
+          title: 'Système de Gestion de Mémoire',
           description:
-            'Applications iOS et Android completes avec mode hors ligne et fonctionnalites avancees.',
-          status: 'Phase 2',
+            'Donne à l’enfant le rôle de "Rédacteur en chef" pour organiser, étiqueter et ajouter des émotions à chaque fragment de souvenir.',
+          status: 'Core',
         },
         {
-          title: 'IA Voix Vers Histoire',
+          title: 'Chronologie de l’Héritage',
           description:
-            'Transcrit automatiquement les enregistrements vocaux en histoires joliment formatees.',
-          status: 'IA',
+            'Interface chronologique personnalisable, reliant les histoires éparpillées en un récit familial continu.',
+          status: 'Core',
         },
         {
-          title: 'Amelioration Des Photos',
+          title: 'Mode de Partage Futur',
           description:
-            'Reconstruction IA des anciennes photos abimees en souvenirs video vivants et emotionnels.',
-          status: 'IA',
-        },
-        {
-          title: 'Chronologie Intelligente',
-          description:
-            'Vue chronologique organisee par IA des histoires familiales, facile a rechercher et parcourir.',
-          status: 'IA',
-        },
-        {
-          title: 'Securite Entreprise',
-          description:
-            'Chiffrement de bout en bout, conformite RGPD et permissions controlees par la famille.',
-          status: 'Noyau',
+            'Définissez l’accès pour les générations futures, transformant les souvenirs en un "testament numérique" vivant pour les petits-enfants partout.',
+          status: 'Héritage',
         },
       ],
-      marketLabel: 'Opportunite De Marche',
-      marketTitle: 'Pourquoi Le Moment Est Ideal',
+      marketLabel: 'Opportunité pour la Communauté Expatriée',
+      marketTitle: 'Pourquoi c’est le moment d’agir',
       metrics: [
-        { value: '6M+', label: 'Diaspora vietnamienne mondiale' },
+        { value: '500k+', label: 'Étudiants vietnamiens dans le monde' },
+        { value: '100%', label: 'Le temps ne peut pas faire marche arrière' },
         {
-          value: '89%',
-          label: 'Souhaitent preserver les histoires familiales',
-        },
-        {
-          value: '67%',
-          label: 'Regrettent de ne pas avoir enregistre leurs parents',
+          value: '0',
+          label: 'Raison d’attendre plus longtemps',
         },
       ],
       marketText:
-        'La diaspora vietnamienne grandit, vieillit et prend de plus en plus conscience de l importance de preserver son heritage. Il est temps d agir - avant qu une autre generation d histoires ne disparaisse.',
+        'La communauté expatriée vietnamienne grandit et vieillit rapidement. Chaque jour qui passe est une page de l’histoire familiale qui risque de disparaître à jamais. Ne vous laissez pas dire "Si j’avais su".',
     },
     finalCta: {
-      quoteText: 'Nous ne construisons pas seulement un produit.',
-      quoteHighlight: 'Nous construisons un heritage.',
+      quoteText: 'Les parents ne vivent pas éternellement avec nous,',
+      quoteHighlight: 'mais leurs histoires le peuvent.',
       visionText:
-        'Rejoignez des milliers de familles vietnamiennes dans le monde qui choisissent de preserver l essentiel - les voix, les histoires et la sagesse de ceux qu elles aiment.',
-      emailPlaceholder: 'Entrez votre email',
-      submitButton: 'Rejoindre Le Voyage',
-      successTitle: 'Merci de nous rejoindre !',
+        'Soyez l’enfant proactif qui préserve la chaleur familiale. Rejoignez ROOTS pour commencer à bâtir l’héritage de vos parents dès aujourd’hui.',
+      emailPlaceholder: 'Votre adresse e-mail',
+      submitButton: 'Je veux préserver les souvenirs',
+      successTitle: 'Merci de valoriser votre famille !',
       successText:
-        'Nous vous contacterons bientot avec des nouvelles de ROOTS.',
+        'Les informations sur l’Album ROOTS vous seront envoyées prochainement.',
       secondaryCtas: [
-        'Telecharger Le Press Kit',
-        'Devenir Partenaire',
-        'Relations Investisseurs',
+        'Partenariats communauté étudiante',
+        'Devenir partenaire',
+        'Relations investisseurs',
       ],
     },
     footer: {
-      logoSubtext: '(RACINES)',
-      privacyPolicy: 'Politique De Confidentialite',
-      termsOfService: 'Conditions D Utilisation',
-      contact: 'Contact',
-      madeWith: 'Cree avec',
-      inVietnam: 'au Vietnam',
-      tagline: 'Preserver hier, pour demain.',
+      logoSubtext: '(ROOTS)',
+      privacyPolicy: 'Confidentialité de l’Héritage',
+      termsOfService: 'Conditions de Responsabilité',
+      contact: 'Soutien aux Étudiants Expats',
+      madeWith:
+        'Conçu avec les préoccupations sincères des enfants vivant loin',
+      inVietnam: 'au Vietnam & en France',
+      tagline: 'Roots : Partir loin, pour raconter de près.',
     },
   },
 };
