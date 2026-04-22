@@ -3,6 +3,7 @@ import { DM_Sans, Playfair_Display } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { headers } from 'next/headers'
 import { I18nProvider } from '@/components/i18n-provider'
+import { EmotionRegistry } from '@/components/emotion-registry'
 import { locales, type Locale } from '@/lib/i18n'
 import './globals.css'
 
@@ -55,7 +56,11 @@ export default async function RootLayout({
   return (
     <html lang={preferredLocale} suppressHydrationWarning>
       <body className={`${dmSans.variable} ${playfair.variable}`}>
-        <I18nProvider defaultLocale={preferredLocale}>{children}</I18nProvider>
+        <EmotionRegistry>
+          <I18nProvider defaultLocale={preferredLocale}>
+            {children}
+          </I18nProvider>
+        </EmotionRegistry>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
