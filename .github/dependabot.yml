@@ -26,6 +26,14 @@ updates:
       emotion:
         patterns:
           - '@emotion/*'
+      prisma:
+        patterns:
+          - 'prisma'
+          - '@prisma/*'
+      pg:
+        patterns:
+          - 'pg'
+          - '@types/pg'
       typescript:
         patterns:
           - 'typescript'

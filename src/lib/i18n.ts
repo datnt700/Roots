@@ -97,6 +97,166 @@ type NavbarTranslations = {
     inVietnam: string
     tagline: string
   }
+  // ─── App shell ────────────────────────────────────────────────────────────
+  app: {
+    nav: {
+      dashboard: string
+      record: string
+      studio: string
+      timeline: string
+      feedback: string
+      parents: string
+    }
+    sidebar: {
+      parents: string
+      addParent: string
+      settings: string
+      logout: string
+    }
+    greeting: string
+    greetingName: string
+  }
+  // ─── Dashboard ────────────────────────────────────────────────────────────
+  dashboard: {
+    title: string
+    subtitle: string
+    stats: {
+      memories: string
+      hours: string
+      parents: string
+      albums: string
+    }
+    recentMemories: string
+    noMemories: string
+    startRecording: string
+    continueJourney: string
+    parentCard: {
+      lastRecorded: string
+      recordings: string
+      viewAll: string
+    }
+    quickActions: {
+      title: string
+      newRecording: string
+      openStudio: string
+      viewTimeline: string
+      seeFeedback: string
+    }
+    pendingFeedback: string
+  }
+  // ─── Recording Station ────────────────────────────────────────────────────
+  record: {
+    title: string
+    subtitle: string
+    selectParent: string
+    noParents: string
+    addParentFirst: string
+    prompt: string
+    promptLabel: string
+    skipPrompt: string
+    uploadPhoto: string
+    photoPreview: string
+    removePhoto: string
+    startRecording: string
+    stopRecording: string
+    recordingTime: string
+    playback: string
+    retake: string
+    saveMemory: string
+    saving: string
+    saved: string
+    decade: string
+    decadeOptions: {
+      unknown: string
+      d1960s: string
+      d1970s: string
+      d1980s: string
+      d1990s: string
+      d2000s: string
+      d2010s: string
+    }
+    prompts: string[]
+  }
+  // ─── Memory Studio ────────────────────────────────────────────────────────
+  studio: {
+    title: string
+    subtitle: string
+    allMemories: string
+    filter: {
+      all: string
+      processed: string
+      pending: string
+    }
+    sort: {
+      newest: string
+      oldest: string
+      decade: string
+    }
+    memoryCard: {
+      transcript: string
+      reflection: string
+      noTranscript: string
+      addReflection: string
+      processed: string
+      processing: string
+    }
+    editReflection: string
+    saveReflection: string
+    deleteMemory: string
+    confirmDelete: string
+    emptyState: string
+    heart: string
+    hearted: string
+  }
+  // ─── Feedback Page ────────────────────────────────────────────────────────
+  feedback: {
+    title: string
+    subtitle: string
+    fromParent: string
+    listenAgain: string
+    yourResponse: string
+    recordResponse: string
+    writeResponse: string
+    sendResponse: string
+    markPlayed: string
+    played: string
+    noFeedback: string
+    respondedAt: string
+  }
+  // ─── Legacy Timeline ──────────────────────────────────────────────────────
+  timeline: {
+    title: string
+    subtitle: string
+    addAlbum: string
+    albumName: string
+    createAlbum: string
+    emptyAlbum: string
+    addToAlbum: string
+    decades: {
+      title: string
+      unknown: string
+    }
+    shareTimeline: string
+    exportPdf: string
+    memoryCount: string
+  }
+  // ─── Parents / QR ─────────────────────────────────────────────────────────
+  parents: {
+    title: string
+    subtitle: string
+    addParent: string
+    generateQR: string
+    empty: string
+    qrModal: {
+      title: string
+      instructions: string
+      download: string
+      print: string
+      expires: string
+      close: string
+      generating: string
+    }
+  }
 }
 
 export type TranslationSchema = NavbarTranslations
@@ -325,6 +485,170 @@ export const translations: Record<Locale, TranslationSchema> = {
       inVietnam: 'in Vietnam & France',
       tagline: 'Roots: Go far, to tell it close.',
     },
+    app: {
+      nav: {
+        dashboard: 'Home',
+        record: 'Record',
+        studio: 'Studio',
+        timeline: 'Timeline',
+        feedback: 'Feedback',
+        parents: 'Family',
+      },
+      sidebar: {
+        parents: 'My Parents',
+        addParent: 'Add Parent',
+        settings: 'Settings',
+        logout: 'Sign Out',
+      },
+      greeting: 'Good',
+      greetingName: 'Welcome back',
+    },
+    dashboard: {
+      title: 'Your Family Museum',
+      subtitle: 'Every memory saved is a piece of history preserved',
+      stats: {
+        memories: 'Memories',
+        hours: 'Hours recorded',
+        parents: 'Parents',
+        albums: 'Albums',
+      },
+      recentMemories: 'Recent Memories',
+      noMemories: 'No memories yet',
+      startRecording: 'Start Your First Recording',
+      continueJourney: 'Continue the Journey',
+      parentCard: {
+        lastRecorded: 'Last recorded',
+        recordings: 'recordings',
+        viewAll: 'View all',
+      },
+      quickActions: {
+        title: 'Quick Actions',
+        newRecording: 'New Recording',
+        openStudio: 'Open Studio',
+        viewTimeline: 'View Timeline',
+        seeFeedback: 'See Feedback',
+      },
+      pendingFeedback: 'responses waiting',
+    },
+    record: {
+      title: 'Recording Station',
+      subtitle:
+        'Give your parent a voice prompt and let them share their story',
+      selectParent: 'Select parent',
+      noParents: 'No parents added yet',
+      addParentFirst: 'Add a parent first',
+      prompt: 'Story prompt',
+      promptLabel: 'Prompt for this recording',
+      skipPrompt: 'No prompt',
+      uploadPhoto: 'Add a photo',
+      photoPreview: 'Photo preview',
+      removePhoto: 'Remove photo',
+      startRecording: 'Start Recording',
+      stopRecording: 'Stop',
+      recordingTime: 'Recording',
+      playback: 'Playback',
+      retake: 'Re-record',
+      saveMemory: 'Save Memory',
+      saving: 'Saving…',
+      saved: 'Memory saved!',
+      decade: 'Decade of memory',
+      decadeOptions: {
+        unknown: 'Unknown / Mixed',
+        d1960s: '1960s',
+        d1970s: '1970s',
+        d1980s: '1980s',
+        d1990s: '1990s',
+        d2000s: '2000s',
+        d2010s: '2010s',
+      },
+      prompts: [
+        'Tell me about your childhood home',
+        'What was your first job like?',
+        'How did you and your partner meet?',
+        'What was the hardest moment of your life?',
+        'What piece of advice would you give your younger self?',
+        'What traditions did your parents teach you?',
+        'Describe a typical day when you were young',
+        'What made you happiest as a child?',
+      ],
+    },
+    studio: {
+      title: 'Memory Studio',
+      subtitle: "Curate, edit, and reflect on your family's stories",
+      allMemories: 'All memories',
+      filter: {
+        all: 'All',
+        processed: 'Transcribed',
+        pending: 'Pending',
+      },
+      sort: {
+        newest: 'Newest',
+        oldest: 'Oldest',
+        decade: 'By decade',
+      },
+      memoryCard: {
+        transcript: 'Transcript',
+        reflection: 'Your reflection',
+        noTranscript: 'Transcription in progress…',
+        addReflection: 'Add your reflection',
+        processed: 'Transcribed',
+        processing: 'Processing',
+      },
+      editReflection: 'Edit reflection',
+      saveReflection: 'Save',
+      deleteMemory: 'Delete memory',
+      confirmDelete: 'Are you sure? This cannot be undone.',
+      emptyState: 'No memories in the studio yet. Go record one!',
+      heart: 'Send ❤️',
+      hearted: 'Sent ❤️',
+    },
+    feedback: {
+      title: 'Family Feedback',
+      subtitle: 'Hear what your family said in response to your recordings',
+      fromParent: 'From',
+      listenAgain: 'Listen again',
+      yourResponse: 'Your response',
+      recordResponse: 'Record a response',
+      writeResponse: 'Write a response',
+      sendResponse: 'Send',
+      markPlayed: 'Mark as heard',
+      played: 'Heard',
+      noFeedback: 'No feedback yet. Share a memory to get responses!',
+      respondedAt: 'Responded',
+    },
+    timeline: {
+      title: 'Legacy Timeline',
+      subtitle: "Your family's living history, decade by decade",
+      addAlbum: 'New Album',
+      albumName: 'Album name',
+      createAlbum: 'Create',
+      emptyAlbum: 'No memories in this album yet',
+      addToAlbum: 'Add to album',
+      decades: {
+        title: 'Decades',
+        unknown: 'Timeless',
+      },
+      shareTimeline: 'Share timeline',
+      exportPdf: 'Export as PDF',
+      memoryCount: 'memories',
+    },
+    parents: {
+      title: 'Family Members',
+      subtitle: 'Create QR codes so they can record memories for you',
+      addParent: 'Add member',
+      generateQR: 'Generate QR',
+      empty: 'No family members yet. Add one to get started.',
+      qrModal: {
+        title: 'Print & Stick',
+        instructions:
+          'Download or print this QR code and paste it inside your physical album',
+        download: 'Download',
+        print: 'Print',
+        expires: 'Expires in 72 hours',
+        close: 'Close',
+        generating: 'Generating QR…',
+      },
+    },
   },
   vi: {
     navbar: {
@@ -547,6 +871,168 @@ export const translations: Record<Locale, TranslationSchema> = {
       madeWith: 'Xây dựng bằng nỗi trăn trở của những người con xa xứ',
       inVietnam: 'tại Việt Nam & Pháp',
       tagline: 'Roots: Đi thật xa, để kể lại thật gần.',
+    },
+    app: {
+      nav: {
+        dashboard: 'Trang chủ',
+        record: 'Ghi âm',
+        studio: 'Studio',
+        timeline: 'Dòng thời gian',
+        feedback: 'Phản hồi',
+        parents: 'Gia đình',
+      },
+      sidebar: {
+        parents: 'Cha mẹ của tôi',
+        addParent: 'Thêm người thân',
+        settings: 'Cài đặt',
+        logout: 'Đăng xuất',
+      },
+      greeting: 'Chào buổi',
+      greetingName: 'Chào mừng trở lại',
+    },
+    dashboard: {
+      title: 'Bảo tàng gia đình',
+      subtitle: 'Mỗi ký ức được lưu là một mảnh lịch sử được giữ lại',
+      stats: {
+        memories: 'Ký ức',
+        hours: 'Giờ ghi âm',
+        parents: 'Người thân',
+        albums: 'Album',
+      },
+      recentMemories: 'Ký ức gần đây',
+      noMemories: 'Chưa có ký ức nào',
+      startRecording: 'Bắt đầu ghi âm đầu tiên',
+      continueJourney: 'Tiếp tục hành trình',
+      parentCard: {
+        lastRecorded: 'Ghi lần cuối',
+        recordings: 'đoạn ghi',
+        viewAll: 'Xem tất cả',
+      },
+      quickActions: {
+        title: 'Thao tác nhanh',
+        newRecording: 'Ghi âm mới',
+        openStudio: 'Mở Studio',
+        viewTimeline: 'Xem dòng thời gian',
+        seeFeedback: 'Xem phản hồi',
+      },
+      pendingFeedback: 'phản hồi đang chờ',
+    },
+    record: {
+      title: 'Phòng ghi âm',
+      subtitle: 'Đưa ra câu hỏi gợi ý và để cha mẹ kể câu chuyện của họ',
+      selectParent: 'Chọn người thân',
+      noParents: 'Chưa có người thân nào',
+      addParentFirst: 'Thêm người thân trước',
+      prompt: 'Câu hỏi gợi chuyện',
+      promptLabel: 'Câu hỏi cho lần ghi này',
+      skipPrompt: 'Không có câu hỏi',
+      uploadPhoto: 'Thêm ảnh',
+      photoPreview: 'Xem trước ảnh',
+      removePhoto: 'Xóa ảnh',
+      startRecording: 'Bắt đầu ghi âm',
+      stopRecording: 'Dừng',
+      recordingTime: 'Đang ghi',
+      playback: 'Nghe lại',
+      retake: 'Ghi lại',
+      saveMemory: 'Lưu ký ức',
+      saving: 'Đang lưu…',
+      saved: 'Đã lưu ký ức!',
+      decade: 'Thập niên của ký ức',
+      decadeOptions: {
+        unknown: 'Không rõ / Hỗn hợp',
+        d1960s: 'Thập niên 60',
+        d1970s: 'Thập niên 70',
+        d1980s: 'Thập niên 80',
+        d1990s: 'Thập niên 90',
+        d2000s: 'Thập niên 2000',
+        d2010s: 'Thập niên 2010',
+      },
+      prompts: [
+        'Kể cho con nghe về ngôi nhà thời thơ ấu của bố/mẹ',
+        'Công việc đầu tiên của bố/mẹ như thế nào?',
+        'Bố và mẹ gặp nhau như thế nào?',
+        'Khoảnh khắc khó khăn nhất trong cuộc đời bố/mẹ là gì?',
+        'Bố/mẹ sẽ nói gì với bản thân lúc còn trẻ?',
+        'Bố/mẹ đã học được truyền thống gì từ ông bà?',
+        'Một ngày bình thường của bố/mẹ hồi nhỏ trông như thế nào?',
+        'Điều gì khiến bố/mẹ vui nhất khi còn nhỏ?',
+      ],
+    },
+    studio: {
+      title: 'Studio ký ức',
+      subtitle: 'Sắp xếp, chỉnh sửa và suy ngẫm về câu chuyện gia đình',
+      allMemories: 'Tất cả ký ức',
+      filter: {
+        all: 'Tất cả',
+        processed: 'Đã phiên âm',
+        pending: 'Đang xử lý',
+      },
+      sort: {
+        newest: 'Mới nhất',
+        oldest: 'Cũ nhất',
+        decade: 'Theo thập niên',
+      },
+      memoryCard: {
+        transcript: 'Phiên âm',
+        reflection: 'Cảm nhận của bạn',
+        noTranscript: 'Đang phiên âm…',
+        addReflection: 'Thêm cảm nhận',
+        processed: 'Đã phiên âm',
+        processing: 'Đang xử lý',
+      },
+      editReflection: 'Chỉnh sửa cảm nhận',
+      saveReflection: 'Lưu',
+      deleteMemory: 'Xóa ký ức',
+      confirmDelete: 'Bạn chắc chắn? Hành động này không thể hoàn tác.',
+      emptyState: 'Studio chưa có ký ức nào. Hãy đi ghi âm một cái!',
+      heart: 'Gửi ❤️',
+      hearted: 'Đã gửi ❤️',
+    },
+    feedback: {
+      title: 'Phản hồi gia đình',
+      subtitle: 'Nghe những gì gia đình nói về những đoạn ghi của bạn',
+      fromParent: 'Từ',
+      listenAgain: 'Nghe lại',
+      yourResponse: 'Phản hồi của bạn',
+      recordResponse: 'Ghi âm phản hồi',
+      writeResponse: 'Viết phản hồi',
+      sendResponse: 'Gửi',
+      markPlayed: 'Đánh dấu đã nghe',
+      played: 'Đã nghe',
+      noFeedback: 'Chưa có phản hồi. Hãy chia sẻ một ký ức để nhận phản hồi!',
+      respondedAt: 'Đã phản hồi',
+    },
+    timeline: {
+      title: 'Dòng thời gian di sản',
+      subtitle: 'Lịch sử sống động của gia đình bạn, theo từng thập niên',
+      addAlbum: 'Album mới',
+      albumName: 'Tên album',
+      createAlbum: 'Tạo',
+      emptyAlbum: 'Album này chưa có ký ức nào',
+      addToAlbum: 'Thêm vào album',
+      decades: {
+        title: 'Thập niên',
+        unknown: 'Vô thời hạn',
+      },
+      shareTimeline: 'Chia sẻ dòng thời gian',
+      exportPdf: 'Xuất PDF',
+      memoryCount: 'ký ức',
+    },
+    parents: {
+      title: 'Thành viên gia đình',
+      subtitle: 'Tạo QR để họ ghi lại ký ức cho bạn',
+      addParent: 'Thêm thành viên',
+      generateQR: 'Tạo QR',
+      empty: 'Chưa có thành viên nào. Thêm ngay để bắt đầu.',
+      qrModal: {
+        title: 'In & Dán vào album',
+        instructions: 'Tải về hoặc in QR này rồi dán vào trang album vật lý',
+        download: 'Tải về',
+        print: 'In',
+        expires: 'Hết hạn sau 72 giờ',
+        close: 'Đóng',
+        generating: 'Đang tạo QR…',
+      },
     },
   },
   fr: {
@@ -772,6 +1258,173 @@ export const translations: Record<Locale, TranslationSchema> = {
         'Conçu avec les préoccupations sincères des enfants vivant loin',
       inVietnam: 'au Vietnam & en France',
       tagline: 'Roots : Partir loin, pour raconter de près.',
+    },
+    app: {
+      nav: {
+        dashboard: 'Accueil',
+        record: 'Enregistrer',
+        studio: 'Studio',
+        timeline: 'Chronologie',
+        feedback: 'Retours',
+        parents: 'Famille',
+      },
+      sidebar: {
+        parents: 'Mes Parents',
+        addParent: 'Ajouter un proche',
+        settings: 'Paramètres',
+        logout: 'Déconnexion',
+      },
+      greeting: 'Bonjour',
+      greetingName: 'Bon retour',
+    },
+    dashboard: {
+      title: 'Votre Musée Familial',
+      subtitle:
+        "Chaque souvenir sauvegardé est un fragment d'histoire préservé",
+      stats: {
+        memories: 'Souvenirs',
+        hours: 'Heures enregistrées',
+        parents: 'Proches',
+        albums: 'Albums',
+      },
+      recentMemories: 'Souvenirs récents',
+      noMemories: "Aucun souvenir pour l'instant",
+      startRecording: 'Commencer votre premier enregistrement',
+      continueJourney: 'Continuer le voyage',
+      parentCard: {
+        lastRecorded: 'Dernier enregistrement',
+        recordings: 'enregistrements',
+        viewAll: 'Voir tout',
+      },
+      quickActions: {
+        title: 'Actions rapides',
+        newRecording: 'Nouvel enregistrement',
+        openStudio: 'Ouvrir le Studio',
+        viewTimeline: 'Voir la chronologie',
+        seeFeedback: 'Voir les retours',
+      },
+      pendingFeedback: 'réponses en attente',
+    },
+    record: {
+      title: "Station d'Enregistrement",
+      subtitle:
+        'Donnez une invite à vos proches et laissez-les partager leur histoire',
+      selectParent: 'Choisir un proche',
+      noParents: 'Aucun proche ajouté',
+      addParentFirst: "Ajoutez d'abord un proche",
+      prompt: 'Invite narrative',
+      promptLabel: 'Invite pour cet enregistrement',
+      skipPrompt: 'Sans invite',
+      uploadPhoto: 'Ajouter une photo',
+      photoPreview: 'Aperçu de la photo',
+      removePhoto: 'Supprimer la photo',
+      startRecording: "Démarrer l'enregistrement",
+      stopRecording: 'Arrêter',
+      recordingTime: 'Enregistrement',
+      playback: 'Écouter',
+      retake: 'Recommencer',
+      saveMemory: 'Sauvegarder le souvenir',
+      saving: 'Sauvegarde…',
+      saved: 'Souvenir sauvegardé !',
+      decade: 'Décennie du souvenir',
+      decadeOptions: {
+        unknown: 'Inconnue / Mixte',
+        d1960s: 'Années 60',
+        d1970s: 'Années 70',
+        d1980s: 'Années 80',
+        d1990s: 'Années 90',
+        d2000s: 'Années 2000',
+        d2010s: 'Années 2010',
+      },
+      prompts: [
+        "Parlez-moi de votre maison d'enfance",
+        'Comment était votre premier emploi ?',
+        'Comment vous êtes-vous rencontrés ?',
+        'Quel a été le moment le plus difficile de votre vie ?',
+        'Quel conseil donneriez-vous à votre jeunesse ?',
+        'Quelles traditions vous ont transmis vos parents ?',
+        'Décrivez une journée typique quand vous étiez jeune',
+        "Qu'est-ce qui vous rendait le plus heureux enfant ?",
+      ],
+    },
+    studio: {
+      title: 'Studio de Souvenirs',
+      subtitle:
+        'Curatez, éditez et réfléchissez aux histoires de votre famille',
+      allMemories: 'Tous les souvenirs',
+      filter: {
+        all: 'Tous',
+        processed: 'Transcrits',
+        pending: 'En attente',
+      },
+      sort: {
+        newest: 'Plus récents',
+        oldest: 'Plus anciens',
+        decade: 'Par décennie',
+      },
+      memoryCard: {
+        transcript: 'Transcription',
+        reflection: 'Votre réflexion',
+        noTranscript: 'Transcription en cours…',
+        addReflection: 'Ajouter une réflexion',
+        processed: 'Transcrit',
+        processing: 'En cours',
+      },
+      editReflection: 'Modifier la réflexion',
+      saveReflection: 'Sauvegarder',
+      deleteMemory: 'Supprimer le souvenir',
+      confirmDelete: 'Êtes-vous sûr ? Cette action est irréversible.',
+      emptyState: 'Aucun souvenir dans le studio. Allez en enregistrer un !',
+      heart: 'Envoyer ❤️',
+      hearted: 'Envoyé ❤️',
+    },
+    feedback: {
+      title: 'Retours Familiaux',
+      subtitle:
+        'Écoutez ce que votre famille a dit en réponse à vos enregistrements',
+      fromParent: 'De',
+      listenAgain: 'Réécouter',
+      yourResponse: 'Votre réponse',
+      recordResponse: 'Enregistrer une réponse',
+      writeResponse: 'Écrire une réponse',
+      sendResponse: 'Envoyer',
+      markPlayed: 'Marquer comme écouté',
+      played: 'Écouté',
+      noFeedback: "Aucun retour pour l'instant. Partagez un souvenir !",
+      respondedAt: 'Répondu le',
+    },
+    timeline: {
+      title: "Chronologie de l'Héritage",
+      subtitle: "L'histoire vivante de votre famille, décennie par décennie",
+      addAlbum: 'Nouvel album',
+      albumName: "Nom de l'album",
+      createAlbum: 'Créer',
+      emptyAlbum: 'Aucun souvenir dans cet album',
+      addToAlbum: "Ajouter à l'album",
+      decades: {
+        title: 'Décennies',
+        unknown: 'Intemporel',
+      },
+      shareTimeline: 'Partager la chronologie',
+      exportPdf: 'Exporter en PDF',
+      memoryCount: 'souvenirs',
+    },
+    parents: {
+      title: 'Membres de la famille',
+      subtitle: "Créez des QR codes pour qu'ils enregistrent des souvenirs",
+      addParent: 'Ajouter un membre',
+      generateQR: 'Générer QR',
+      empty: 'Aucun membre encore. Ajoutez-en un pour commencer.',
+      qrModal: {
+        title: 'Imprimer et coller',
+        instructions:
+          'Téléchargez ou imprimez ce QR et collez-le dans votre album',
+        download: 'Télécharger',
+        print: 'Imprimer',
+        expires: 'Expire dans 72 heures',
+        close: 'Fermer',
+        generating: 'Génération du QR…',
+      },
     },
   },
 }

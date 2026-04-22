@@ -15,7 +15,7 @@ Next.js 16 landing page** deployed on Vercel — keep it simple.
 
 1. **Minimal dependencies** — avoid adding packages for things achievable natively
 2. **Performance first** — landing pages must load fast (LCP < 2.5s)
-3. **Static where possible** — no server components, no API routes, no database
+3. **Thin backend** — API routes only for DB operations; keep them simple
 4. **Consistent patterns** — Emotion + theme tokens everywhere
 
 ## Tech Decisions
@@ -23,6 +23,7 @@ Next.js 16 landing page** deployed on Vercel — keep it simple.
 - **Framework**: Next.js 16 (App Router) — no upgrade unless there is a clear need
 - **Styling**: Emotion only — no Tailwind, no SCSS
 - **i18n**: Custom `useI18n()` context — no next-intl, no i18next
+- **Database**: Neon PostgreSQL + Prisma ORM — always use `db` from `lib/db.ts`
 - **Analytics**: Vercel Analytics — no GA, no Segment
 - **Fonts**: Google Fonts (DM Sans + Playfair Display) — no custom fonts
 - **Animation**: CSS transitions + IntersectionObserver — no Framer Motion unless justified
@@ -40,5 +41,8 @@ Ask:
 - ✅ `'use client'` for all interactive components
 - ✅ Static data in `lib/i18n.ts` and `lib/theme.ts`
 - ✅ Emotion + theme tokens for all styling
-- ❌ No API routes, no server actions, no database
+- ✅ DB access via `db` from `lib/db.ts` — only inside `app/api/` routes
+- ✅ Run `npx prisma generate` after every schema change
+- ❌ No server actions — use API routes
+- ❌ No React Query — plain `fetch` in client components
 - ❌ No state management library (useState/useEffect is sufficient)

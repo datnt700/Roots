@@ -43,6 +43,15 @@ pnpm build
 
 # Lint
 pnpm lint
+
+# Prisma — generate client after schema changes
+npx prisma generate
+
+# Prisma — create and apply a migration
+npx prisma migrate dev --name <description>
+
+# Prisma — open visual DB browser
+npx prisma studio
 ```
 
 ---
@@ -50,10 +59,17 @@ pnpm lint
 ## 🏗️ Project Structure
 
 ```
+prisma/
+  schema.prisma     # DB schema — models and datasource
+  migrations/       # Migration history
+prisma.config.ts    # Prisma CLI config
 app/
   layout.tsx        # Root layout with fonts, i18n, analytics
   page.tsx          # Main page — assembles all sections
   globals.css       # Global CSS variables (light/dark theme tokens)
+  api/
+    waitlist/
+      route.ts      # POST /api/waitlist — save email to DB
 components/
   navbar.tsx        # Fixed top navbar with language switcher
   hero-section.tsx  # Hero with parallax + CTA
@@ -70,6 +86,9 @@ hooks/
   use-mobile.ts
   use-toast.ts
 lib/
+  db.ts             # Prisma client singleton — always import from here
+  crypto.ts         # AES-256-GCM encrypt/decrypt + email/token/password hashing
+  storage.ts        # S3 file upload/read/delete (currently mocked)
   i18n.ts           # Locale types and translation strings
   theme.ts          # Design tokens (colors, fonts, spacing, radii)
   utils.ts
@@ -89,6 +108,7 @@ styles/
 | Styling    | Emotion (`@emotion/react`, `@emotion/styled`)        |
 | UI Kit     | Custom components in `components/ui/` (shadcn-style) |
 | i18n       | Custom context — `useI18n()` hook                    |
+| Database   | Neon PostgreSQL + Prisma ORM                         |
 | Fonts      | DM Sans + Playfair Display (Google Fonts)            |
 | Analytics  | Vercel Analytics                                     |
 | Deployment | Vercel                                               |
@@ -172,17 +192,90 @@ export function MySection() {
 }
 ```
 
-### 3. No Backend / No Database
+### 3. Database with Prisma + Neon
 
-This is a **static landing page**. There is no database, no API routes, no
-server actions, and no authentication.
+The database is **Neon PostgreSQL** accessed via **Prisma ORM**.
 
-- ❌ No Prisma, no PostgreSQL, no Docker required
-- ❌ No React Query, no server actions
-- ✅ Data is static — defined in `lib/i18n.ts` translations
-- ✅ Any form submissions (waitlist) go to external services (Mailchimp, etc.)
+```typescript
+// ✅ CORRECT — always import the singleton
+import { db } from '@/lib/db'
 
-### 4. Environment Variables
+// In an API route (app/api/waitlist/route.ts):
+export async function POST(request: Request) {
+  const { email, locale } = await request.json()
+  const entry = await db.waitlistEntry.create({
+    data: { email: email.toLowerCase().trim(), locale: locale ?? 'en' },
+  })
+  return NextResponse.json({ id: entry.id }, { status: 201 })
+}
+
+// ❌ WRONG — never instantiate PrismaClient directly
+import { PrismaClient } from '@/generated/prisma'
+const prisma = new PrismaClient() // wrong — missing adapter, creates multiple connections!
+```
+
+**Rules:**
+
+- ✅ Always use `db` from `lib/db.ts`
+- ✅ DB access only in `app/api/` routes — never in client components
+- ✅ Run `npx prisma generate` after every schema change
+- ✅ `DATABASE_URL` in `.env` (gitignored)
+- ❌ No server actions — use API routes
+- ❌ No React Query — plain `fetch` in client components is fine
+
+### 4. Encryption (GDPR + Decree 13/2023/NĐ-CP)
+
+Fields marked `[ENCRYPTED]` in `prisma/schema.prisma` are personal/biometric data
+and must **never** be stored as plaintext.
+
+```typescript
+import {
+  encrypt,
+  decrypt,
+  hashEmail,
+  hashToken,
+  encryptOptional,
+} from '@/lib/crypto'
+
+// ✅ CORRECT — encrypt before write, hash email for lookup
+await db.user.create({
+  data: {
+    email: encrypt(rawEmail),
+    emailHash: hashEmail(rawEmail), // for WHERE lookups
+    displayName: encrypt(name),
+  },
+})
+
+// ✅ CORRECT — QR tokens: only hash stored, raw token goes in QR URL
+const rawToken = randomBytes(32).toString('hex')
+await db.parentSession.create({ data: { tokenHash: hashToken(rawToken) } })
+
+// ✅ CORRECT — S3 keys: encrypt before DB, pre-sign for client access
+const { key } = await uploadFile(file, 'audio')
+await db.memory.update({ data: { audioKey: encrypt(key) } })
+const url = await getFileUrl(decrypt(memory.audioKey!))
+```
+
+Encrypted fields: `User.email/displayName`, `Parent.name`,
+`Memory.audioKey/photoKey`, `Transcript.content`, `Reflection.content`,
+`Feedback.content/audioKey`.
+
+### 5. File Storage (S3 Mock → Real)
+
+All file operations use `lib/storage.ts`. Currently mocked — returns fake keys.
+
+```typescript
+import { uploadFile, getFileUrl, deleteFile } from '@/lib/storage'
+
+const { key } = await uploadFile(blob, 'audio') // returns S3 object key
+const url = await getFileUrl(key) // returns pre-signed URL
+await deleteFile(key) // GDPR right to erasure
+```
+
+When replacing the mock with real S3: enable SSE-AES256 on the bucket,
+block all public access, and use `getSignedUrl` with 15-min expiry.
+
+### 6. Environment Variables
 
 Use `process.env.NEXT_PUBLIC_*` for any client-visible env vars. Add them
 to `.env.local` for local dev and to Vercel for production.
@@ -192,7 +285,13 @@ to `.env.local` for local dev and to Vercel for production.
 const analyticsId = process.env.NEXT_PUBLIC_ANALYTICS_ID
 ```
 
-### 5. Performance
+Required server-side env vars:
+
+- `DATABASE_URL` — Neon PostgreSQL connection string
+- `ENCRYPTION_KEY` — 64-char hex (AES-256 key), generate: `openssl rand -hex 32`
+- `EMAIL_HASH_PEPPER` — 64-char hex (hash pepper), generate: `openssl rand -hex 32`
+
+### 7. Performance
 
 - ✅ Use `useEffect` + `IntersectionObserver` for scroll-triggered animations
 - ✅ Add `transitionDelay` per item index for staggered reveals

@@ -41,6 +41,13 @@ consistency across the landing page codebase.
 - [ ] Styled components defined at module level (not inside render)
 - [ ] No heavy dependencies added to `package.json`
 
+### Database
+
+- [ ] DB calls only in `app/api/` routes — never in client components
+- [ ] Always imports `db` from `@/lib/db` — never `new PrismaClient()`
+- [ ] Input validated before `db.*` calls
+- [ ] Schema changes accompanied by a migration (`npx prisma migrate dev`)
+
 ### Patterns
 
 ```typescript
@@ -77,5 +84,6 @@ const Card = styled.div<{ $isVisible: boolean }>(({ $isVisible }) => ({
 **Styling**: Emotion only — no Tailwind migration
 **State**: React built-ins — no Redux/Zustand needed
 **i18n**: Custom `useI18n()` — no next-intl needed for 3 locales
-**Data**: Static in `lib/i18n.ts` — no CMS needed unless content grows significantly
+**Database**: Neon PostgreSQL + Prisma — always use `db` from `lib/db.ts`; DB calls only in `app/api/`
+**Data**: Static content in `lib/i18n.ts`; persisted data (e.g. waitlist) via Prisma API routes
 **Animation**: CSS transitions + IntersectionObserver — no animation library needed

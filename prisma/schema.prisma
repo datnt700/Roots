@@ -1,0 +1,232 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+//
+// Encryption strategy (GDPR Art.32 + Decree 13/2023/NĐ-CP Art.26):
+//   [ENCRYPTED]  — AES-256-GCM via lib/crypto.ts before write, decrypt after read
+//   [HASHED]     — one-way hash, never reversible
+//   Fields without annotation are non-sensitive metadata.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Landing / Waitlist ──────────────────────────────────────────────────────
+
+model WaitlistEntry {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  locale    String   @default("en")
+  createdAt DateTime @default(now())
+
+  @@map("waitlist_entries")
+}
+
+// ─── Core MVP Models ─────────────────────────────────────────────────────────
+
+/// The student abroad who owns the account and dashboard.
+model User {
+  id           String  @id @default(cuid())
+  /// [ENCRYPTED] Decrypt for display; use emailHash for DB lookups.
+  email        String  @unique
+  /// [HASHED] SHA-256(email + pepper) — allows lookup without decrypting.
+  emailHash    String  @unique
+  /// [ENCRYPTED] Display name shown in the parent greeting.
+  displayName  String
+  /// [HASHED] scrypt-derived — null when using OAuth / magic link.
+  passwordHash String?
+  locale       String   @default("vi")
+  /// Required by Auth.js Prisma adapter
+  emailVerified DateTime?
+  image         String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  accounts  Account[]
+  parents   Parent[]
+  memories  Memory[]
+  feedbacks Feedback[]
+  albums    Album[]
+
+  @@map("users")
+}
+
+/// OAuth provider accounts linked to a User (Auth.js Prisma adapter model).
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+/// A parent/grandparent who records stories via QR code (no password needed).
+model Parent {
+  id           String @id @default(cuid())
+  userId       String
+  user         User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  /// [ENCRYPTED] Personal name — sensitive personal data.
+  name         String
+  /// "bố" | "mẹ" | "ông" | "bà" | "other"
+  relationship String
+  locale       String @default("vi")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  sessions ParentSession[]
+  memories Memory[]
+
+  @@map("parents")
+}
+
+/// Time-limited session created when a QR code is scanned.
+model ParentSession {
+  id        String   @id @default(cuid())
+  parentId  String
+  parent    Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  /// [HASHED] SHA-256 of the raw QR token — raw token is never stored.
+  tokenHash String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("parent_sessions")
+}
+
+/// Core content unit: one recording session (photo + voice) from a parent.
+model Memory {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId    String?
+  parent      Parent?   @relation(fields: [parentId], references: [id])
+
+  /// [ENCRYPTED] S3 object key for the voice recording (biometric-adjacent).
+  audioKey    String?
+  /// [ENCRYPTED] S3 object key for the uploaded photo (biometric-adjacent).
+  photoKey    String?
+
+  /// Prompt question shown to the parent during recording.
+  prompt      String?
+  /// Timeline grouping: "1970s" | "1980s" | "1990s" | "2000s" | "unknown"
+  decade      String?
+  recordedAt  DateTime?
+  isProcessed Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  transcript Transcript?
+  reflection Reflection?
+  feedbacks  Feedback[]
+  reactions  Reaction[]
+
+  @@map("memories")
+}
+
+/// AI-generated transcript of the parent's voice recording.
+model Transcript {
+  id        String @id @default(cuid())
+  memoryId  String @unique
+  memory    Memory @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  /// [ENCRYPTED] Voice content = personal data (GDPR Art.4 + Decree 13/2023 Art.2.4).
+  content   String
+  language  String @default("vi")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  aiSummary AiSummary?
+
+  @@map("transcripts")
+}
+
+/// Claude-generated analysis of a transcript: title, summary paragraph, and entity/topic tags.
+model AiSummary {
+  id           String   @id @default(cuid())
+  transcriptId String   @unique
+  transcript   Transcript @relation(fields: [transcriptId], references: [id], onDelete: Cascade)
+  /// [ENCRYPTED] Short generated title (3-8 words) — may contain personal names.
+  title        String
+  /// [ENCRYPTED] 2-3 sentence summary written in warm Vietnamese prose.
+  summary      String
+  /// JSON array of tag strings e.g. ["tuổi thơ","Hà Nội","1980s","gia đình"]
+  tags         Json     @default("[]")
+  /// Claude model used to generate this, e.g. "claude-sonnet-4-5"
+  model        String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("ai_summaries")
+}
+
+/// The student's personal emotional notes attached to a memory.
+model Reflection {
+  id        String @id @default(cuid())
+  memoryId  String @unique
+  memory    Memory @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  /// [ENCRYPTED] Personal emotional content — sensitive by nature.
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("reflections")
+}
+
+/// A response (text or voice clip) sent by the student back to the parent.
+model Feedback {
+  id        String @id @default(cuid())
+  memoryId  String
+  memory    Memory @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User   @relation(fields: [userId], references: [id])
+  /// [ENCRYPTED] Text message to parent.
+  content   String?
+  /// [ENCRYPTED] S3 key for voice feedback clip.
+  audioKey  String?
+  isPlayed  Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("feedbacks")
+}
+
+/// A "heart" reaction sent by a student to acknowledge a parent memory (lights the lantern).
+model Reaction {
+  id        String   @id @default(cuid())
+  memoryId  String
+  memory    Memory   @relation(fields: [memoryId], references: [id], onDelete: Cascade)
+  /// The student user who sent the reaction.
+  userId    String
+  createdAt DateTime @default(now())
+
+  /// One heart per student per memory.
+  @@unique([memoryId, userId])
+  @@map("reactions")
+}
+
+/// Tracks which pages of a physical album have been digitised.
+model Album {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  /// Array of { page: number, hasData: boolean, memoryId?: string }
+  pages     Json     @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("albums")
+}
+

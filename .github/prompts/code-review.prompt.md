@@ -51,11 +51,13 @@ Perform a thorough code review following ROOTS (GỐC) project standards.
 - [ ] Unused params prefixed with `_`
 - [ ] Types inferred where obvious
 
-### 6. No Backend Patterns
+### 6. Database / API Routes
 
-- [ ] No API routes added (`app/api/` should not exist)
-- [ ] No server actions
-- [ ] No database/ORM imports
+- [ ] DB calls only inside `app/api/` routes — never in client components
+- [ ] Always imports `db` from `@/lib/db` — never `new PrismaClient()`
+- [ ] Input validated before `db.*` calls (at minimum: type check + trim)
+- [ ] Schema changes include a migration file
+- [ ] No server actions — use API routes + `fetch` from client
 
 ### 7. Build
 

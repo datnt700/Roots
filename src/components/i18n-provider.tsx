@@ -27,32 +27,27 @@ const I18nContext = createContext<I18nContextValue | undefined>(undefined)
 const STORAGE_KEY = 'roots-locale'
 const USER_SELECTED_STORAGE_KEY = 'roots-locale-user-selected'
 
-export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>('vi')
+export function I18nProvider({
+  children,
+  defaultLocale = 'en',
+}: {
+  children: React.ReactNode
+  defaultLocale?: Locale
+}) {
+  // On the client, read localStorage synchronously so there's no flash.
+  // On the server, localStorage doesn't exist → use the server-detected defaultLocale.
+  const [locale, setLocaleState] = useState<Locale>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = window.localStorage.getItem(STORAGE_KEY)
+      if (stored && locales.includes(stored as Locale)) return stored as Locale
+    }
+    return defaultLocale
+  })
 
   const setLocale = useCallback((nextLocale: Locale) => {
     setLocaleState(nextLocale)
     window.localStorage.setItem(STORAGE_KEY, nextLocale)
     window.localStorage.setItem(USER_SELECTED_STORAGE_KEY, 'true')
-  }, [])
-
-  useEffect(() => {
-    const storedLocale = window.localStorage.getItem(STORAGE_KEY)
-    const userSelectedLocale =
-      window.localStorage.getItem(USER_SELECTED_STORAGE_KEY) === 'true'
-
-    if (
-      userSelectedLocale &&
-      storedLocale &&
-      locales.includes(storedLocale as Locale)
-    ) {
-      setLocaleState(storedLocale as Locale)
-      return
-    }
-
-    // For first-time visitors (or legacy auto-saved locale), default to Vietnamese.
-    setLocaleState('vi')
-    window.localStorage.setItem(STORAGE_KEY, 'vi')
   }, [])
 
   useEffect(() => {

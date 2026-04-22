@@ -36,6 +36,7 @@ You are an expert in React, Next.js 16, Emotion, and performance optimization.
 
 - Hardcode strings in JSX — always use `t()`
 - Use raw CSS values — always use `theme.*`
-- Add API routes, server actions, or database calls
+- Call the database directly from client components — DB calls belong in `app/api/` routes
+- Use server actions — use API routes + `fetch` instead
 - Use Tailwind, SCSS, or CSS modules
 - Add heavy third-party dependencies

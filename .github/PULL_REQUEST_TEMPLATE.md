@@ -32,6 +32,8 @@ Closes #
 - [ ] All styled components use `theme.*` tokens — no raw CSS values
 - [ ] New translation keys added to all 3 locales (en, vi, fr)
 - [ ] Animated elements use `$isVisible` (transient `$` prefix)
+- [ ] DB calls only in `app/api/` routes via `db` from `lib/db.ts`
+- [ ] Schema changes include a migration (`npx prisma migrate dev`)
 - [ ] `pnpm build` passes locally
 - [ ] `pnpm lint` passes with no errors
 - [ ] Commits follow conventional commits (`feat:`, `fix:`, `style:`, etc.)

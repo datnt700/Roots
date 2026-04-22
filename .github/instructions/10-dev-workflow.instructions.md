@@ -23,11 +23,42 @@ pnpm lint
 pnpm start
 ```
 
+## Prisma Commands
+
+```powershell
+# Generate Prisma client after schema changes
+npx prisma generate
+
+# Create and apply a migration (dev only)
+npx prisma migrate dev --name <description>
+
+# Apply existing migrations in production
+npx prisma migrate deploy
+
+# Open Prisma Studio (visual DB browser)
+npx prisma studio
+
+# Push schema without migration (prototyping)
+npx prisma db push
+
+# Introspect an existing DB
+npx prisma db pull
+```
+
+> Always run `npx prisma generate` after editing `prisma/schema.prisma`.
+
 ## Adding a New Section
 
 1. Create `components/{name}-section.tsx` with `'use client'` directive
 2. Add all translation keys to all 3 locales in `lib/i18n.ts`
 3. Import and add to `app/page.tsx`
+
+## Adding a New DB Model
+
+1. Add model to `prisma/schema.prisma`
+2. Run `npx prisma migrate dev --name <description>`
+3. Create an API route in `app/api/{resource}/route.ts`
+4. Import `db` from `@/lib/db` in the route
 
 ## Adding Dependencies
 
@@ -40,6 +71,18 @@ pnpm add -D <package-name>
 ```
 
 No monorepo catalog — just regular pnpm. Version can be explicit in `package.json`.
+
+## Environment Variables
+
+```powershell
+# .env — local development (gitignored)
+DATABASE_URL="postgresql://..."
+
+# .env.local — additional local overrides (also gitignored)
+NEXT_PUBLIC_SOME_KEY="value"
+```
+
+Add all production env vars to Vercel dashboard under Project Settings → Environment Variables.
 
 ## Git Workflow (Conventional Commits)
 

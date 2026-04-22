@@ -9,8 +9,8 @@ applyTo: '**/*'
 ROOTS (GỐC) is a **marketing landing page** for a digital family heritage app.
 It is the first digital museum for ancestral storytelling in Vietnam.
 
-The landing page is a **single Next.js 16 app** — no monorepo, no backend, no
-database.
+The landing page is a **single Next.js 16 app** with a PostgreSQL database
+(Neon) accessed via Prisma ORM — primarily for waitlist signups.
 
 ## Tech Stack
 
@@ -19,6 +19,7 @@ database.
 - **Styling**: Emotion (`@emotion/styled`, `@emotion/react`)
 - **UI Primitives**: Custom components in `components/ui/` (shadcn-style)
 - **i18n**: Custom React context — 3 locales: `en`, `vi`, `fr`
+- **Database**: Neon PostgreSQL + Prisma ORM
 - **Fonts**: DM Sans (sans-serif) + Playfair Display (serif) via Google Fonts
 - **Analytics**: Vercel Analytics (production only)
 - **Deployment**: Vercel
@@ -26,10 +27,18 @@ database.
 ## Directory Structure
 
 ```
+prisma/
+  schema.prisma       # Prisma schema — models and datasource config
+  migrations/         # Prisma migration history
+prisma.config.ts      # Prisma CLI config (datasource URL from env)
+
 app/
   layout.tsx          # Root layout — fonts, i18n provider, analytics
   page.tsx            # Home page — assembles all sections
   globals.css         # CSS custom properties (light/dark theme tokens)
+  api/
+    waitlist/
+      route.ts        # POST /api/waitlist — save email to DB
 
 components/
   navbar.tsx          # Fixed sticky navbar with language switcher + mobile menu
@@ -49,10 +58,14 @@ hooks/
   use-toast.ts        # Toast notifications
 
 lib/
+  db.ts               # Prisma client singleton — always import from here
+  crypto.ts           # AES-256-GCM encrypt/decrypt + hashEmail/hashToken/hashPassword
+  storage.ts          # S3 file upload/read/delete (currently mocked)
   i18n.ts             # Locale types + all translation strings (en/vi/fr)
   theme.ts            # Design tokens — colors, fonts, spacing, radii, shadows
   utils.ts            # Utility functions (cn, etc.)
 
+src/generated/prisma/ # Auto-generated Prisma client — DO NOT edit manually
 public/               # Static assets (icons, images)
 styles/
   globals.css         # Global styles
@@ -69,6 +82,40 @@ styles/
    `theme.*`.
 5. **CSS variables in `globals.css`** — Colors are CSS variables to support
    light/dark mode; `theme.colors.*` references them.
+6. **Single Prisma client instance** — Always import `db` from `lib/db.ts`;
+   never instantiate `PrismaClient` directly in components or routes.
+
+## Database Layer
+
+Prisma connects to a **Neon PostgreSQL** database. The connection string lives
+in `.env` as `DATABASE_URL`.
+
+```
+# .env
+DATABASE_URL="postgresql://user:password@ep-xxx.us-east-1.aws.neon.tech/neondb?sslmode=require"
+```
+
+- Models are defined in `prisma/schema.prisma`
+- The generated client is in `src/generated/prisma/` (gitignored)
+- Always access the DB via the singleton in `lib/db.ts`
+- API routes in `app/api/` are the only place DB calls should live
+
+## API Routes (DB Operations Only)
+
+API routes exist solely to write/read from the database. Client components call
+them via `fetch`. No complex business logic — keep routes thin.
+
+```typescript
+// app/api/waitlist/route.ts
+import { db } from '@/lib/db'
+import { NextResponse } from 'next/server'
+
+export async function POST(request: Request) {
+  const { email, locale } = await request.json()
+  const entry = await db.waitlistEntry.create({ data: { email, locale } })
+  return NextResponse.json({ id: entry.id })
+}
+```
 
 ## Adding a New Section
 

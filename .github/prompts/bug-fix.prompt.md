@@ -57,6 +57,13 @@ Systematically investigate and fix bugs in the ROOTS (GỐC) landing page.
 - `isVisible` state not resetting for repeated animations
 - `IntersectionObserver` not disconnecting in cleanup
 
+**API / Database issues:**
+
+- `db` imported outside of `app/api/` — must only be used in API routes
+- `new PrismaClient()` instantiated directly — use `db` from `@/lib/db`
+- Missing `DATABASE_URL` in `.env` — causes runtime connection error
+- Schema not matching generated client — run `npx prisma generate`
+
 **Build issues:**
 
 - TypeScript error — check `pnpm build` output
@@ -69,6 +76,7 @@ Make the minimal change needed. Do not refactor unrelated code.
 ### 5. Verify
 
 ```powershell
-pnpm lint      # No lint errors
-pnpm build     # Build succeeds
+pnpm lint          # No lint errors
+pnpm build         # Build succeeds
+npx prisma generate  # If schema/client mismatch suspected
 ```

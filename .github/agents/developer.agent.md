@@ -13,9 +13,12 @@ You implement features and fixes for the ROOTS (GỐC) landing page.
 ## Quick Reference
 
 ```powershell
-pnpm dev    # Start dev server (localhost:3000)
-pnpm build  # Production build
-pnpm lint   # Lint check
+pnpm dev                              # Start dev server (localhost:3000)
+pnpm build                            # Production build
+pnpm lint                             # Lint check
+npx prisma generate                   # Generate client after schema change
+npx prisma migrate dev --name <desc>  # Create + apply migration
+npx prisma studio                     # Visual DB browser
 ```
 
 ## Implementation Checklist
@@ -35,6 +38,8 @@ After writing code:
 - [ ] New translations added to en, vi, AND fr
 - [ ] Transient styled props use `$` prefix
 - [ ] `'use client'` at top of component file
+- [ ] DB calls only in `app/api/` routes via `db` from `@/lib/db`
+- [ ] `npx prisma generate` run after any schema change
 - [ ] `pnpm lint` passes
 - [ ] `pnpm build` passes
 
