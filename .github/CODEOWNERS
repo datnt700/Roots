@@ -1,0 +1,13 @@
+﻿# Code Owners for ROOTS (GỐC)
+# Owners are automatically requested for review on pull requests.
+
+# Default — all files
+* @roots-team/maintainers
+
+# GitHub config
+/.github/ @roots-team/maintainers
+
+# Core app files
+/app/ @roots-team/maintainers
+/components/ @roots-team/maintainers
+/lib/ @roots-team/maintainers

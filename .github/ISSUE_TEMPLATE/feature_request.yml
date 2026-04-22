@@ -1,0 +1,56 @@
+﻿name: Feature Request
+description: Suggest a new section or feature for the ROOTS landing page
+title: '[feat]: '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting an improvement to ROOTS (GỐC)!
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: What visitor need or conversion goal does this address?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe the new section, component, or feature you'd like to see.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area of the landing page?
+      options:
+        - Hero section
+        - Problem section
+        - Solution section
+        - Competitive section
+        - Tech section
+        - Final CTA section
+        - Navbar
+        - Footer
+        - New section
+        - i18n / translations
+        - Performance
+        - SEO
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: locales
+    attributes:
+      label: Translations needed
+      description: If this adds user-visible text, list the copy in en, vi, and fr.
+      placeholder: |
+        en: "Preserve Your Family Story"
+        vi: "Lưu Giữ Câu Chuyện Gia Đình"
+        fr: "Préservez l'Histoire de Votre Famille"
