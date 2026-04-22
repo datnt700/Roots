@@ -1,11 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Mail } from 'lucide-react'
 import { theme } from '@/lib/theme'
 import { useI18n } from '@/components/i18n-provider'
+import { joinWaitlist } from '@/app/action'
+import { initialWaitlistState } from '@/lib/waitlist-action-state'
 
 const Section = styled.section({
   position: 'relative',
@@ -117,7 +119,7 @@ const FormWrapper = styled.form({
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing[4],
-  maxWidth: '28rem',
+  maxWidth: '38rem',
   margin: `0 auto ${theme.spacing[8]}`,
   '@media (min-width: 640px)': {
     flexDirection: 'row',
@@ -187,7 +189,7 @@ const SuccessCard = styled.div({
   border: '1px solid oklch(0.35 0.08 145 / 0.3)',
   borderRadius: theme.radius['2xl'],
   padding: theme.spacing[6],
-  maxWidth: '28rem',
+  maxWidth: '30rem',
   margin: `0 auto ${theme.spacing[8]}`,
 })
 
@@ -200,6 +202,12 @@ const SuccessTitle = styled.p({
 const SuccessText = styled.p({
   color: 'oklch(0.97 0.01 85 / 0.7)',
   fontSize: '0.875rem',
+})
+
+const ErrorText = styled.p({
+  color: theme.colors.destructive,
+  fontSize: '0.875rem',
+  marginBottom: theme.spacing[6],
 })
 
 const SecondaryCTAs = styled.div({
@@ -234,8 +242,10 @@ const Divider = styled.span({
 export function FinalCTASection() {
   const sectionRef = useRef<HTMLElement>(null)
   const [isVisible, setIsVisible] = useState(false)
-  const [email, setEmail] = useState('')
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const [state, formAction, isPending] = useActionState(
+    joinWaitlist,
+    initialWaitlistState,
+  )
   const { messages } = useI18n()
 
   useEffect(() => {
@@ -257,14 +267,6 @@ export function FinalCTASection() {
     return () => observer.disconnect()
   }, [])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (email) {
-      setIsSubmitted(true)
-      setEmail('')
-    }
-  }
-
   return (
     <Section ref={sectionRef}>
       <BackgroundDecoration>
@@ -284,29 +286,34 @@ export function FinalCTASection() {
 
           <VisionText>{messages.finalCta.visionText}</VisionText>
 
-          {!isSubmitted ? (
-            <FormWrapper onSubmit={handleSubmit}>
-              <InputWrapper>
-                <MailIcon />
-                <EmailInput
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={messages.finalCta.emailPlaceholder}
-                  required
-                />
-              </InputWrapper>
-              <SubmitButton type="submit" size="lg">
-                {messages.finalCta.submitButton}
-                <ArrowRight
-                  style={{ marginLeft: '0.5rem', width: 16, height: 16 }}
-                />
-              </SubmitButton>
-            </FormWrapper>
+          {!state.success ? (
+            <>
+              {state.message ? <ErrorText>{state.message}</ErrorText> : null}
+              <FormWrapper action={formAction}>
+                <InputWrapper>
+                  <MailIcon />
+                  <EmailInput
+                    name="email"
+                    type="email"
+                    placeholder={messages.finalCta.emailPlaceholder}
+                    autoComplete="email"
+                    required
+                  />
+                </InputWrapper>
+                <SubmitButton type="submit" size="lg" disabled={isPending}>
+                  {messages.finalCta.submitButton}
+                  <ArrowRight
+                    style={{ marginLeft: '0.5rem', width: 16, height: 16 }}
+                  />
+                </SubmitButton>
+              </FormWrapper>
+            </>
           ) : (
             <SuccessCard>
               <SuccessTitle>{messages.finalCta.successTitle}</SuccessTitle>
-              <SuccessText>{messages.finalCta.successText}</SuccessText>
+              <SuccessText>
+                {state.message || messages.finalCta.successText}
+              </SuccessText>
             </SuccessCard>
           )}
 

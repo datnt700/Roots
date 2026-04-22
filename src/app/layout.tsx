@@ -46,7 +46,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="vi" suppressHydrationWarning>
       <body className={`${dmSans.variable} ${playfair.variable}`}>
         <I18nProvider>{children}</I18nProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}

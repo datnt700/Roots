@@ -1,6 +1,4 @@
-import { defineConfig } from '@commitlint/config-conventional'
-
-export default defineConfig({
+export default {
   extends: ['@commitlint/config-conventional'],
   rules: {
     // Allowed types for this project
@@ -24,4 +22,4 @@ export default defineConfig({
     'subject-case': [2, 'always', 'lower-case'],
     'header-max-length': [2, 'always', 100],
   },
-})
+}
