@@ -104,6 +104,7 @@ const Content = styled.div({
 
 const AnimatedContent = styled.div({
   animation: `${fadeIn} 1s ease-out forwards`,
+  willChange: 'transform, opacity',
 })
 
 const Tagline = styled.p({

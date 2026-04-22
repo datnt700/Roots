@@ -70,16 +70,17 @@ const TechGrid = styled.div({
   },
 })
 
-const TechCard = styled.div<{ isVisible: boolean; index: number }>(
-  ({ isVisible, index }) => ({
+const TechCard = styled.div<{ $isVisible: boolean; $index: number }>(
+  ({ $isVisible, $index }) => ({
     backgroundColor: theme.colors.card,
     borderRadius: theme.radius['2xl'],
     padding: theme.spacing[6],
     border: `1px solid ${theme.colors.border}`,
     transition: `all ${theme.transitions.slow}`,
-    transitionDelay: `${index * 100}ms`,
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible ? 'translateY(0)' : 'translateY(2rem)',
+    transitionDelay: `${$index * 100}ms`,
+    opacity: $isVisible ? 1 : 0,
+    transform: $isVisible ? 'translateY(0)' : 'translateY(2rem)',
+    willChange: 'transform, opacity',
     '&:hover': {
       borderColor: 'oklch(0.35 0.08 145 / 0.3)',
       boxShadow: theme.shadows.lg,
@@ -134,10 +135,10 @@ const TechDescription = styled.p({
 const MarketCard = styled.div({
   backgroundColor: 'oklch(0.92 0.015 80 / 0.3)',
   borderRadius: theme.radius['3xl'],
-  padding: `${theme.spacing[8]} ${theme.spacing[12]}`,
+  padding: theme.spacing[8],
   border: `1px solid ${theme.colors.border}`,
-  '@media (max-width: 768px)': {
-    padding: theme.spacing[8],
+  '@media (min-width: 768px)': {
+    padding: `${theme.spacing[8]} ${theme.spacing[12]}`,
   },
 })
 
@@ -172,13 +173,14 @@ const MetricsGrid = styled.div({
   },
 })
 
-const MetricCard = styled.div<{ isAnimated: boolean; index: number }>(
-  ({ isAnimated, index }) => ({
+const MetricCard = styled.div<{ $isAnimated: boolean; $index: number }>(
+  ({ $isAnimated, $index }) => ({
     textAlign: 'center',
     transition: `all ${theme.transitions.verySlow}`,
-    transitionDelay: `${index * 200}ms`,
-    opacity: isAnimated ? 1 : 0,
-    transform: isAnimated ? 'scale(1)' : 'scale(0.95)',
+    transitionDelay: `${$index * 200}ms`,
+    opacity: $isAnimated ? 1 : 0,
+    transform: $isAnimated ? 'scale(1)' : 'scale(0.95)',
+    willChange: 'transform, opacity',
   }),
 )
 
@@ -253,8 +255,8 @@ export function TechSection() {
             return (
               <TechCard
                 key={index}
-                isVisible={isVisible}
-                index={index}
+                $isVisible={isVisible}
+                $index={index}
                 className="group"
               >
                 <TechCardHeader>
@@ -286,8 +288,8 @@ export function TechSection() {
             {messages.tech.metrics.map((metric, index) => (
               <MetricCard
                 key={index}
-                isAnimated={countersAnimated}
-                index={index}
+                $isAnimated={countersAnimated}
+                $index={index}
               >
                 <MetricValue>{metric.value}</MetricValue>
                 <MetricLabel>{metric.label}</MetricLabel>

@@ -139,6 +139,7 @@ const ContentWrapper = styled.div<{ $isVisible: boolean }>(
     transition: `all ${theme.transitions.verySlow}`,
     opacity: $isVisible ? 1 : 0,
     transform: $isVisible ? 'translateY(0)' : 'translateY(2rem)',
+    willChange: 'transform, opacity',
   }),
 )
 

@@ -68,17 +68,20 @@ const SectionDescription = styled.p({
   lineHeight: 1.6,
 })
 
-const ComparisonGrid = styled.div<{ isVisible: boolean }>(({ isVisible }) => ({
-  display: 'grid',
-  gap: theme.spacing[8],
-  marginBottom: theme.spacing[20],
-  transition: `all ${theme.transitions.verySlow}`,
-  opacity: isVisible ? 1 : 0,
-  transform: isVisible ? 'translateY(0)' : 'translateY(2rem)',
-  '@media (min-width: 1024px)': {
-    gridTemplateColumns: 'repeat(2, 1fr)',
-  },
-}))
+const ComparisonGrid = styled.div<{ $isVisible: boolean }>(
+  ({ $isVisible }) => ({
+    display: 'grid',
+    gap: theme.spacing[8],
+    marginBottom: theme.spacing[20],
+    transition: `all ${theme.transitions.verySlow}`,
+    opacity: $isVisible ? 1 : 0,
+    transform: $isVisible ? 'translateY(0)' : 'translateY(2rem)',
+    willChange: 'transform, opacity',
+    '@media (min-width: 1024px)': {
+      gridTemplateColumns: 'repeat(2, 1fr)',
+    },
+  }),
+)
 
 const RootsCard = styled.div({
   backgroundColor: theme.colors.card,
@@ -214,13 +217,14 @@ const AdvantagesGrid = styled.div({
   },
 })
 
-const AdvantageCard = styled.div<{ isVisible: boolean; index: number }>(
-  ({ isVisible, index }) => ({
+const AdvantageCard = styled.div<{ $isVisible: boolean; $index: number }>(
+  ({ $isVisible, $index }) => ({
     textAlign: 'center',
     transition: `all ${theme.transitions.verySlow}`,
-    transitionDelay: `${(index + 2) * 150}ms`,
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible ? 'translateY(0)' : 'translateY(2rem)',
+    transitionDelay: `${($index + 2) * 150}ms`,
+    opacity: $isVisible ? 1 : 0,
+    transform: $isVisible ? 'translateY(0)' : 'translateY(2rem)',
+    willChange: 'transform, opacity',
   }),
 )
 
@@ -283,7 +287,7 @@ export function CompetitiveSection() {
           </SectionDescription>
         </SectionHeader>
 
-        <ComparisonGrid isVisible={isVisible}>
+        <ComparisonGrid $isVisible={isVisible}>
           <RootsCard>
             <CardDecoration />
             <CardContent>
@@ -381,7 +385,7 @@ export function CompetitiveSection() {
             const Icon = advantageIcons[index].icon
 
             return (
-              <AdvantageCard key={index} isVisible={isVisible} index={index}>
+              <AdvantageCard key={index} $isVisible={isVisible} $index={index}>
                 <AdvantageIcon>
                   <Icon
                     style={{

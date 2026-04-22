@@ -78,6 +78,7 @@ const Card = styled.div<{ $isVisible: boolean; $index: number }>(
     transitionDelay: `${$index * 150}ms`,
     opacity: $isVisible ? 1 : 0,
     transform: $isVisible ? 'translateY(0)' : 'translateY(2rem)',
+    willChange: 'transform, opacity',
     '&:hover': {
       boxShadow: theme.shadows.lg,
     },
