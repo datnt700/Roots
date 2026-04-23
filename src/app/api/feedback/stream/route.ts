@@ -14,6 +14,7 @@
  */
 import { NextRequest } from 'next/server'
 import { db } from '@/lib/db'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,8 +26,11 @@ export async function GET(request: NextRequest) {
   const userId = searchParams.get('userId')
 
   if (!userId) {
+    logger.warn('feedback/stream', 'GET called without userId')
     return new Response('userId is required', { status: 400 })
   }
+
+  logger.info('feedback/stream', 'SSE connection opened', { userId })
 
   const encoder = new TextEncoder()
   let closed = false

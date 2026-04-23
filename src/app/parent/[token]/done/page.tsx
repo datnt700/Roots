@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
-import { Lantern, Play, Pause, MessageSquare, Heart } from 'lucide-react'
+import { Play, Pause, Heart } from 'lucide-react'
 import { theme } from '@/lib/theme'
 
 // ─── Animations ───────────────────────────────────────────────────────────────
@@ -451,15 +451,7 @@ export default function ParentDonePage() {
             fontSize: '0.9rem',
           }}
         >
-          <MessageSquare
-            style={{
-              width: '2.5rem',
-              height: '2.5rem',
-              opacity: 0.3,
-              display: 'block',
-              margin: '0 auto 1rem',
-            }}
-          />
+          <span style={{ fontSize: '2.5rem', opacity: 0.3, display: 'block', textAlign: 'center', margin: '0 auto 1rem' }}>💬</span>
           <p>
             {SESSION.studentName} chưa có tin nhắn nào. Quay lại sau nhé{' '}
             {SESSION.parentName}!

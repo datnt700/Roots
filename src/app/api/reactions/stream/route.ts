@@ -10,6 +10,7 @@
 import { NextResponse } from 'next/server'
 import { hashToken } from '@/lib/crypto'
 import { db } from '@/lib/db'
+import { logger } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,6 +19,7 @@ export async function GET(request: Request) {
   const rawToken = searchParams.get('token')
 
   if (!rawToken) {
+    logger.warn('reactions/stream', 'GET called without token')
     return NextResponse.json({ error: 'token is required' }, { status: 400 })
   }
 
@@ -30,10 +32,12 @@ export async function GET(request: Request) {
   })
 
   if (!session) {
+    logger.warn('reactions/stream', 'Token not found for SSE connection')
     return NextResponse.json({ error: 'Invalid token' }, { status: 404 })
   }
 
   const { parentId } = session
+  logger.info('reactions/stream', 'SSE connection opened', { parentId })
   let lastSeen = new Date()
 
   const stream = new ReadableStream({
@@ -66,6 +70,7 @@ export async function GET(request: Request) {
 
           if (reactions.length > 0) {
             lastSeen = reactions[reactions.length - 1].createdAt
+            logger.debug('reactions/stream', 'Emitting reaction event', { parentId, count: reactions.length })
             emit('reaction', { count: reactions.length, type: 'heart' })
           }
         } catch {

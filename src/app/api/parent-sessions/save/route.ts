@@ -22,6 +22,7 @@ import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { hashToken, encrypt, encryptOptional, decrypt } from '@/lib/crypto'
 import { uploadFile } from '@/lib/storage'
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -29,6 +30,7 @@ export const maxDuration = 60
 type Turn = { role: 'ai' | 'parent'; text: string }
 
 export async function POST(request: Request) {
+  const t0 = Date.now()
   try {
     const formData = await request.formData()
     const token = formData.get('token') as string
@@ -48,6 +50,7 @@ export async function POST(request: Request) {
     })
 
     if (!session || session.expiresAt < new Date()) {
+      logger.warn('parent-sessions/save', 'Invalid or expired QR token on save')
       return NextResponse.json(
         { error: 'Invalid or expired QR token' },
         { status: 401 },
@@ -94,7 +97,6 @@ export async function POST(request: Request) {
         prompt,
         audioKey: encryptOptional(audioKey),
         photoKey: encryptOptional(photoKey),
-        // Mark as processed since we already have the transcript text
         isProcessed: parentText.length > 0,
       },
     })
@@ -109,9 +111,21 @@ export async function POST(request: Request) {
       })
     }
 
+    logger.info('parent-sessions/save', 'Dialogue session saved as memory', {
+      memoryId: memory.id,
+      userId,
+      parentId,
+      parentName,
+      turnCount: turns.length,
+      parentTurnCount: turns.filter((t) => t.role === 'parent').length,
+      hasAudio: !!audioKey,
+      hasPhoto: !!photoKey,
+      hasTranscript: !!parentText,
+      ms: Date.now() - t0,
+    })
     return NextResponse.json({ memoryId: memory.id }, { status: 201 })
   } catch (err) {
-    console.error('[parent-sessions/save]', err)
+    logger.error('parent-sessions/save', 'Failed to save dialogue session', { ms: Date.now() - t0 }, err)
     return NextResponse.json({ error: 'Failed to save session' }, { status: 500 })
   }
 }

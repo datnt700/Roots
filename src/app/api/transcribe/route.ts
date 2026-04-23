@@ -20,6 +20,7 @@ import OpenAI from 'openai'
 import { db } from '@/lib/db'
 import { decrypt, encrypt } from '@/lib/crypto'
 import { getFileBuffer } from '@/lib/storage'
+import { logger } from '@/lib/logger'
 
 function getOpenAI(): OpenAI {
   if (!process.env.OPENAI_API_KEY) {
@@ -29,11 +30,13 @@ function getOpenAI(): OpenAI {
 }
 
 export async function POST(request: Request) {
+  const t0 = Date.now()
   try {
     const body = await request.json()
     const { memoryId } = body as { memoryId: string }
 
     if (!memoryId) {
+      logger.warn('transcribe', 'POST called without memoryId')
       return NextResponse.json(
         { error: 'memoryId is required' },
         { status: 400 },
@@ -43,9 +46,11 @@ export async function POST(request: Request) {
     // 1. Load memory and verify it has an audio key
     const memory = await db.memory.findUnique({ where: { id: memoryId } })
     if (!memory) {
+      logger.warn('transcribe', 'Memory not found', { memoryId })
       return NextResponse.json({ error: 'Memory not found' }, { status: 404 })
     }
     if (!memory.audioKey) {
+      logger.warn('transcribe', 'Memory has no audioKey', { memoryId })
       return NextResponse.json(
         { error: 'Memory has no audio recording' },
         { status: 422 },
@@ -73,6 +78,7 @@ export async function POST(request: Request) {
       typeof result === 'string' ? result : (result as { text: string }).text
 
     if (!transcriptText?.trim()) {
+      logger.warn('transcribe', 'Whisper returned empty transcript', { memoryId })
       return NextResponse.json(
         { error: 'Whisper returned empty transcript' },
         { status: 422 },
@@ -107,13 +113,15 @@ export async function POST(request: Request) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memoryId }),
       },
-    ).catch(() => {
-      /* summarization failure is non-critical */
+    ).catch((err) => {
+      logger.warn('transcribe', 'Fire-and-forget summarization failed', { memoryId })
     })
 
+    logger.info('transcribe', 'Whisper transcription completed', { memoryId, chars: transcriptText.trim().length, ms: Date.now() - t0 })
     return NextResponse.json({ ok: true })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Transcription failed'
+    logger.error('transcribe', 'Whisper transcription failed', { ms: Date.now() - t0 }, err)
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }

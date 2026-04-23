@@ -18,6 +18,7 @@ import { NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
 import { db } from '@/lib/db'
 import { decrypt, encrypt } from '@/lib/crypto'
+import { logger } from '@/lib/logger'
 
 const MODEL = 'claude-sonnet-4-5'
 
@@ -79,11 +80,13 @@ function parseClaudeJson(text: string): ClaudeOutput {
 }
 
 export async function POST(request: Request) {
+  const t0 = Date.now()
   try {
     const body = (await request.json()) as { memoryId?: string }
     const { memoryId } = body
 
     if (!memoryId) {
+      logger.warn('summarize', 'POST called without memoryId')
       return NextResponse.json(
         { error: 'memoryId is required' },
         { status: 400 },
@@ -96,6 +99,7 @@ export async function POST(request: Request) {
     })
 
     if (!transcript) {
+      logger.warn('summarize', 'Transcript not found', { memoryId })
       return NextResponse.json(
         { error: 'Transcript not found — run /api/transcribe first' },
         { status: 404 },
@@ -105,6 +109,7 @@ export async function POST(request: Request) {
     const rawContent = decrypt(transcript.content)
 
     if (!rawContent.trim()) {
+      logger.warn('summarize', 'Transcript content is empty', { memoryId })
       return NextResponse.json(
         { error: 'Transcript content is empty' },
         { status: 422 },
@@ -155,9 +160,11 @@ export async function POST(request: Request) {
       },
     })
 
+    logger.info('summarize', 'AI summary generated and saved', { memoryId, tags: output.tags, ms: Date.now() - t0 })
     return NextResponse.json({ ok: true })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Summarization failed'
+    logger.error('summarize', 'Claude summarization failed', { ms: Date.now() - t0 }, err)
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
