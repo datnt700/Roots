@@ -3,7 +3,7 @@
 import styled from '@emotion/styled'
 import { Heart } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useMessages } from 'next-intl'
 
 const FooterWrapper = styled.footer({
   backgroundColor: theme.colors.background,
@@ -96,7 +96,7 @@ const TaglineText = styled.p({
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
-  const { messages } = useI18n()
+  const messages = useMessages()
 
   return (
     <FooterWrapper>

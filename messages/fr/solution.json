@@ -1,0 +1,40 @@
+{
+  "sectionLabel": "Soyez Proactif",
+  "sectionTitle": "ROOTS : Un Bouclier Contre l'Oubli",
+  "sectionDescription": "N'attendez pas que vos parents racontent leurs histoires ; soyez celui qui demande. Un voyage 'Phygital' pour vous aider à construire votre héritage familial à distance.",
+  "steps": [
+    {
+      "title": "L'Album 'Déverrouilleur de Souvenirs'",
+      "subtitle": "Un cadeau de piété filiale venu d'ailleurs",
+      "description": "Envoyez à la maison un album physique premium. Chaque page est un espace pour que les parents y placent de vieilles photos et un code QR unique, supprimant toutes les barrières technologiques.",
+      "features": [
+        "Design élégant, évoquant la nostalgie",
+        "Système de questions suggestives approfondies",
+        "Facile à utiliser pour les personnes âgées",
+        "Un trésor à transmettre de génération en génération"
+      ]
+    },
+    {
+      "title": "Assistant Narratif Intelligent",
+      "subtitle": "Pour que les mots d'amour soient plus faciles à dire",
+      "description": "En scannant le QR, les parents ne font pas qu'enregistrer ; ils reçoivent des 'Guides Narratifs'. Nous avons conçu des scénarios pour aider les parents les plus réservés à s'ouvrir naturellement.",
+      "features": [
+        "Amorceurs de conversation pour 'briser la glace'",
+        "Questions de relance pour approfondir les émotions",
+        "Interface minimaliste 'appuyer pour parler'",
+        "Suppression du bruit par IA directement dans le navigateur"
+      ]
+    },
+    {
+      "title": "Musée Numérique Éternel",
+      "subtitle": "Le plus grand atout que vous posséderez jamais",
+      "description": "Vous jouez le rôle de 'Conservateur'. Organisez, éditez et stockez les fragments de vie de vos parents dans une chronologie vivante et dynamique.",
+      "features": [
+        "Chronologie entièrement personnalisable par vous",
+        "L'IA transcrit la voix en mémoires écrites",
+        "Restauration de vieilles photos en vidéos émotionnelles",
+        "Mode de partage pour les générations futures"
+      ]
+    }
+  ]
+}

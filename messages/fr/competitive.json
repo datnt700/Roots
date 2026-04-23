@@ -1,0 +1,31 @@
+{
+  "sectionLabel": "Votre Choix",
+  "sectionTitle": "Stocker des Déchets ou Préserver un Héritage ?",
+  "sectionDescription": "Nous ne créons pas de messages instantanés. Nous créons des souvenirs qui vivent éternellement.",
+  "rootsTitle": "ROOTS",
+  "rootsSubtitle": "Préservateur d'Héritage",
+  "othersTitle": "Apps de Communication",
+  "othersSubtitle": "Stockage de Données Brutes",
+  "comparisons": [
+    { "feature": "Valeur Fondamentale", "roots": "Empathie & Connexion Profonde", "others": "Commodité & Rapidité" },
+    { "feature": "Résultat", "roots": "Un mémoire vivant et vibrant", "others": "Historiques de chat désordonnés et perdus" },
+    { "feature": "Guidage", "roots": "Scénarios pour aider les parents à 's'ouvrir'", "others": "Attente d'interactions aléatoires" },
+    { "feature": "Accès", "roots": "Scanner le QR, utiliser instantanément sur le Web", "others": "Installation d'App et connexion obligatoires" },
+    { "feature": "Élément Physique", "roots": "Album physique comme 'déclencheur'", "others": "Présence numérique superficielle uniquement" },
+    { "feature": "Fonctions IA", "roots": "Sublimer et préserver l'héritage", "others": "Suggestions de contenu de divertissement" }
+  ],
+  "advantages": [
+    {
+      "title": "La Profondeur Avant Tout",
+      "description": "Alors que d'autres apps optimisent pour la commodité, nous optimisons pour les valeurs spirituelles durables."
+    },
+    {
+      "title": "Comprendre les Nuances Culturelles",
+      "description": "Nous savons que les parents vietnamiens ont souvent du mal à exprimer leur amour. Roots joue le rôle de 'narrateur' pour lier les deux générations."
+    },
+    {
+      "title": "Confidentialité Sacrée",
+      "description": "Les données émotionnelles de votre famille sont uniques. Nous promettons de ne jamais commercialiser ni analyser vos histoires personnelles."
+    }
+  ]
+}

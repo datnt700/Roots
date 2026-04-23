@@ -1,0 +1,16 @@
+{
+  "title": "Membres de la famille",
+  "subtitle": "Créez des QR codes pour qu'ils enregistrent des souvenirs",
+  "addParent": "Ajouter un membre",
+  "generateQR": "Générer QR",
+  "empty": "Aucun membre encore. Ajoutez-en un pour commencer.",
+  "qrModal": {
+    "title": "Imprimer et coller",
+    "instructions": "Téléchargez ou imprimez ce QR et collez-le dans votre album",
+    "download": "Télécharger",
+    "print": "Imprimer",
+    "expires": "Expire dans 72 heures",
+    "close": "Fermer",
+    "generating": "Génération du QR…"
+  }
+}

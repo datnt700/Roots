@@ -1,12 +1,14 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useTransition } from 'react'
 import styled from '@emotion/styled'
 import { Button } from '@/components/ui/button'
 import { Menu, X } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
-import type { Locale } from '@/lib/i18n'
+import { useTranslations, useLocale } from 'next-intl'
+import { useRouter } from 'next/navigation'
+
+type Locale = 'en' | 'vi' | 'fr'
 
 const Header = styled.header<{ $isScrolled: boolean }>(({ $isScrolled }) => ({
   position: 'fixed',
@@ -175,7 +177,15 @@ const languageOptions: Array<{ locale: Locale; label: string }> = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { locale, setLocale, t } = useI18n()
+  const [, startTransition] = useTransition()
+  const t = useTranslations('navbar')
+  const locale = useLocale() as Locale
+  const router = useRouter()
+
+  const setLocale = (next: Locale) => {
+    document.cookie = `roots-locale=${next}; path=/; max-age=31536000`
+    startTransition(() => router.refresh())
+  }
 
   useEffect(() => {
     const handleScroll = () => {

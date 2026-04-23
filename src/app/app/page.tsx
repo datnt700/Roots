@@ -15,9 +15,12 @@ import {
   Headphones,
   Users,
   BookOpen,
+  Bell,
+  CheckCircle2,
+  Mic2,
 } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useTranslations } from 'next-intl'
 
 // ─── Animations ───────────────────────────────────────────────────────────────
 
@@ -31,6 +34,8 @@ const fadeUp = keyframes`
 const Page = styled.div({
   padding: `${theme.spacing[4]} ${theme.spacing[4]} ${theme.spacing[8]}`,
   maxWidth: '56rem',
+  width: '100%',
+  overflowX: 'hidden',
   margin: '0 auto',
   '@media (min-width: 768px)': {
     padding: `${theme.spacing[8]} ${theme.spacing[6]}`,
@@ -148,7 +153,7 @@ const QuickActionsGrid = styled.div({
   },
 })
 
-const QuickActionCard = styled(Link)<{ $accent?: string }>(({ $accent }) => ({
+const QuickActionCard = styled(Link, { shouldForwardProp: (prop) => prop !== 'viewTransition' })<{ $accent?: string }>(({ $accent }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
@@ -275,7 +280,7 @@ const MemoryList = styled.div({
   animation: `${fadeUp} 0.4s 0.2s ease both`,
 })
 
-const MemoryItem = styled(Link)({
+const MemoryItem = styled(Link, { shouldForwardProp: (prop) => prop !== 'viewTransition' })({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing[3],
@@ -385,7 +390,66 @@ const StartButton = styled(Link)({
   '& svg': { width: '1rem', height: '1rem' },
 })
 
-// ─── Feedback banner ──────────────────────────────────────────────────────────
+// ─── Notifications ───────────────────────────────────────────────────────────
+
+const NotifList = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing[2],
+})
+
+const NotifItem = styled.div<{ $unread: boolean }>(({ $unread }) => ({
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: theme.spacing[3],
+  padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
+  borderRadius: theme.radius.xl,
+  backgroundColor: $unread ? 'oklch(0.88 0.06 155 / 0.08)' : theme.colors.card,
+  border: `1px solid ${$unread ? 'oklch(0.88 0.06 155 / 0.2)' : theme.colors.border}`,
+  position: 'relative',
+}))
+
+const NotifDot = styled.div({
+  position: 'absolute',
+  top: '0.875rem',
+  right: '0.875rem',
+  width: '0.5rem',
+  height: '0.5rem',
+  borderRadius: theme.radius.full,
+  backgroundColor: theme.colors.primary,
+})
+
+const NotifIconWrap = styled.div<{ $color: string }>(({ $color }) => ({
+  width: '2.25rem',
+  height: '2.25rem',
+  borderRadius: theme.radius.lg,
+  backgroundColor: $color,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flexShrink: 0,
+  '& svg': { width: '1rem', height: '1rem', color: '#fff' },
+}))
+
+const NotifBody = styled.div({
+  flex: 1,
+  minWidth: 0,
+})
+
+const NotifTitle = styled.div({
+  fontSize: '0.8125rem',
+  fontWeight: 600,
+  color: theme.colors.foreground,
+  lineHeight: 1.4,
+})
+
+const NotifMeta = styled.div({
+  fontSize: '0.75rem',
+  color: theme.colors.mutedForeground,
+  marginTop: '0.125rem',
+})
+
+// ─── Feedback banner ─────────────────────────────────────────────────────────
 
 const FeedbackBanner = styled(Link)({
   display: 'flex',
@@ -431,6 +495,33 @@ const FeedbackBannerSub = styled.div({
 })
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
+
+const MOCK_NOTIFICATIONS = [
+  {
+    id: '1',
+    title: 'Bố Hùng completed a new recording',
+    meta: '2 hours ago',
+    icon: Mic2,
+    color: theme.colors.primary,
+    unread: true,
+  },
+  {
+    id: '2',
+    title: "Memory 'Childhood home' is ready to review",
+    meta: '5 hours ago',
+    icon: CheckCircle2,
+    color: 'oklch(0.55 0.12 155)',
+    unread: true,
+  },
+  {
+    id: '3',
+    title: 'Mẹ Lan has 3 pending feedback responses',
+    meta: '1 day ago',
+    icon: MessageSquare,
+    color: theme.colors.accent,
+    unread: false,
+  },
+]
 
 const MOCK_PARENTS = [
   {
@@ -489,7 +580,7 @@ const MOCK_MEMORIES = [
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const { t } = useI18n()
+  const t = useTranslations()
   const [pendingFeedback] = useState(3)
 
   const hour = new Date().getHours()
@@ -551,6 +642,31 @@ export default function DashboardPage() {
           </StatCard>
         ))}
       </StatsGrid>
+
+      {/* Notifications */}
+      <Section>
+        <SectionHeader>
+          <SectionTitle>
+            <Bell style={{ display: 'inline', width: '0.875rem', height: '0.875rem', marginRight: '0.375rem', verticalAlign: 'middle' }} />
+            Notifications
+          </SectionTitle>
+          <SeeAll href="/app/feedback">See all <ChevronRight /></SeeAll>
+        </SectionHeader>
+        <NotifList>
+          {MOCK_NOTIFICATIONS.map((n) => (
+            <NotifItem key={n.id} $unread={n.unread}>
+              {n.unread && <NotifDot />}
+              <NotifIconWrap $color={n.color}>
+                <n.icon />
+              </NotifIconWrap>
+              <NotifBody>
+                <NotifTitle>{n.title}</NotifTitle>
+                <NotifMeta>{n.meta}</NotifMeta>
+              </NotifBody>
+            </NotifItem>
+          ))}
+        </NotifList>
+      </Section>
 
       {/* Feedback banner */}
       {pendingFeedback > 0 && (

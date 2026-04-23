@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
 import { Check, X, Heart, MessageSquare, Shield, Users } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useMessages } from 'next-intl'
 
 const advantageIcons = [
   {
@@ -255,7 +255,7 @@ const AdvantageDescription = styled.p({
 export function CompetitiveSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const [isVisible, setIsVisible] = useState(false)
-  const { messages } = useI18n()
+  const messages = useMessages()
 
   useEffect(() => {
     const observer = new IntersectionObserver(

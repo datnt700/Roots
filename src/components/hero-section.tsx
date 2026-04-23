@@ -6,7 +6,7 @@ import { keyframes } from '@emotion/react'
 import { Button } from '@/components/ui/button'
 import { ArrowDown, Play } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useMessages } from 'next-intl'
 
 const fadeIn = keyframes`
   from {
@@ -229,7 +229,7 @@ const ScrollDotInner = styled.div({
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
-  const { messages } = useI18n()
+  const messages = useMessages()
 
   useEffect(() => {
     const section = sectionRef.current

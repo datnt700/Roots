@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
 import QRCode from 'qrcode'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useTranslations } from 'next-intl'
 import {
   QrCode,
   Plus,
@@ -326,7 +326,7 @@ function QRModal({
   modal: QRModalState
   onClose: () => void
 }) {
-  const { t } = useI18n()
+  const t = useTranslations()
 
   const handleDownload = () => {
     const a = document.createElement('a')
@@ -415,7 +415,7 @@ function QRModal({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ParentsPage() {
-  const { t } = useI18n()
+  const t = useTranslations()
   const [parents, setParents] = useState<Parent[]>([])
   const [loading, setLoading] = useState(true)
   const [loadingQR, setLoadingQR] = useState<string | null>(null)

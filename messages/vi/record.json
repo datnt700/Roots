@@ -1,0 +1,41 @@
+{
+  "title": "Phòng ghi âm",
+  "subtitle": "Đưa ra câu hỏi gợi ý và để cha mẹ kể câu chuyện của họ",
+  "selectParent": "Chọn người thân",
+  "noParents": "Chưa có người thân nào",
+  "addParentFirst": "Thêm người thân trước",
+  "prompt": "Câu hỏi gợi chuyện",
+  "promptLabel": "Câu hỏi cho lần ghi này",
+  "skipPrompt": "Không có câu hỏi",
+  "uploadPhoto": "Thêm ảnh",
+  "photoPreview": "Xem trước ảnh",
+  "removePhoto": "Xóa ảnh",
+  "startRecording": "Bắt đầu ghi âm",
+  "stopRecording": "Dừng",
+  "recordingTime": "Đang ghi",
+  "playback": "Nghe lại",
+  "retake": "Ghi lại",
+  "saveMemory": "Lưu ký ức",
+  "saving": "Đang lưu…",
+  "saved": "Đã lưu ký ức!",
+  "decade": "Thập niên của ký ức",
+  "decadeOptions": {
+    "unknown": "Không rõ / Hỗn hợp",
+    "d1960s": "Thập niên 60",
+    "d1970s": "Thập niên 70",
+    "d1980s": "Thập niên 80",
+    "d1990s": "Thập niên 90",
+    "d2000s": "Thập niên 2000",
+    "d2010s": "Thập niên 2010"
+  },
+  "prompts": {
+    "0": "Kể cho con nghe về ngôi nhà thời thơ ấu của bố/mẹ",
+    "1": "Công việc đầu tiên của bố/mẹ như thế nào?",
+    "2": "Bố và mẹ gặp nhau như thế nào?",
+    "3": "Khoảnh khắc khó khăn nhất trong cuộc đời bố/mẹ là gì?",
+    "4": "Bố/mẹ sẽ nói gì với bản thân lúc còn trẻ?",
+    "5": "Bố/mẹ đã học được truyền thống gì từ ông bà?",
+    "6": "Một ngày bình thường của bố/mẹ hồi nhỏ trông như thế nào?",
+    "7": "Điều gì khiến bố/mẹ vui nhất khi còn nhỏ?"
+  }
+}

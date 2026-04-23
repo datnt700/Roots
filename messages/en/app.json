@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "dashboard": "Home",
+    "record": "Record",
+    "studio": "Studio",
+    "timeline": "Timeline",
+    "feedback": "Feedback",
+    "parents": "Family"
+  },
+  "sidebar": {
+    "parents": "My Parents",
+    "addParent": "Add Parent",
+    "settings": "Settings",
+    "logout": "Sign Out"
+  },
+  "greeting": "Good",
+  "greetingName": "Welcome back"
+}

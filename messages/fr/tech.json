@@ -1,0 +1,19 @@
+{
+  "sectionLabel": "Fonctionnalités Clés",
+  "sectionTitle": "Solution de Connexion à l'Héritage Familial",
+  "sectionDescription": "La combinaison parfaite entre albums physiques traditionnels et technologie moderne pour préserver pleinement les histoires de vie.",
+  "features": [
+    { "title": "Pont Phygital", "description": "Album physique premium avec codes QR uniques, permettant aux parents de prendre des photos et d'enregistrer des histoires d'un seul geste.", "status": "MVP" },
+    { "title": "Système de Gestion de Mémoire", "description": "Donne à l'enfant le rôle de 'Rédacteur en chef' pour organiser, étiqueter et ajouter des émotions à chaque fragment de souvenir.", "status": "Core" },
+    { "title": "Chronologie de l'Héritage", "description": "Interface chronologique personnalisable, reliant les histoires éparpillées en un récit familial continu.", "status": "Core" },
+    { "title": "Mode de Partage Futur", "description": "Définissez l'accès pour les générations futures, transformant les souvenirs en un 'testament numérique' vivant pour les petits-enfants partout.", "status": "Héritage" }
+  ],
+  "marketLabel": "Opportunité pour la Communauté Expatriée",
+  "marketTitle": "Pourquoi c'est le moment d'agir",
+  "metrics": [
+    { "value": "500k+", "label": "Étudiants vietnamiens dans le monde" },
+    { "value": "100%", "label": "Le temps ne peut pas faire marche arrière" },
+    { "value": "0", "label": "Raison d'attendre plus longtemps" }
+  ],
+  "marketText": "La communauté expatriée vietnamienne grandit et vieillit rapidement. Chaque jour qui passe est une page de l'histoire familiale qui risque de disparaître à jamais. Ne vous laissez pas dire 'Si j'avais su'."
+}

@@ -1,0 +1,30 @@
+{
+  "title": "Studio ký ức",
+  "subtitle": "Sắp xếp, chỉnh sửa và suy ngẫm về câu chuyện gia đình",
+  "allMemories": "Tất cả ký ức",
+  "filter": {
+    "all": "Tất cả",
+    "processed": "Đã phiên âm",
+    "pending": "Đang xử lý"
+  },
+  "sort": {
+    "newest": "Mới nhất",
+    "oldest": "Cũ nhất",
+    "decade": "Theo thập niên"
+  },
+  "memoryCard": {
+    "transcript": "Phiên âm",
+    "reflection": "Cảm nhận của bạn",
+    "noTranscript": "Đang phiên âm…",
+    "addReflection": "Thêm cảm nhận",
+    "processed": "Đã phiên âm",
+    "processing": "Đang xử lý"
+  },
+  "editReflection": "Chỉnh sửa cảm nhận",
+  "saveReflection": "Lưu",
+  "deleteMemory": "Xóa ký ức",
+  "confirmDelete": "Bạn chắc chắn? Hành động này không thể hoàn tác.",
+  "emptyState": "Studio chưa có ký ức nào. Hãy đi ghi âm một cái!",
+  "heart": "Gửi ❤️",
+  "hearted": "Đã gửi ❤️"
+}

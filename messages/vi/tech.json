@@ -1,0 +1,19 @@
+{
+  "sectionLabel": "Tính năng cốt lõi",
+  "sectionTitle": "Giải pháp kết nối di sản gia đình",
+  "sectionDescription": "Sự kết hợp hoàn hảo giữa Album vật lý truyền thống và công nghệ hiện đại, giúp lưu giữ những câu chuyện đời người một cách trọn vẹn nhất.",
+  "features": [
+    { "title": "Phygital Bridge", "description": "Album vật lý cao cấp tích hợp mã QR định danh, giúp cha mẹ dễ dàng chụp ảnh và ghi âm kể chuyện chỉ với một cú chạm.", "status": "MVP" },
+    { "title": "Hệ thống Quản trị Ký ức", "description": "Cung cấp quyền 'Tổng biên tập' cho người con để sắp xếp, gắn nhãn và thêm cảm xúc vào từng mảnh ghép ký ức của cha mẹ.", "status": "Core" },
+    { "title": "Legacy Timeline", "description": "Giao diện dòng thời gian tùy chỉnh, ghép nối những đoạn kể chuyện rời rạc thành một mạch truyện xuyên suốt về gia tộc.", "status": "Core" },
+    { "title": "Chế độ Chia sẻ Tương lai", "description": "Thiết lập quyền truy cập cho thế hệ mai sau, biến ký ức thành một 'di chúc số' sống động cho con cháu ở bất cứ đâu.", "status": "Di sản" }
+  ],
+  "marketLabel": "Cơ hội cho cộng đồng xa xứ",
+  "marketTitle": "Vì sao bây giờ là lúc phải hành động",
+  "metrics": [
+    { "value": "500k+", "label": "Du học sinh Việt Nam toàn cầu" },
+    { "value": "100%", "label": "Thời gian không thể quay lại" },
+    { "value": "0", "label": "Lý do để trì hoãn thêm nữa" }
+  ],
+  "marketText": "Cộng đồng người Việt xa xứ đang tăng trưởng và già hóa nhanh chóng. Mỗi ngày trôi qua là một trang sử gia đình có nguy cơ mất đi vĩnh viễn. Đừng để bản thân phải nói câu 'Giá như'."
+}

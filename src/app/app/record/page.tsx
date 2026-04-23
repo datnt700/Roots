@@ -18,7 +18,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useTranslations } from 'next-intl'
 
 // ─── Animations ───────────────────────────────────────────────────────────────
 
@@ -453,7 +453,7 @@ async function uploadBlob(
 type RecordState = 'idle' | 'recording' | 'recorded' | 'saved'
 
 export default function RecordPage() {
-  const { t } = useI18n()
+  const t = useTranslations()
 
   const [selectedParent, setSelectedParent] = useState(MOCK_PARENTS[0])
   const [promptIdx, setPromptIdx] = useState(0)
@@ -476,7 +476,7 @@ export default function RecordPage() {
 
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const prompts = (t('record.prompts') as unknown as string[] | undefined) ?? []
+  const prompts = Array.from({ length: 8 }, (_, i) => t(`record.prompts.${i}` as Parameters<typeof t>[0]))
   const DECADE_KEYS = [
     'unknown',
     'd1960s',

@@ -14,7 +14,7 @@ import {
   BookOpen,
 } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useTranslations } from 'next-intl'
 
 // ─── Animations ───────────────────────────────────────────────────────────────
 
@@ -424,7 +424,7 @@ const MOCK_ALBUMS = [
 type TabKey = 'decades' | 'albums'
 
 export default function TimelinePage() {
-  const { t } = useI18n()
+  const t = useTranslations()
   const [activeTab, setActiveTab] = useState<TabKey>('decades')
 
   const totalMemories = MOCK_DECADES.reduce(

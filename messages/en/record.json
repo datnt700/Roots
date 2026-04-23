@@ -1,0 +1,41 @@
+{
+  "title": "Recording Station",
+  "subtitle": "Give your parent a voice prompt and let them share their story",
+  "selectParent": "Select parent",
+  "noParents": "No parents added yet",
+  "addParentFirst": "Add a parent first",
+  "prompt": "Story prompt",
+  "promptLabel": "Prompt for this recording",
+  "skipPrompt": "No prompt",
+  "uploadPhoto": "Add a photo",
+  "photoPreview": "Photo preview",
+  "removePhoto": "Remove photo",
+  "startRecording": "Start Recording",
+  "stopRecording": "Stop",
+  "recordingTime": "Recording",
+  "playback": "Playback",
+  "retake": "Re-record",
+  "saveMemory": "Save Memory",
+  "saving": "Saving\u2026",
+  "saved": "Memory saved!",
+  "decade": "Decade of memory",
+  "decadeOptions": {
+    "unknown": "Unknown / Mixed",
+    "d1960s": "1960s",
+    "d1970s": "1970s",
+    "d1980s": "1980s",
+    "d1990s": "1990s",
+    "d2000s": "2000s",
+    "d2010s": "2010s"
+  },
+  "prompts": {
+    "0": "Tell me about your childhood home",
+    "1": "What was your first job like?",
+    "2": "How did you and your partner meet?",
+    "3": "What was the hardest moment of your life?",
+    "4": "What piece of advice would you give your younger self?",
+    "5": "What traditions did your parents teach you?",
+    "6": "Describe a typical day when you were young",
+    "7": "What made you happiest as a child?"
+  }
+}

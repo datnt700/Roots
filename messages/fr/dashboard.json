@@ -1,0 +1,27 @@
+{
+  "title": "Votre Musée Familial",
+  "subtitle": "Chaque souvenir sauvegardé est un fragment d'histoire préservé",
+  "stats": {
+    "memories": "Souvenirs",
+    "hours": "Heures enregistrées",
+    "parents": "Proches",
+    "albums": "Albums"
+  },
+  "recentMemories": "Souvenirs récents",
+  "noMemories": "Aucun souvenir pour l'instant",
+  "startRecording": "Commencer votre premier enregistrement",
+  "continueJourney": "Continuer le voyage",
+  "parentCard": {
+    "lastRecorded": "Dernier enregistrement",
+    "recordings": "enregistrements",
+    "viewAll": "Voir tout"
+  },
+  "quickActions": {
+    "title": "Actions rapides",
+    "newRecording": "Nouvel enregistrement",
+    "openStudio": "Ouvrir le Studio",
+    "viewTimeline": "Voir la chronologie",
+    "seeFeedback": "Voir les retours"
+  },
+  "pendingFeedback": "réponses en attente"
+}

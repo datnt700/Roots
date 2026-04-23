@@ -1,6 +1,6 @@
 # ROOTS (GỐC) — Task Tracker
 
-> Last updated: 2026-04-22
+> Last updated: 2026-04-23
 > Status legend: ✅ Done · 🔄 Partial · ❌ Not started · 🚧 In progress
 
 ---
@@ -118,6 +118,8 @@ Do these in order — each unlocks the next.
 | 2.5 | Whisper AI transcription          | ✅     | `POST /api/transcribe` — decrypt key → S3 → Whisper-1 → encrypt → DB                |
 | 2.6 | LLM prompt generation             | ❌     | Prompts hardcoded in i18n.ts — needs OpenAI GPT call to generate contextual prompts |
 | 2.7 | Parent QR recording flow          | ✅     | `/parent/[token]` — claymorphism record, photo, send                                |
+| 2.8 | AI Voice Prompting (TTS)          | ❌     | ElevenLabs API — khi bố mẹ quét QR, AI lên tiếng chào bằng giọng Việt ấm. `POST /api/tts` → stream mp3 to parent page. `ELEVENLABS_API_KEY` + voice ID cấu hình trong env |
+| 2.9 | Interactive Dialogue Flow         | ❌     | Vercel AI SDK `streamText` — AI hỏi → Whisper nhận real-time → AI phản hồi → hỏi tiếp. Trạng thái hội thoại lưu trong `ConversationTurn[]` (client state). Khi kết thúc lưu toàn bộ transcript vào DB |
 
 ---
 
@@ -144,6 +146,8 @@ Do these in order — each unlocks the next.
 | 4.3 | Real-time notifications (SSE) | ✅     | `GET /api/feedback/stream` — 3s DB poll, 25s ping, unread banner |
 | 4.4 | AI photo enhancement          | ❌     | Not started                                                      |
 | 4.5 | Push notifications (mobile)   | ❌     | Web Push API — not started                                       |
+| 4.6 | AI Nudging — proactive outreach | ❌     | Logic nhắc nhở qua Zalo OA hoặc SMS (Twilio). AI soạn tin nhắn cá nhân hoá: đề cập tên bố/mẹ, gợi lại một ký ức cụ thể. Cron job (Vercel Cron) chạy hàng ngày 8h sáng giờ VN |
+| 4.7 | Memory Synthesis (tóm tắt hội thoại) | ❌  | Sau mỗi session, GPT-4o tóm tắt nội dung thành 2-3 câu ngắn gọn. Lưu vào `Transcript.summary`. Dashboard con cái hiển thị tóm tắt ngay lập tức qua SSE — không cần đợi nghe toàn bộ file âm thanh |
 
 ---
 
@@ -162,6 +166,9 @@ Do these in order — each unlocks the next.
 | I9  | AWS IAM user + S3 bucket                    | ❌     | SSE-AES256, block public access, IAM policy |
 | I10 | Add all vars to Vercel dashboard            | ❌     | Project Settings → Environment Variables    |
 | I11 | Run Prisma migration on real DB             | ❌     | After I2 is done                            |
+| I12 | ElevenLabs API key                          | ❌     | elevenlabs.io → Profile → API Keys → `ELEVENLABS_API_KEY` + chọn voice ID tiếng Việt |
+| I13 | Pusher credentials (real-time)              | ❌     | pusher.com → Create app → `PUSHER_APP_ID`, `PUSHER_KEY`, `PUSHER_SECRET`, `PUSHER_CLUSTER` |
+| I14 | Zalo OA / Twilio (AI Nudging)               | ❌     | Chọn một: Zalo OA (VN) hoặc Twilio SMS (quốc tế). Lấy API key và cấu hình trong env |
 
 ---
 
@@ -173,6 +180,10 @@ Do these in order — each unlocks the next.
 4. **Page transitions** — View Transitions API in `app/layout.tsx` (CSS, no extra deps)
 5. **LLM prompt generation** — GPT-4o call to generate contextual interview prompts
 6. **Connect auth session to UI** — replace `MOCK_USER_ID` in record/feedback pages with `session.user.id`
+7. **AI Voice Prompting (2.8)** — `pnpm add elevenlabs`, tạo `POST /api/tts`, phát audio khi bố mẹ mở `/parent/[token]`
+8. **Interactive Dialogue Flow (2.9)** — `pnpm add ai`, dùng `streamText` (GPT-4o) + Whisper để tạo vòng hội thoại đa bước
+9. **Memory Synthesis (4.7)** — thêm `summary` field vào `Transcript` model, gọi GPT sau transcribe, push qua SSE đến dashboard
+10. **Pusher real-time (I13)** — thay SSE polling bằng Pusher để dashboard hiện "Mẹ đang kể chuyện..." real-time
 
 ---
 
@@ -199,3 +210,6 @@ Do these in order — each unlocks the next.
 | `POST /api/transcribe`             | API              | 🔒                   |
 | `GET/POST /api/parents`            | API              | 🔒                   |
 | `GET/POST /api/parent-sessions`    | API              | 🔒                   |
+| `POST /api/tts`                    | API (stream)     | Public (token-gated) |
+| `POST /api/dialogue`               | API (stream SSE) | Public (token-gated) |
+| `POST /api/nudge`                  | API (cron)       | Internal (cron secret) |

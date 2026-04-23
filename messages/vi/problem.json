@@ -1,0 +1,24 @@
+{
+  "sectionLabel": "Sự thật nghiệt ngã",
+  "sectionTitle": "Phép toán đau lòng của người xa xứ",
+  "sectionDescription": "Bạn có bao giờ dám tính thử mình còn bao nhiêu cơ hội để thực sự thấu hiểu cha mẹ trước khi quá muộn?",
+  "cards": [
+    {
+      "title": "Con số 20 hữu hạn",
+      "description": "Nếu mỗi năm bạn về một lần, bạn có thể chỉ còn đúng 20 lần được ngồi ăn cơm cùng cha mẹ. Mỗi năm trôi qua là một cơ hội vĩnh viễn mất đi.",
+      "quote": "Tôi bàng hoàng nhận ra mình chỉ còn chưa đầy 30 ngày thực sự ở bên cha mẹ trong suốt phần đời còn lại."
+    },
+    {
+      "title": "Nỗi sợ 'Người lạ quen thuộc'",
+      "description": "Zalo vẫn báo tin nhắn, FaceTime vẫn thấy mặt, nhưng bạn dần không còn biết cha mẹ đang thực sự nghĩ gì. Bạn đang mất họ ngay khi họ vẫn còn sống.",
+      "quote": "Sợ nhất là khi trở về, tôi nhận ra mình đã bỏ lỡ cả một chương đời quan trọng nhất của mẹ."
+    },
+    {
+      "title": "Tiếng vọng trống rỗng",
+      "description": "Các ứng dụng nhắn tin chỉ là công cụ liên lạc nhanh, không phải nơi lưu giữ báu vật. Một ngày nào đó, bạn sẽ khao khát được nghe lại một lời dặn dò, nhưng chỉ còn là im lặng.",
+      "quote": "Lướt lại tin nhắn cũ không giống như được nghe giọng nói ấm áp của cha."
+    }
+  ],
+  "emotionalQuote": "Sai lầm lớn nhất của chúng ta là nghĩ rằng mình vẫn còn nhiều thời gian.",
+  "emotionalAttribution": "Châm ngôn sống"
+}

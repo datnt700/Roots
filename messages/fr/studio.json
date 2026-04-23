@@ -1,0 +1,30 @@
+{
+  "title": "Studio de Souvenirs",
+  "subtitle": "Curatez, éditez et réfléchissez aux histoires de votre famille",
+  "allMemories": "Tous les souvenirs",
+  "filter": {
+    "all": "Tous",
+    "processed": "Transcrits",
+    "pending": "En attente"
+  },
+  "sort": {
+    "newest": "Plus récents",
+    "oldest": "Plus anciens",
+    "decade": "Par décennie"
+  },
+  "memoryCard": {
+    "transcript": "Transcription",
+    "reflection": "Votre réflexion",
+    "noTranscript": "Transcription en cours…",
+    "addReflection": "Ajouter une réflexion",
+    "processed": "Transcrit",
+    "processing": "En cours"
+  },
+  "editReflection": "Modifier la réflexion",
+  "saveReflection": "Sauvegarder",
+  "deleteMemory": "Supprimer le souvenir",
+  "confirmDelete": "Êtes-vous sûr ? Cette action est irréversible.",
+  "emptyState": "Aucun souvenir dans le studio. Allez en enregistrer un !",
+  "heart": "Envoyer ❤️",
+  "hearted": "Envoyé ❤️"
+}

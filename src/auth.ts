@@ -5,7 +5,7 @@
  *
  * Security notes:
  * - OAuth tokens are NOT stored in plaintext — @auth/prisma-adapter handles them
- * - Passwords are hashed with bcrypt (cost 12) before storage
+ * - Passwords are hashed with scrypt (N=32768, salt=16B) before storage
  * - User email is stored encrypted in DB; emailHash for lookups
  * - NEVER store raw tokens or plaintext passwords
  *
@@ -26,9 +26,10 @@ import Google from 'next-auth/providers/google'
 import Facebook from 'next-auth/providers/facebook'
 import Apple from 'next-auth/providers/apple'
 import Credentials from 'next-auth/providers/credentials'
-import bcrypt from 'bcryptjs'
+import { scryptSync, timingSafeEqual } from 'crypto'
 import { db } from '@/lib/db'
 import { encrypt, hashEmail, decrypt } from '@/lib/crypto'
+import { logger } from '@/lib/logger'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   // Use Prisma adapter for persistent sessions + OAuth account linking
@@ -80,20 +81,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         if (!email || !password) return null
 
-        // Lookup by hashed email (never decrypt-then-compare)
-        const emailHash = hashEmail(email)
-        const user = await db.user.findUnique({ where: { emailHash } })
+        try {
+          // Lookup by hashed email (never decrypt-then-compare)
+          const emailHash = hashEmail(email)
+          const user = await db.user.findUnique({ where: { emailHash } })
 
-        if (!user || !user.passwordHash) return null
+          if (!user || !user.passwordHash) {
+            logger.warn('auth', 'authorize: user not found or no password', { email })
+            return null
+          }
 
-        const valid = await bcrypt.compare(password, user.passwordHash)
-        if (!valid) return null
+          const [saltHex, hashHex] = user.passwordHash.split(':')
+          const derived = scryptSync(password, Buffer.from(saltHex, 'hex'), 32)
+          const valid = timingSafeEqual(derived, Buffer.from(hashHex, 'hex'))
+          if (!valid) {
+            logger.warn('auth', 'authorize: password mismatch', { userId: user.id })
+            return null
+          }
 
-        return {
-          id: user.id,
-          email: decrypt(user.email),
-          name: decrypt(user.displayName),
-          image: user.image ?? null,
+          logger.info('auth', 'authorize: success', { userId: user.id })
+          return {
+            id: user.id,
+            email: decrypt(user.email),
+            name: decrypt(user.displayName),
+            image: user.image ?? null,
+          }
+        } catch (err) {
+          logger.error('auth', 'authorize: unexpected error', { email }, err)
+          return null
         }
       },
     }),

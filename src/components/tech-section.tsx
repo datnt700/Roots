@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
 import { Smartphone, Cpu, Image, Mic, Lock, Cloud } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useMessages } from 'next-intl'
 
 const techIcons = [Smartphone, Cloud, Mic, Image, Cpu, Lock]
 
@@ -215,7 +215,7 @@ export function TechSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const [isVisible, setIsVisible] = useState(false)
   const [countersAnimated, setCountersAnimated] = useState(false)
-  const { messages } = useI18n()
+  const messages = useMessages()
 
   useEffect(() => {
     const observer = new IntersectionObserver(

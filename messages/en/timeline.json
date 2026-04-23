@@ -1,0 +1,16 @@
+{
+  "title": "Legacy Timeline",
+  "subtitle": "Your family's living history, decade by decade",
+  "addAlbum": "New Album",
+  "albumName": "Album name",
+  "createAlbum": "Create",
+  "emptyAlbum": "No memories in this album yet",
+  "addToAlbum": "Add to album",
+  "decades": {
+    "title": "Decades",
+    "unknown": "Timeless"
+  },
+  "shareTimeline": "Share timeline",
+  "exportPdf": "Export as PDF",
+  "memoryCount": "memories"
+}

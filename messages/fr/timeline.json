@@ -1,0 +1,16 @@
+{
+  "title": "Chronologie de l'Héritage",
+  "subtitle": "L'histoire vivante de votre famille, décennie par décennie",
+  "addAlbum": "Nouvel album",
+  "albumName": "Nom de l'album",
+  "createAlbum": "Créer",
+  "emptyAlbum": "Aucun souvenir dans cet album",
+  "addToAlbum": "Ajouter à l'album",
+  "decades": {
+    "title": "Décennies",
+    "unknown": "Intemporel"
+  },
+  "shareTimeline": "Partager la chronologie",
+  "exportPdf": "Exporter en PDF",
+  "memoryCount": "souvenirs"
+}

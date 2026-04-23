@@ -1,0 +1,27 @@
+{
+  "title": "Bảo tàng gia đình",
+  "subtitle": "Mỗi ký ức được lưu là một mảnh lịch sử được giữ lại",
+  "stats": {
+    "memories": "Ký ức",
+    "hours": "Giờ ghi âm",
+    "parents": "Người thân",
+    "albums": "Album"
+  },
+  "recentMemories": "Ký ức gần đây",
+  "noMemories": "Chưa có ký ức nào",
+  "startRecording": "Bắt đầu ghi âm đầu tiên",
+  "continueJourney": "Tiếp tục hành trình",
+  "parentCard": {
+    "lastRecorded": "Ghi lần cuối",
+    "recordings": "đoạn ghi",
+    "viewAll": "Xem tất cả"
+  },
+  "quickActions": {
+    "title": "Thao tác nhanh",
+    "newRecording": "Ghi âm mới",
+    "openStudio": "Mở Studio",
+    "viewTimeline": "Xem dòng thời gian",
+    "seeFeedback": "Xem phản hồi"
+  },
+  "pendingFeedback": "phản hồi đang chờ"
+}

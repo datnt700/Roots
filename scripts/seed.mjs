@@ -10,25 +10,16 @@
 import { createRequire } from 'module'
 import {
   createCipheriv,
-  createDecipheriv,
   randomBytes,
-  createHmac,
+  createHash,
   scryptSync,
 } from 'crypto'
+import { config } from 'dotenv'
 
 const require = createRequire(import.meta.url)
 
 // ── Load env ────────────────────────────────────────────────────────────────
-const dotenvPath = new URL('../.env', import.meta.url).pathname.replace(
-  /^\/([A-Z]:)/,
-  '$1',
-)
-try {
-  const { config } = await import('dotenv')
-  config({ path: dotenvPath })
-} catch {
-  // dotenv optional — env may already be set
-}
+config()
 
 if (!process.env.DATABASE_URL) {
   console.error('❌  DATABASE_URL is not set. Create a .env file first.')
@@ -51,12 +42,18 @@ function encrypt(plaintext) {
     cipher.final(),
   ])
   const tag = cipher.getAuthTag()
-  return Buffer.concat([iv, tag, encrypted]).toString('base64')
+  // Must match lib/crypto.ts format: base64(iv):base64(tag):base64(ciphertext)
+  return [
+    iv.toString('base64'),
+    tag.toString('base64'),
+    encrypted.toString('base64'),
+  ].join(':')
 }
 
 function hashEmail(email) {
-  return createHmac('sha256', PEPPER)
-    .update(email.toLowerCase().trim())
+  // Must match lib/crypto.ts: SHA-256(email + pepper)
+  return createHash('sha256')
+    .update(email.toLowerCase().trim() + PEPPER)
     .digest('hex')
 }
 
@@ -66,12 +63,9 @@ function hashPassword(password) {
   return `${salt.toString('hex')}:${hash.toString('hex')}`
 }
 
-// ── Prisma client (dynamic import after env is set) ─────────────────────────
+// ── Prisma client ──────────────────────────────────────────────────────────
 const { PrismaPg } = await import('@prisma/adapter-pg')
-const { PrismaClient } =
-  await import('../src/generated/prisma/client.js').catch(
-    () => import('@prisma/client'),
-  )
+const { PrismaClient } = await import('../src/generated/prisma/client.ts')
 
 const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
 const db = new PrismaClient({ adapter })

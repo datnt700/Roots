@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
 import { Layers, Smartphone, Database, ArrowRight } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useMessages } from 'next-intl'
 
 const stepMeta = [
   {
@@ -396,7 +396,7 @@ export function SolutionSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const [activeStep, setActiveStep] = useState(0)
   const [isVisible, setIsVisible] = useState(false)
-  const { messages } = useI18n()
+  const messages = useMessages()
   const steps = messages.solution.steps
 
   useEffect(() => {

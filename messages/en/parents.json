@@ -1,0 +1,16 @@
+{
+  "title": "Family Members",
+  "subtitle": "Create QR codes so they can record memories for you",
+  "addParent": "Add member",
+  "generateQR": "Generate QR",
+  "empty": "No family members yet. Add one to get started.",
+  "qrModal": {
+    "title": "Print & Stick",
+    "instructions": "Download or print this QR code and paste it inside your physical album",
+    "download": "Download",
+    "print": "Print",
+    "expires": "Expires in 72 hours",
+    "close": "Close",
+    "generating": "Generating QR\u2026"
+  }
+}

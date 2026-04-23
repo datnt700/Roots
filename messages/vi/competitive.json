@@ -1,0 +1,31 @@
+{
+  "sectionLabel": "Sự lựa chọn của bạn",
+  "sectionTitle": "Lưu trữ rác hay Lưu giữ Di sản?",
+  "sectionDescription": "Chúng tôi không tạo ra tin nhắn nhanh. Chúng tôi tạo ra những kỷ vật sống mãi với thời gian.",
+  "rootsTitle": "ROOTS",
+  "rootsSubtitle": "Người bảo trì di sản",
+  "othersTitle": "App giao tiếp",
+  "othersSubtitle": "Kho chứa dữ liệu thô",
+  "comparisons": [
+    { "feature": "Cốt lõi", "roots": "Sự thấu cảm & Gắn kết sâu", "others": "Tiện lợi & Nhanh chóng" },
+    { "feature": "Kết quả", "roots": "Một cuốn hồi ký sống động", "others": "Dòng tin nhắn lộn xộn, dễ mất" },
+    { "feature": "Cách dẫn dắt", "roots": "Kịch bản giúp bố mẹ 'mở lòng'", "others": "Đợi chờ tương tác ngẫu nhiên" },
+    { "feature": "Truy cập", "roots": "Quét mã QR, dùng ngay trên Web", "others": "Bắt buộc cài App, đăng nhập" },
+    { "feature": "Yếu Tố Vật Lý", "roots": "Album vật lý làm 'ngòi nổ'", "others": "Chỉ kỹ thuật số hời hợt" },
+    { "feature": "Tính Năng AI", "roots": "Nâng tầm và bảo tồn di sản", "others": "Gợi ý nội dung giải trí" }
+  ],
+  "advantages": [
+    {
+      "title": "Chiều sâu trên hết",
+      "description": "Trong khi các ứng dụng khác tối ưu cho sự tiện lợi, chúng tôi tối ưu cho những giá trị tinh thần trường tồn."
+    },
+    {
+      "title": "Thấu hiểu tâm lý người Việt",
+      "description": "Chúng tôi hiểu cha mẹ Việt thường ngại nói lời yêu thương. Vì vậy, Roots đóng vai trò là 'người dẫn chuyện' để kết nối hai thế hệ."
+    },
+    {
+      "title": "Quyền riêng tư thiêng liêng",
+      "description": "Dữ liệu cảm xúc của gia đình bạn là duy nhất. Chúng tôi cam kết không bao giờ thương mại hóa hay phân tích câu chuyện của bạn."
+    }
+  ]
+}

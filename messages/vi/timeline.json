@@ -1,0 +1,16 @@
+{
+  "title": "Dòng thời gian di sản",
+  "subtitle": "Lịch sử sống động của gia đình bạn, theo từng thập niên",
+  "addAlbum": "Album mới",
+  "albumName": "Tên album",
+  "createAlbum": "Tạo",
+  "emptyAlbum": "Album này chưa có ký ức nào",
+  "addToAlbum": "Thêm vào album",
+  "decades": {
+    "title": "Thập niên",
+    "unknown": "Vô thời hạn"
+  },
+  "shareTimeline": "Chia sẻ dòng thời gian",
+  "exportPdf": "Xuất PDF",
+  "memoryCount": "ký ức"
+}

@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "dashboard": "Accueil",
+    "record": "Enregistrer",
+    "studio": "Studio",
+    "timeline": "Chronologie",
+    "feedback": "Retours",
+    "parents": "Famille"
+  },
+  "sidebar": {
+    "parents": "Mes Parents",
+    "addParent": "Ajouter un proche",
+    "settings": "Paramètres",
+    "logout": "Déconnexion"
+  },
+  "greeting": "Bonjour",
+  "greetingName": "Bon retour"
+}

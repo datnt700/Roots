@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
 import { Phone, Clock, MessageCircle } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useMessages } from 'next-intl'
 
 const problemIcons = [Phone, Clock, MessageCircle]
 
@@ -162,7 +162,7 @@ const EmotionalAttribution = styled.p({
 export function ProblemSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const [visibleCards, setVisibleCards] = useState<number[]>([])
-  const { messages } = useI18n()
+  const messages = useMessages()
 
   useEffect(() => {
     const observer = new IntersectionObserver(

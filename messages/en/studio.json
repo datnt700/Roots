@@ -1,0 +1,30 @@
+{
+  "title": "Memory Studio",
+  "subtitle": "Curate, edit, and reflect on your family's stories",
+  "allMemories": "All memories",
+  "filter": {
+    "all": "All",
+    "processed": "Transcribed",
+    "pending": "Pending"
+  },
+  "sort": {
+    "newest": "Newest",
+    "oldest": "Oldest",
+    "decade": "By decade"
+  },
+  "memoryCard": {
+    "transcript": "Transcript",
+    "reflection": "Your reflection",
+    "noTranscript": "Transcription in progress\u2026",
+    "addReflection": "Add your reflection",
+    "processed": "Transcribed",
+    "processing": "Processing"
+  },
+  "editReflection": "Edit reflection",
+  "saveReflection": "Save",
+  "deleteMemory": "Delete memory",
+  "confirmDelete": "Are you sure? This cannot be undone.",
+  "emptyState": "No memories in the studio yet. Go record one!",
+  "heart": "Send \u2764\ufe0f",
+  "hearted": "Sent \u2764\ufe0f"
+}

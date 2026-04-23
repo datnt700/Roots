@@ -1,0 +1,14 @@
+{
+  "title": "Family Feedback",
+  "subtitle": "Hear what your family said in response to your recordings",
+  "fromParent": "From",
+  "listenAgain": "Listen again",
+  "yourResponse": "Your response",
+  "recordResponse": "Record a response",
+  "writeResponse": "Write a response",
+  "sendResponse": "Send",
+  "markPlayed": "Mark as heard",
+  "played": "Heard",
+  "noFeedback": "No feedback yet. Share a memory to get responses!",
+  "respondedAt": "Responded"
+}

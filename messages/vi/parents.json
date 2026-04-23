@@ -1,0 +1,16 @@
+{
+  "title": "Thành viên gia đình",
+  "subtitle": "Tạo QR để họ ghi lại ký ức cho bạn",
+  "addParent": "Thêm thành viên",
+  "generateQR": "Tạo QR",
+  "empty": "Chưa có thành viên nào. Thêm ngay để bắt đầu.",
+  "qrModal": {
+    "title": "In & Dán vào album",
+    "instructions": "Tải về hoặc in QR này rồi dán vào trang album vật lý",
+    "download": "Tải về",
+    "print": "In",
+    "expires": "Hết hạn sau 72 giờ",
+    "close": "Đóng",
+    "generating": "Đang tạo QR…"
+  }
+}

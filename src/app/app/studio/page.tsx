@@ -18,7 +18,7 @@ import {
   Sparkles,
 } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useTranslations } from 'next-intl'
 
 const MOCK_USER_ID = 'demo-user'
 
@@ -472,7 +472,7 @@ function MemoryCardItem({
   memory: MockMemory
   delay: number
 }) {
-  const { t } = useI18n()
+  const t = useTranslations()
   const [editingReflection, setEditingReflection] = useState(false)
   const [reflectionText, setReflectionText] = useState(memory.reflection ?? '')
   const [savedReflection, setSavedReflection] = useState(memory.reflection)
@@ -643,7 +643,7 @@ function MemoryCardItem({
 type FilterKey = 'all' | 'processed' | 'pending'
 
 export default function StudioPage() {
-  const { t } = useI18n()
+  const t = useTranslations()
   const [filter, setFilter] = useState<FilterKey>('all')
 
   const filtered = MOCK_MEMORIES.filter((m) => {

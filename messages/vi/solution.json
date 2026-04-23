@@ -1,0 +1,40 @@
+{
+  "sectionLabel": "Hãy là người chủ động",
+  "sectionTitle": "ROOTS: Lá chắn chống lại sự lãng quên",
+  "sectionDescription": "Đừng đợi cha mẹ kể, hãy là người khơi gợi. Một hành trình 'Phygital' giúp bạn kiến tạo di sản gia đình từ xa.",
+  "steps": [
+    {
+      "title": "Album 'Mở khóa ký ức'",
+      "subtitle": "Món quà hiếu kính từ phương xa",
+      "description": "Bạn gửi về nhà một Album vật lý cao cấp. Mỗi trang là một không gian để cha mẹ lồng ảnh cũ và mã QR định danh, giúp xóa bỏ mọi rào cản công nghệ.",
+      "features": [
+        "Thiết kế sang trọng, gợi nhắc hoài niệm",
+        "Hệ thống câu hỏi khơi gợi cảm xúc chuyên sâu",
+        "Dễ dàng sử dụng cho người cao tuổi",
+        "Vật báu lưu truyền qua nhiều thế hệ"
+      ]
+    },
+    {
+      "title": "Trợ lý kể chuyện thông minh",
+      "subtitle": "Để lời thương không còn khó nói",
+      "description": "Khi quét QR, cha mẹ không chỉ thu âm mà còn nhận được các 'Gợi ý kể chuyện'. Chúng tôi thiết kế sẵn các kịch bản dẫn dắt giúp những người cha, người mẹ vốn ít bày tỏ tình cảm có thể mở lòng một cách tự nhiên nhất.",
+      "features": [
+        "Gợi ý cách bắt đầu câu chuyện 'phá băng'",
+        "Câu hỏi phụ dẫn dắt cảm xúc đi sâu hơn",
+        "Giao diện chạm-để-nói tối giản",
+        "Lọc nhiễu âm thanh AI trực tiếp trên trình duyệt"
+      ]
+    },
+    {
+      "title": "Bảo tàng số vĩnh cửu",
+      "subtitle": "Tài sản lớn nhất bạn từng sở hữu",
+      "description": "Nơi bạn đóng vai trò 'Người giám tuyển'. Sắp xếp, biên tập và lưu trữ những mảnh ghép cuộc đời cha mẹ thành một dòng thời gian sống động.",
+      "features": [
+        "Dòng thời gian do bạn tự tay tùy chỉnh",
+        "AI chuyển giọng nói thành hồi ký văn bản",
+        "Phục dựng ảnh cũ thành video cảm xúc",
+        "Chế độ chia sẻ cho thế hệ tương lai"
+      ]
+    }
+  ]
+}

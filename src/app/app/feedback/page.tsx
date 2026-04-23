@@ -15,7 +15,7 @@ import {
   Bell,
 } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useTranslations } from 'next-intl'
 
 // Hardcoded for now — replace with session.user.id when auth wired to UI
 const MOCK_USER_ID = 'demo-user'
@@ -437,7 +437,7 @@ function FeedbackCardItem({
   item: FeedbackItem
   delay: number
 }) {
-  const { t } = useI18n()
+  const t = useTranslations()
   const [playing, setPlaying] = useState(false)
   const [pct, setPct] = useState(0)
   const [isPlayed, setIsPlayed] = useState(item.isPlayed)
@@ -549,7 +549,7 @@ function FeedbackCardItem({
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function FeedbackPage() {
-  const { t } = useI18n()
+  const t = useTranslations()
   const [unread, setUnread] = useState(0)
   const eventSourceRef = useRef<EventSource | null>(null)
 

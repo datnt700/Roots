@@ -5,7 +5,7 @@ import styled from '@emotion/styled'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Mail } from 'lucide-react'
 import { theme } from '@/lib/theme'
-import { useI18n } from '@/components/i18n-provider'
+import { useMessages } from 'next-intl'
 import { joinWaitlist } from '@/app/action'
 import { initialWaitlistState } from '@/lib/waitlist-action-state'
 
@@ -249,7 +249,7 @@ export function FinalCTASection() {
     joinWaitlist,
     initialWaitlistState,
   )
-  const { messages } = useI18n()
+  const messages = useMessages()
 
   useEffect(() => {
     const observer = new IntersectionObserver(

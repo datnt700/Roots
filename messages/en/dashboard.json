@@ -1,0 +1,27 @@
+{
+  "title": "Your Family Museum",
+  "subtitle": "Every memory saved is a piece of history preserved",
+  "stats": {
+    "memories": "Memories",
+    "hours": "Hours recorded",
+    "parents": "Parents",
+    "albums": "Albums"
+  },
+  "recentMemories": "Recent Memories",
+  "noMemories": "No memories yet",
+  "startRecording": "Start Your First Recording",
+  "continueJourney": "Continue the Journey",
+  "parentCard": {
+    "lastRecorded": "Last recorded",
+    "recordings": "recordings",
+    "viewAll": "View all"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "newRecording": "New Recording",
+    "openStudio": "Open Studio",
+    "viewTimeline": "View Timeline",
+    "seeFeedback": "See Feedback"
+  },
+  "pendingFeedback": "responses waiting"
+}

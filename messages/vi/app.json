@@ -1,0 +1,18 @@
+{
+  "nav": {
+    "dashboard": "Trang chủ",
+    "record": "Ghi âm",
+    "studio": "Studio",
+    "timeline": "Dòng thời gian",
+    "feedback": "Phản hồi",
+    "parents": "Gia đình"
+  },
+  "sidebar": {
+    "parents": "Cha mẹ của tôi",
+    "addParent": "Thêm người thân",
+    "settings": "Cài đặt",
+    "logout": "Đăng xuất"
+  },
+  "greeting": "Chào buổi",
+  "greetingName": "Chào mừng trở lại"
+}

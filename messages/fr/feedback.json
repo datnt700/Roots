@@ -1,0 +1,14 @@
+{
+  "title": "Retours Familiaux",
+  "subtitle": "Écoutez ce que votre famille a dit en réponse à vos enregistrements",
+  "fromParent": "De",
+  "listenAgain": "Réécouter",
+  "yourResponse": "Votre réponse",
+  "recordResponse": "Enregistrer une réponse",
+  "writeResponse": "Écrire une réponse",
+  "sendResponse": "Envoyer",
+  "markPlayed": "Marquer comme écouté",
+  "played": "Écouté",
+  "noFeedback": "Aucun retour pour l'instant. Partagez un souvenir !",
+  "respondedAt": "Répondu le"
+}

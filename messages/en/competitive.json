@@ -1,0 +1,31 @@
+{
+  "sectionLabel": "Your Choice",
+  "sectionTitle": "Store Trash or Preserve a Legacy?",
+  "sectionDescription": "We don't create instant messages. We create memories that live forever.",
+  "rootsTitle": "ROOTS",
+  "rootsSubtitle": "Heritage Preserver",
+  "othersTitle": "Communication Apps",
+  "othersSubtitle": "Raw Data Storage",
+  "comparisons": [
+    { "feature": "Core Value", "roots": "Empathy & Deep Connection", "others": "Convenience & Speed" },
+    { "feature": "Outcome", "roots": "A vivid, living memoir", "others": "Messy, easily lost chat logs" },
+    { "feature": "Guidance", "roots": "Scripts to help parents 'open up'", "others": "Waiting for random interactions" },
+    { "feature": "Access", "roots": "Scan QR, use instantly on Web", "others": "Mandatory App install & login" },
+    { "feature": "Physical Element", "roots": "Physical album as a 'trigger'", "others": "Superficial digital presence only" },
+    { "feature": "AI Features", "roots": "Elevate and preserve the legacy", "others": "Entertainment content suggestions" }
+  ],
+  "advantages": [
+    {
+      "title": "Depth Above All",
+      "description": "While other apps optimize for convenience, we optimize for enduring spiritual values."
+    },
+    {
+      "title": "Understanding Vietnamese Cultural Nuances",
+      "description": "We know Vietnamese parents often find it hard to express love. Roots acts as the 'narrator' to bridge the two generations."
+    },
+    {
+      "title": "Sacred Privacy",
+      "description": "Your family's emotional data is unique. We commit to never commercializing or analyzing your personal stories."
+    }
+  ]
+}

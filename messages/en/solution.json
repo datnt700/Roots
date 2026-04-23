@@ -1,0 +1,40 @@
+{
+  "sectionLabel": "Be Proactive",
+  "sectionTitle": "ROOTS: A Shield Against Forgetting",
+  "sectionDescription": "Don't wait for your parents to tell their stories; be the one who asks. A Phygital journey to help you build your family legacy from afar.",
+  "steps": [
+    {
+      "title": "The 'Memory Unlocker' Album",
+      "subtitle": "A filial gift from afar",
+      "description": "You ship home a premium physical album. Each page is a space for parents to place old photos and a unique QR code identity, removing all technological barriers.",
+      "features": [
+        "Elegant design evoking nostalgia",
+        "In-depth suggestive question system",
+        "Easy to use for the elderly",
+        "A treasure to pass down through generations"
+      ]
+    },
+    {
+      "title": "Intelligent Storytelling Assistant",
+      "subtitle": "So words of love are easier to say",
+      "description": "When scanning the QR, parents don't just record; they receive 'Storytelling Guides'. We design guided scripts to help even the most reserved parents open up naturally.",
+      "features": [
+        "Conversation starters to 'break the ice'",
+        "Follow-up questions to deepen emotions",
+        "Minimalist touch-to-talk interface",
+        "AI noise cancellation directly in the browser"
+      ]
+    },
+    {
+      "title": "Eternal Digital Museum",
+      "subtitle": "The greatest asset you will ever own",
+      "description": "You play the role of 'Curator'. Organize, edit, and store the life fragments of your parents into a vivid, living timeline.",
+      "features": [
+        "Fully customizable timeline by you",
+        "AI transcribes voice into written memoirs",
+        "Restoration of old photos into emotional videos",
+        "Sharing mode for future generations"
+      ]
+    }
+  ]
+}

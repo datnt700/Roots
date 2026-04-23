@@ -1,0 +1,24 @@
+{
+  "sectionLabel": "La Réalité Cruelle",
+  "sectionTitle": "Le Calcul Déchirant des Expatriés",
+  "sectionDescription": "Avez-vous déjà osé calculer combien de chances il vous reste réellement pour comprendre vos parents avant qu'il ne soit trop tard ?",
+  "cards": [
+    {
+      "title": "Le Chiffre Fini 20",
+      "description": "Si vous rentrez une fois par an, il ne vous reste peut-être que 20 repas à partager avec vos parents. Chaque année qui passe est une opportunité perdue à jamais.",
+      "quote": "J'ai été choqué de réaliser qu'il me restait moins de 30 jours de temps réel avec mes parents pour le reste de leur vie."
+    },
+    {
+      "title": "La Peur de 'l'Étranger Familier'",
+      "description": "Les messages Zalo arrivent, les appels FaceTime se connectent, mais vous perdez peu à peu le fil de ce que vos parents pensent vraiment. Vous les perdez alors qu'ils sont encore là.",
+      "quote": "Le plus effrayant, c'est de rentrer à la maison et de réaliser que j'ai manqué tout un chapitre vital de la vie de ma mère."
+    },
+    {
+      "title": "L'Écho Vide",
+      "description": "Les applications de messagerie ne sont que des outils de communication rapide, pas des coffres aux trésors. Un jour, vous rêverez d'entendre à nouveau un conseil, mais il n'y aura que le silence.",
+      "quote": "Faire défiler de vieux SMS n'est pas la même chose que d'entendre la chaleur dans la voix de mon père."
+    }
+  ],
+  "emotionalQuote": "Notre plus grande erreur est de penser que nous avons encore beaucoup de temps.",
+  "emotionalAttribution": "Philosophie de Vie"
+}
