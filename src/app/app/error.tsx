@@ -2,7 +2,6 @@
 
 // app/app/error.tsx — Error boundary for the /app/* student section
 import { useEffect } from 'react'
-import { logger } from '@/lib/logger'
 import { StatusPage } from '@/components/status-page'
 
 export default function AppError({
@@ -13,9 +12,12 @@ export default function AppError({
   reset: () => void
 }) {
   useEffect(() => {
-    logger.error('app-section-error', error.message ?? 'Unhandled error in /app', {
-      digest: error.digest,
-    }, error)
+    console.error(
+      '[app-section-error]',
+      error.message,
+      { digest: error.digest },
+      error,
+    )
   }, [error])
 
   return (

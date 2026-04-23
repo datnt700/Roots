@@ -38,9 +38,13 @@ function systemPrompt(
   studentName: string,
   relationship: string,
   photoDescription?: string,
+  slotPrompt?: string,
 ): string {
   const photoCtx = photoDescription
     ? `\n\nBối cảnh: ${parentName} đã chia sẻ một tấm ảnh — "${photoDescription}". Hãy tham chiếu tự nhiên đến tấm ảnh này khi phù hợp.`
+    : ''
+  const topicCtx = slotPrompt
+    ? `\n\nChủ đề ${studentName} muốn khám phá: "${slotPrompt}". Hãy dẫn dắt câu chuyện xoay quanh chủ đề này một cách tự nhiên.`
     : ''
   return `Bạn là Roots — người bạn nhỏ mà ${studentName} gửi về để cùng ${parentName} lưu lại những câu chuyện quý giá của gia đình mình.
 
@@ -56,7 +60,7 @@ Quy tắc bắt buộc:
 - Luôn dùng "dạ", "ạ"
 - Tối đa 3 câu ngắn gọn. Giọng ấm áp như gọi điện tâm tình, không phải phỏng vấn
 - TUYỆT ĐỐI không đề cập "AI", "robot", "ứng dụng", "phần mềm", "hệ thống", "Roots"
-- Chỉ trả về lời thoại thuần — không markdown, không ngoặc, không stage direction${photoCtx}`
+- Chỉ trả về lời thoại thuần — không markdown, không ngoặc, không stage direction${topicCtx}${photoCtx}`
 }
 
 export async function POST(request: Request) {
@@ -69,7 +73,8 @@ export async function POST(request: Request) {
     const turnsJson = (formData.get('turns') as string) || '[]'
     const audio = formData.get('audio') as File | null
     const photo = formData.get('photo') as File | null
-    const photoDescription = (formData.get('photoDescription') as string) || undefined
+    const photoDescription =
+      (formData.get('photoDescription') as string) || undefined
 
     if (!token || !parentName || !studentName) {
       logger.warn('dialogue', 'POST called with missing required fields')
@@ -79,28 +84,33 @@ export async function POST(request: Request) {
       )
     }
 
-    // 1. Validate QR token
+    // 1. Validate QR token → MemorySlot
     const tokenHash = hashToken(token)
-    const session = await db.parentSession.findUnique({ where: { tokenHash } })
-    if (!session || session.expiresAt < new Date()) {
-      logger.warn('dialogue', 'Invalid or expired QR token')
-      return NextResponse.json(
-        { error: 'Invalid or expired QR token' },
-        { status: 401 },
-      )
+    const slot = await db.memorySlot.findUnique({ where: { tokenHash } })
+    if (!slot) {
+      logger.warn('dialogue', 'Invalid QR token')
+      return NextResponse.json({ error: 'Invalid QR token' }, { status: 401 })
     }
 
     const turns: Turn[] = JSON.parse(turnsJson)
+    // Slot prompt set by student — drives AI opening question
+    const slotPrompt = slot.prompt?.trim() || ''
 
     // 2. Greeting turn — no audio + no history → personalized opening (Vision if photo provided)
     if (!audio && turns.length === 0) {
-      const staticGreeting = `Dạ chào ${parentName} ạ! Con là Roots — người bạn nhỏ mà ${studentName} nhờ ở đây để lắng nghe và lưu lại những câu chuyện quý giá của gia đình mình. ${studentName} ở xa nhưng lúc nào cũng nhớ đến những câu chuyện của ${parentName}. ${parentName} có thể kể cho con nghe — trong cuộc đời của ${parentName}, có kỷ niệm nào mà bác hay nhớ đến nhất không ạ?`
+      const openingQuestion = slotPrompt
+        ? `${studentName} muốn nghe ${parentName} kể về: "${slotPrompt}". ${parentName} có thể chia sẻ với con không ạ?`
+        : `trong cuộc đời của ${parentName}, có kỷ niệm nào mà ${parentName} hay nhớ đến nhất không ạ?`
+      const staticGreeting = `Dạ chào ${parentName} ạ! Con là Roots — người bạn nhỏ mà ${studentName} nhờ ở đây để lắng nghe và lưu lại những câu chuyện quý giá của gia đình mình. ${studentName} ở xa nhưng lúc nào cũng nhớ đến những câu chuyện của ${parentName}. ${parentName} ơi, ${openingQuestion}`
       if (photo && photo.size > 0 && process.env.OPENAI_API_KEY) {
         try {
           const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
           const photoBuffer = await photo.arrayBuffer()
           const photoBase64 = Buffer.from(photoBuffer).toString('base64')
           const mimeType = photo.type || 'image/jpeg'
+          const promptContext = slotPrompt
+            ? `\n\nChủ đề ${studentName} muốn nghe: "${slotPrompt}". Nếu ảnh liên quan đến chủ đề này, hãy kết nối tự nhiên.`
+            : ''
           const visionResult = await openai.chat.completions.create({
             model: 'gpt-4o',
             messages: [
@@ -109,11 +119,14 @@ export async function POST(request: Request) {
                 content: [
                   {
                     type: 'image_url',
-                    image_url: { url: `data:${mimeType};base64,${photoBase64}`, detail: 'low' },
+                    image_url: {
+                      url: `data:${mimeType};base64,${photoBase64}`,
+                      detail: 'low',
+                    },
                   },
                   {
                     type: 'text',
-                    text: `Bạn là Roots — người bạn nhỏ mà ${studentName} gửi về để giúp ${parentName} (${relationship} của ${studentName}) kể lại kỷ niệm gia đình.\n\n${parentName} vừa chia sẻ một tấm ảnh. Hãy làm 2 việc và trả về JSON:\n1. Mô tả ngắn tấm ảnh trong 1 câu tiếng Việt (field "photoDescription")\n2. Tạo lời chào mở đầu (3-4 câu) theo kịch bản (field "greeting"):\n   - Giới thiệu bản thân là Roots, người bạn nhỏ mà ${studentName} gửi về\n   - Nhắc ${parentName} rằng ${studentName} ở xa nhưng rất trân trọng từng câu chuyện\n   - Nhận xét tự nhiên ấm áp về tấm ảnh ("Con thấy trong ảnh...")\n   - Hỏi mở: "${parentName} có thể kể cho con nghe — tấm ảnh này gắn với kỷ niệm gì vậy ạ?"\n   - Xưng "con", gọi "${parentName}", luôn dùng "dạ/ạ", giọng như đứa cháu nhỏ lễ phép`,
+                    text: `Bạn là Roots — người bạn nhỏ mà ${studentName} gửi về để giúp ${parentName} (${relationship} của ${studentName}) kể lại kỷ niệm gia đình.${promptContext}\n\n${parentName} vừa chia sẻ một tấm ảnh. Hãy làm 2 việc và trả về JSON:\n1. Mô tả ngắn tấm ảnh trong 1 câu tiếng Việt (field "photoDescription")\n2. Tạo lời chào mở đầu (3-4 câu) theo kịch bản (field "greeting"):\n   - Giới thiệu bản thân là Roots, người bạn nhỏ mà ${studentName} gửi về\n   - Nhắc ${parentName} rằng ${studentName} ở xa nhưng rất trân trọng từng câu chuyện\n   - Nhận xét tự nhiên ấm áp về tấm ảnh ("Con thấy trong ảnh...")\n   ${slotPrompt ? `- Hỏi về chủ đề: "${slotPrompt}"` : `- Hỏi mở: "${parentName} có thể kể cho con nghe — tấm ảnh này gắn với kỷ niệm gì vậy ạ?"`}\n   - Xưng "con", gọi "${parentName}", luôn dùng "dạ/ạ", giọng như đứa cháu nhỏ lễ phép`,
                   },
                 ],
               },
@@ -121,18 +134,25 @@ export async function POST(request: Request) {
             max_tokens: 400,
             response_format: { type: 'json_object' },
           })
-          const parsed = JSON.parse(visionResult.choices[0].message.content ?? '{}') as {
+          const parsed = JSON.parse(
+            visionResult.choices[0].message.content ?? '{}',
+          ) as {
             photoDescription?: string
             greeting?: string
           }
-          logger.info('dialogue', 'Vision greeting generated', { hasDescription: !!parsed.photoDescription })
+          logger.info('dialogue', 'Vision greeting generated', {
+            hasDescription: !!parsed.photoDescription,
+          })
           return NextResponse.json({
             aiMessage: parsed.greeting ?? staticGreeting,
             isComplete: false,
             photoDescription: parsed.photoDescription,
           })
         } catch (visionErr) {
-          logger.warn('dialogue', 'GPT Vision failed — falling back to static greeting')
+          logger.warn(
+            'dialogue',
+            'GPT Vision failed — falling back to static greeting',
+          )
           // Vision failed — fall through to static greeting
         }
       }
@@ -164,7 +184,9 @@ export async function POST(request: Request) {
           ? transcription
           : (transcription as { text: string }).text
       transcript = raw.trim()
-      logger.debug('dialogue', 'Whisper transcription complete', { chars: transcript.length })
+      logger.debug('dialogue', 'Whisper transcription complete', {
+        chars: transcript.length,
+      })
     }
 
     // 4. Count parent turns to know if this is the last one
@@ -174,7 +196,16 @@ export async function POST(request: Request) {
 
     // 5. Build GPT-4o message history
     const messages: OpenAI.Chat.ChatCompletionMessageParam[] = [
-      { role: 'system', content: systemPrompt(parentName, studentName, relationship, photoDescription) },
+      {
+        role: 'system',
+        content: systemPrompt(
+          parentName,
+          studentName,
+          relationship,
+          photoDescription,
+          slotPrompt,
+        ),
+      },
     ]
 
     for (const turn of turns) {
@@ -208,7 +239,12 @@ export async function POST(request: Request) {
       completion.choices[0].message.content?.trim() ??
       `Dạ, con cảm ơn ${parentName} ạ!`
 
-    logger.info('dialogue', 'GPT-4o response generated', { parentTurnCount, isComplete, hasTranscript: !!transcript, aiChars: aiMessage.length })
+    logger.info('dialogue', 'GPT-4o response generated', {
+      parentTurnCount,
+      isComplete,
+      hasTranscript: !!transcript,
+      aiChars: aiMessage.length,
+    })
     return NextResponse.json({ transcript, aiMessage, isComplete })
   } catch (err) {
     logger.error('dialogue', 'Dialogue pipeline failed', {}, err)

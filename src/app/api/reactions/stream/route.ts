@@ -25,18 +25,18 @@ export async function GET(request: Request) {
 
   const tokenHash = hashToken(rawToken)
 
-  // Resolve parentId once at connection time
-  const session = await db.parentSession.findUnique({
+  // Resolve parentId once at connection time via MemorySlot
+  const slot = await db.memorySlot.findUnique({
     where: { tokenHash },
     select: { parentId: true },
   })
 
-  if (!session) {
+  if (!slot) {
     logger.warn('reactions/stream', 'Token not found for SSE connection')
     return NextResponse.json({ error: 'Invalid token' }, { status: 404 })
   }
 
-  const { parentId } = session
+  const { parentId } = slot
   logger.info('reactions/stream', 'SSE connection opened', { parentId })
   let lastSeen = new Date()
 
@@ -70,7 +70,10 @@ export async function GET(request: Request) {
 
           if (reactions.length > 0) {
             lastSeen = reactions[reactions.length - 1].createdAt
-            logger.debug('reactions/stream', 'Emitting reaction event', { parentId, count: reactions.length })
+            logger.debug('reactions/stream', 'Emitting reaction event', {
+              parentId,
+              count: reactions.length,
+            })
             emit('reaction', { count: reactions.length, type: 'heart' })
           }
         } catch {

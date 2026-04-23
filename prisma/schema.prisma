@@ -50,7 +50,7 @@ model User {
   parents   Parent[]
   memories  Memory[]
   feedbacks Feedback[]
-  albums    Album[]
+  slots     MemorySlot[]
 
   @@map("users")
 }
@@ -88,23 +88,38 @@ model Parent {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  sessions ParentSession[]
+  sessions MemorySlot[]
   memories Memory[]
 
   @@map("parents")
 }
 
-/// Time-limited session created when a QR code is scanned.
-model ParentSession {
-  id        String   @id @default(cuid())
-  parentId  String
-  parent    Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
-  /// [HASHED] SHA-256 of the raw QR token — raw token is never stored.
-  tokenHash String   @unique
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+/// A persistent QR-linked memory slot: one page in the physical album.
+/// The token is reusable — student can update the prompt at any time.
+/// 1 slot = 1 physical album page = 1 QR sticker.
+model MemorySlot {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentId     String
+  parent       Parent   @relation(fields: [parentId], references: [id], onDelete: Cascade)
+  /// Album page number (1-based). Unique per user for ordering.
+  pageNumber   Int
+  /// Short title for the slot, e.g. "Ngày đầu đi làm".
+  title        String   @default("")
+  /// The question/prompt the student sets. AI uses this to open the conversation.
+  prompt       String   @default("")
+  /// [HASHED] SHA-256 of raw QR token — raw token never stored.
+  tokenHash    String   @unique
+  /// Cover photo S3 key (set by student, shown in album grid). [ENCRYPTED]
+  coverPhotoKey String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  @@map("parent_sessions")
+  memories Memory[]
+
+  @@unique([userId, pageNumber])
+  @@map("memory_slots")
 }
 
 /// Core content unit: one recording session (photo + voice) from a parent.
@@ -114,6 +129,9 @@ model Memory {
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   parentId    String?
   parent      Parent?   @relation(fields: [parentId], references: [id])
+  /// The album slot this memory belongs to.
+  slotId      String?
+  slot        MemorySlot? @relation(fields: [slotId], references: [id])
 
   /// [ENCRYPTED] S3 object key for the voice recording (biometric-adjacent).
   audioKey    String?
@@ -216,17 +234,5 @@ model Reaction {
   @@map("reactions")
 }
 
-/// Tracks which pages of a physical album have been digitised.
-model Album {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  name      String
-  /// Array of { page: number, hasData: boolean, memoryId?: string }
-  pages     Json     @default("[]")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  @@map("albums")
-}
 

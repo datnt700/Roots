@@ -4,7 +4,15 @@ import { useState, useRef, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
-import { Camera, X, Mic, Square, Loader2, Send, ChevronRight } from 'lucide-react'
+import {
+  Camera,
+  X,
+  Mic,
+  Square,
+  Loader2,
+  Send,
+  ChevronRight,
+} from 'lucide-react'
 import { theme } from '@/lib/theme'
 
 // â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -23,18 +31,23 @@ type Phase =
 type Turn = { role: 'ai' | 'parent'; text: string }
 
 interface SessionData {
+  slotId: string
   parentId: string
   userId: string
   parentName: string
   studentName: string
   relationship: string
   locale: string
+  prompt: string
+  pageNumber: number
 }
 
 // â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function fmtTimer(sec: number) {
-  return `${Math.floor(sec / 60).toString().padStart(2, '0')}:${(sec % 60).toString().padStart(2, '0')}`
+  return `${Math.floor(sec / 60)
+    .toString()
+    .padStart(2, '0')}:${(sec % 60).toString().padStart(2, '0')}`
 }
 
 function getSupportedMimeType() {
@@ -54,7 +67,12 @@ async function callDialogue(
   audio?: Blob,
   photo?: File,
   photoDescription?: string,
-): Promise<{ transcript?: string; aiMessage: string; isComplete: boolean; photoDescription?: string }> {
+): Promise<{
+  transcript?: string
+  aiMessage: string
+  isComplete: boolean
+  photoDescription?: string
+}> {
   const fd = new FormData()
   fd.append('token', token)
   fd.append('parentName', session.parentName)
@@ -357,7 +375,8 @@ const SendBtn = styled('button', {
   fontSize: '1.0625rem',
   fontWeight: 700,
   fontFamily: theme.fonts.sans,
-  boxShadow: '0 6px 0 oklch(0.42 0.1 155), 0 10px 20px oklch(0.55 0.1 155 / 0.25)',
+  boxShadow:
+    '0 6px 0 oklch(0.42 0.1 155), 0 10px 20px oklch(0.55 0.1 155 / 0.25)',
   '& svg': { width: '1.125rem', height: '1.125rem' },
 }))
 
@@ -477,7 +496,8 @@ const StartBtn = styled.button({
   fontSize: '1.0625rem',
   fontWeight: 700,
   fontFamily: theme.fonts.sans,
-  boxShadow: '0 8px 0 oklch(0.42 0.1 155), 0 14px 30px oklch(0.55 0.1 155 / 0.3)',
+  boxShadow:
+    '0 8px 0 oklch(0.42 0.1 155), 0 14px 30px oklch(0.55 0.1 155 / 0.3)',
   animation: `${breathe} 3s ease infinite`,
   '& svg': { width: '1.125rem', height: '1.125rem' },
 })
@@ -538,9 +558,15 @@ export default function ParentRecordPage() {
   const photoDescriptionRef = useRef<string | null>(null)
 
   // Keep refs in sync
-  useEffect(() => { turnsRef.current = turns }, [turns])
-  useEffect(() => { sessionRef.current = session }, [session])
-  useEffect(() => { photoDescriptionRef.current = photoDescription }, [photoDescription])
+  useEffect(() => {
+    turnsRef.current = turns
+  }, [turns])
+  useEffect(() => {
+    sessionRef.current = session
+  }, [session])
+  useEffect(() => {
+    photoDescriptionRef.current = photoDescription
+  }, [photoDescription])
 
   // Auto-scroll chat
   useEffect(() => {
@@ -554,17 +580,20 @@ export default function ParentRecordPage() {
     } else {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
   }, [phase])
 
-  // Fetch session on mount â†’ show welcome screen
+  // Fetch slot on mount → show welcome screen
   useEffect(() => {
     async function fetchSession() {
       try {
-        const res = await fetch(
-          `/api/parent-sessions?token=${encodeURIComponent(token)}`,
-        )
-        if (!res.ok) { setPhase('error'); return }
+        const res = await fetch(`/api/slots?token=${encodeURIComponent(token)}`)
+        if (!res.ok) {
+          setPhase('error')
+          return
+        }
         const data: SessionData = await res.json()
         setSession(data)
         sessionRef.current = data
@@ -582,7 +611,13 @@ export default function ParentRecordPage() {
     if (!sess) return
     setPhase('greeting')
     try {
-      const result = await callDialogue(token, sess, [], undefined, photoFile ?? undefined)
+      const result = await callDialogue(
+        token,
+        sess,
+        [],
+        undefined,
+        photoFile ?? undefined,
+      )
       const t: Turn = { role: 'ai', text: result.aiMessage }
       setTurns([t])
       turnsRef.current = [t]
@@ -606,7 +641,9 @@ export default function ParentRecordPage() {
       const mimeType = getSupportedMimeType()
       const mr = new MediaRecorder(stream, mimeType ? { mimeType } : undefined)
       chunksRef.current = []
-      mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data) }
+      mr.ondataavailable = (e) => {
+        if (e.data.size > 0) chunksRef.current.push(e.data)
+      }
       mr.start(200)
       mediaRecorderRef.current = mr
       setTimer(0)
@@ -624,7 +661,9 @@ export default function ParentRecordPage() {
 
     mr.onstop = async () => {
       mr.stream.getTracks().forEach((t) => t.stop())
-      const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'audio/webm' })
+      const blob = new Blob(chunksRef.current, {
+        type: mr.mimeType || 'audio/webm',
+      })
       audioBlobsRef.current.push(blob)
 
       const sess = sessionRef.current!
@@ -682,7 +721,7 @@ export default function ParentRecordPage() {
         fd.append('audio', last, `recording.${ext}`)
       }
       if (photoFile) fd.append('photo', photoFile, photoFile.name)
-      await fetch('/api/parent-sessions/save', { method: 'POST', body: fd })
+      await fetch('/api/slots/save', { method: 'POST', body: fd })
       router.push(`/parent/${token}/done`)
     } catch {
       setFlashError('Gửi không thành công. Vui lòng thử lại.')
@@ -699,17 +738,37 @@ export default function ParentRecordPage() {
   }
 
   const parentTurnCount = turns.filter((t) => t.role === 'parent').length
-  const inConversation = ['idle', 'recording', 'processing', 'summary', 'submitting'].includes(phase)
+  const inConversation = [
+    'idle',
+    'recording',
+    'processing',
+    'summary',
+    'submitting',
+  ].includes(phase)
 
   // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   return (
     <Wrap>
-      <input ref={fileRef} type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handlePhotoChange} />
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        capture="environment"
+        style={{ display: 'none' }}
+        onChange={handlePhotoChange}
+      />
       {/* Loading */}
       {phase === 'loading' && (
         <Center>
-          <Loader2 style={{ width: '2.5rem', height: '2.5rem', color: theme.colors.primary, animation: `${spin} 1s linear infinite` }} />
+          <Loader2
+            style={{
+              width: '2.5rem',
+              height: '2.5rem',
+              color: theme.colors.primary,
+              animation: `${spin} 1s linear infinite`,
+            }}
+          />
           <StatusText>Äang káº¿t ná»‘i...</StatusText>
         </Center>
       )}
@@ -718,7 +777,11 @@ export default function ParentRecordPage() {
       {phase === 'error' && (
         <Center>
           <span style={{ fontSize: '3rem' }}>ðŸ˜”</span>
-          <ErrorTitle>MÃ£ QR khÃ´ng há»£p lá»‡<br />hoáº·c Ä‘Ã£ háº¿t háº¡n</ErrorTitle>
+          <ErrorTitle>
+            MÃ£ QR khÃ´ng há»£p lá»‡
+            <br />
+            hoáº·c Ä‘Ã£ háº¿t háº¡n
+          </ErrorTitle>
           <ErrorHint>Vui lÃ²ng xin mÃ£ QR má»›i tá»« ngÆ°á»i thÃ¢n.</ErrorHint>
         </Center>
       )}
@@ -726,24 +789,39 @@ export default function ParentRecordPage() {
       {/* Welcome */}
       {phase === 'welcome' && session && (
         <>
-          <TopBar><Logo>Gá»C</Logo></TopBar>
+          <TopBar>
+            <Logo>Gá»C</Logo>
+          </TopBar>
           <WelcomeWrap>
             <WelcomeEmoji>ðŸŒ¿</WelcomeEmoji>
             <WelcomeTitle>
               ChÃ o <em>{session.parentName}</em>!
             </WelcomeTitle>
             <WelcomeSubtitle>
-              {session.studentName} muá»‘n lÆ°u giá»¯ tiáº¿ng nÃ³i vÃ  cÃ¢u chuyá»‡n cá»§a{' '}
-              {session.relationship} Ä‘á»ƒ cÃ³ thá»ƒ nghe láº¡i mÃ£i mÃ£i.
-              <br /><br />
-              Con sáº½ trÃ² chuyá»‡n cÃ¹ng {session.parentName} â€” cá»© tá»± nhiÃªn nhÆ° Ä‘ang gá»i Ä‘iá»‡n nhÃ©!
+              {session.studentName} muá»‘n lÆ°u giá»¯ tiáº¿ng nÃ³i vÃ  cÃ¢u
+              chuyá»‡n cá»§a {session.relationship} Ä‘á»ƒ cÃ³ thá»ƒ nghe láº¡i
+              mÃ£i mÃ£i.
+              <br />
+              <br />
+              Con sáº½ trÃ² chuyá»‡n cÃ¹ng {session.parentName} â€” cá»© tá»±
+              nhiÃªn nhÆ° Ä‘ang gá»i Ä‘iá»‡n nhÃ©!
             </WelcomeSubtitle>
             {/* Optional photo — analyzed by AI Vision on greeting */}
-            <PhotoRow style={{ justifyContent: 'center', marginBottom: theme.spacing[4] }}>
+            <PhotoRow
+              style={{
+                justifyContent: 'center',
+                marginBottom: theme.spacing[4],
+              }}
+            >
               {photoUrl ? (
                 <PhotoWrap>
                   <PhotoThumb src={photoUrl} alt="Ảnh" />
-                  <RemovePhotoBtn onClick={() => { setPhotoUrl(null); setPhotoFile(null) }}>
+                  <RemovePhotoBtn
+                    onClick={() => {
+                      setPhotoUrl(null)
+                      setPhotoFile(null)
+                    }}
+                  >
                     <X />
                   </RemovePhotoBtn>
                 </PhotoWrap>
@@ -764,9 +842,18 @@ export default function ParentRecordPage() {
       {/* Greeting: fetching first AI message */}
       {phase === 'greeting' && (
         <>
-          <TopBar><Logo>Gá»C</Logo></TopBar>
+          <TopBar>
+            <Logo>Gá»C</Logo>
+          </TopBar>
           <Center>
-            <Loader2 style={{ width: '2rem', height: '2rem', color: theme.colors.primary, animation: `${spin} 1s linear infinite` }} />
+            <Loader2
+              style={{
+                width: '2rem',
+                height: '2rem',
+                color: theme.colors.primary,
+                animation: `${spin} 1s linear infinite`,
+              }}
+            />
             <StatusText>Äang chuáº©n bá»‹...</StatusText>
           </Center>
         </>
@@ -777,7 +864,9 @@ export default function ParentRecordPage() {
         <>
           <TopBar>
             <Logo>Gá»C</Logo>
-            {parentTurnCount > 0 && <TurnBadge>LÆ°á»£t {parentTurnCount}</TurnBadge>}
+            {parentTurnCount > 0 && (
+              <TurnBadge>LÆ°á»£t {parentTurnCount}</TurnBadge>
+            )}
           </TopBar>
 
           <ChatArea>
@@ -789,7 +878,9 @@ export default function ParentRecordPage() {
                 </AiBubbleRow>
               ) : (
                 <ParentBubbleRow key={i}>
-                  <ParentBubble>ðŸŽ™ {turn.text || '[ÄÃ£ ghi Ã¢m]'}</ParentBubble>
+                  <ParentBubble>
+                    ðŸŽ™ {turn.text || '[ÄÃ£ ghi Ã¢m]'}
+                  </ParentBubble>
                 </ParentBubbleRow>
               ),
             )}
@@ -798,7 +889,14 @@ export default function ParentRecordPage() {
               <AiBubbleRow>
                 <BubbleAvatar>ðŸŒ¿</BubbleAvatar>
                 <AiBubble style={{ color: 'oklch(0.6 0.06 155)' }}>
-                  <Loader2 style={{ width: '1rem', height: '1rem', animation: `${spin} 1s linear infinite`, verticalAlign: 'middle' }} />{' '}
+                  <Loader2
+                    style={{
+                      width: '1rem',
+                      height: '1rem',
+                      animation: `${spin} 1s linear infinite`,
+                      verticalAlign: 'middle',
+                    }}
+                  />{' '}
                   Äang suy nghÄ©...
                 </AiBubble>
               </AiBubbleRow>
@@ -810,7 +908,13 @@ export default function ParentRecordPage() {
           <ControlArea>
             {/* Error flash */}
             {flashError && (
-              <StatusText style={{ color: 'oklch(0.52 0.16 25)', fontSize: '0.8125rem', marginBottom: theme.spacing[2] }}>
+              <StatusText
+                style={{
+                  color: 'oklch(0.52 0.16 25)',
+                  fontSize: '0.8125rem',
+                  marginBottom: theme.spacing[2],
+                }}
+              >
                 ⚠️ {flashError}
               </StatusText>
             )}
@@ -820,7 +924,12 @@ export default function ParentRecordPage() {
                   {photoUrl ? (
                     <PhotoWrap>
                       <PhotoThumb src={photoUrl} alt="áº¢nh" />
-                      <RemovePhotoBtn onClick={() => { setPhotoUrl(null); setPhotoFile(null) }}>
+                      <RemovePhotoBtn
+                        onClick={() => {
+                          setPhotoUrl(null)
+                          setPhotoFile(null)
+                        }}
+                      >
                         <X />
                       </RemovePhotoBtn>
                     </PhotoWrap>
@@ -884,7 +993,14 @@ export default function ParentRecordPage() {
             {/* Processing */}
             {phase === 'processing' && (
               <StatusText>
-                <Loader2 style={{ width: '1.25rem', height: '1.25rem', animation: `${spin} 1s linear infinite`, verticalAlign: 'middle' }} />{' '}
+                <Loader2
+                  style={{
+                    width: '1.25rem',
+                    height: '1.25rem',
+                    animation: `${spin} 1s linear infinite`,
+                    verticalAlign: 'middle',
+                  }}
+                />{' '}
                 Äang suy nghÄ©...
               </StatusText>
             )}
@@ -897,9 +1013,16 @@ export default function ParentRecordPage() {
                 disabled={phase === 'submitting'}
               >
                 {phase === 'submitting' ? (
-                  <><Loader2 style={{ animation: `${spin} 1s linear infinite` }} /> Äang gá»­i...</>
+                  <>
+                    <Loader2
+                      style={{ animation: `${spin} 1s linear infinite` }}
+                    />{' '}
+                    Äang gá»­i...
+                  </>
                 ) : (
-                  <><Send /> Gá»­i cho {session.studentName}</>
+                  <>
+                    <Send /> Gá»­i cho {session.studentName}
+                  </>
                 )}
               </SendBtn>
             )}

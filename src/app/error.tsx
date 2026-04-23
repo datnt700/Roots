@@ -3,7 +3,6 @@
 // app/error.tsx — Global error boundary
 // Catches unhandled runtime errors in the root layout tree.
 import { useEffect } from 'react'
-import { logger } from '@/lib/logger'
 import { StatusPage } from '@/components/status-page'
 
 export default function GlobalError({
@@ -14,9 +13,12 @@ export default function GlobalError({
   reset: () => void
 }) {
   useEffect(() => {
-    logger.error('global-error', error.message ?? 'Unhandled client error', {
-      digest: error.digest,
-    }, error)
+    console.error(
+      '[global-error]',
+      error.message,
+      { digest: error.digest },
+      error,
+    )
   }, [error])
 
   return (

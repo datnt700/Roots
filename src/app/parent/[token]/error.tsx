@@ -2,7 +2,6 @@
 
 // app/parent/[token]/error.tsx — Error boundary for the parent QR recording flow
 import { useEffect } from 'react'
-import { logger } from '@/lib/logger'
 import { StatusPage } from '@/components/status-page'
 
 export default function ParentFlowError({
@@ -13,9 +12,12 @@ export default function ParentFlowError({
   reset: () => void
 }) {
   useEffect(() => {
-    logger.error('parent-flow-error', error.message ?? 'Unhandled error in parent flow', {
-      digest: error.digest,
-    }, error)
+    console.error(
+      '[parent-flow-error]',
+      error.message,
+      { digest: error.digest },
+      error,
+    )
   }, [error])
 
   return (
