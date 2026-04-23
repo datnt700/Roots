@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { encrypt, encryptOptional } from '@/lib/crypto'
+import { logger } from '@/lib/logger'
 
 export async function GET(request: Request) {
   try {
@@ -8,6 +9,7 @@ export async function GET(request: Request) {
     const userId = searchParams.get('userId')
 
     if (!userId) {
+      logger.warn('memories', 'GET /memories called without userId')
       return NextResponse.json({ error: 'userId is required' }, { status: 400 })
     }
 
@@ -17,8 +19,10 @@ export async function GET(request: Request) {
       orderBy: { createdAt: 'desc' },
     })
 
+    logger.debug('memories', 'Fetched memories', { userId, count: memories.length })
     return NextResponse.json({ memories })
-  } catch {
+  } catch (err) {
+    logger.error('memories', 'Failed to fetch memories', {}, err)
     return NextResponse.json(
       { error: 'Failed to fetch memories' },
       { status: 500 },
@@ -27,6 +31,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
+  const t0 = Date.now()
   try {
     const body = await request.json()
     const { userId, parentId, prompt, decade, audioKey, photoKey } = body as {
@@ -39,6 +44,7 @@ export async function POST(request: Request) {
     }
 
     if (!userId || !parentId || !prompt) {
+      logger.warn('memories', 'POST /memories missing required fields', { userId, parentId })
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 },
@@ -58,8 +64,10 @@ export async function POST(request: Request) {
       },
     })
 
+    logger.info('memories', 'Memory created', { memoryId: memory.id, userId, parentId, hasAudio: !!audioKey, hasPhoto: !!photoKey, ms: Date.now() - t0 })
     return NextResponse.json({ id: memory.id }, { status: 201 })
-  } catch {
+  } catch (err) {
+    logger.error('memories', 'Failed to create memory', { ms: Date.now() - t0 }, err)
     return NextResponse.json(
       { error: 'Failed to create memory' },
       { status: 500 },

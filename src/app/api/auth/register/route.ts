@@ -6,10 +6,12 @@ import { NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import { db } from '@/lib/db'
 import { encrypt, hashEmail } from '@/lib/crypto'
+import { logger } from '@/lib/logger'
 
 const BCRYPT_ROUNDS = 12
 
 export async function POST(request: Request) {
+  const t0 = Date.now()
   try {
     const body = await request.json()
     const { email, password, name, locale } = body as {
@@ -50,6 +52,7 @@ export async function POST(request: Request) {
     const emailHash = hashEmail(normalised)
     const existing = await db.user.findUnique({ where: { emailHash } })
     if (existing) {
+      logger.warn('auth/register', 'Registration attempt with duplicate email')
       return NextResponse.json(
         { error: 'Email này đã được đăng ký' },
         { status: 409 },
@@ -59,7 +62,7 @@ export async function POST(request: Request) {
     // ── Hash password + encrypt personal fields ───────────────────────────
     const passwordHash = await bcrypt.hash(password, BCRYPT_ROUNDS)
 
-    await db.user.create({
+    const user = await db.user.create({
       data: {
         email: encrypt(normalised),
         emailHash,
@@ -69,8 +72,10 @@ export async function POST(request: Request) {
       },
     })
 
+    logger.info('auth/register', 'New user registered', { userId: user.id, locale: locale ?? 'vi', ms: Date.now() - t0 })
     return NextResponse.json({ ok: true }, { status: 201 })
-  } catch {
+  } catch (err) {
+    logger.error('auth/register', 'Failed to create user account', { ms: Date.now() - t0 }, err)
     return NextResponse.json(
       { error: 'Không thể tạo tài khoản' },
       { status: 500 },

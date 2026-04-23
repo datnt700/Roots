@@ -6,8 +6,10 @@
  */
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { logger } from '@/lib/logger'
 
 export async function POST(request: Request) {
+  const t0 = Date.now()
   try {
     const body = (await request.json()) as {
       memoryId?: string
@@ -16,6 +18,7 @@ export async function POST(request: Request) {
     const { memoryId, userId } = body
 
     if (!memoryId || !userId) {
+      logger.warn('reactions', 'POST /reactions missing fields', { memoryId, userId })
       return NextResponse.json(
         { error: 'memoryId and userId are required' },
         { status: 400 },
@@ -28,6 +31,7 @@ export async function POST(request: Request) {
     })
 
     if (existing) {
+      logger.debug('reactions', 'Duplicate reaction (idempotent)', { memoryId, userId })
       return NextResponse.json({ id: existing.id }, { status: 200 })
     }
 
@@ -35,8 +39,10 @@ export async function POST(request: Request) {
       data: { memoryId, userId },
     })
 
+    logger.info('reactions', 'Heart reaction saved', { reactionId: reaction.id, memoryId, userId, ms: Date.now() - t0 })
     return NextResponse.json({ id: reaction.id }, { status: 201 })
-  } catch {
+  } catch (err) {
+    logger.error('reactions', 'Failed to save reaction', { ms: Date.now() - t0 }, err)
     return NextResponse.json(
       { error: 'Failed to save reaction' },
       { status: 500 },

@@ -1,27 +1,118 @@
-'use client'
+﻿'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
-import { Camera, X, RefreshCw, Send, Mic, Square, Loader2 } from 'lucide-react'
+import { Camera, X, Mic, Square, Loader2, Send, ChevronRight } from 'lucide-react'
 import { theme } from '@/lib/theme'
 
-// ─── Animations ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(1rem); }
+type Phase =
+  | 'loading'
+  | 'error'
+  | 'welcome'
+  | 'greeting'
+  | 'idle'
+  | 'recording'
+  | 'processing'
+  | 'summary'
+  | 'submitting'
+
+type Turn = { role: 'ai' | 'parent'; text: string }
+
+interface SessionData {
+  parentId: string
+  userId: string
+  parentName: string
+  studentName: string
+  relationship: string
+  locale: string
+}
+
+// â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+function fmtTimer(sec: number) {
+  return `${Math.floor(sec / 60).toString().padStart(2, '0')}:${(sec % 60).toString().padStart(2, '0')}`
+}
+
+function getSupportedMimeType() {
+  const types = [
+    'audio/webm;codecs=opus',
+    'audio/mp4',
+    'audio/webm',
+    'audio/ogg',
+  ]
+  return types.find((t) => MediaRecorder.isTypeSupported(t)) ?? ''
+}
+
+async function callDialogue(
+  token: string,
+  session: SessionData,
+  turns: Turn[],
+  audio?: Blob,
+  photo?: File,
+  photoDescription?: string,
+): Promise<{ transcript?: string; aiMessage: string; isComplete: boolean; photoDescription?: string }> {
+  const fd = new FormData()
+  fd.append('token', token)
+  fd.append('parentName', session.parentName)
+  fd.append('studentName', session.studentName)
+  fd.append('relationship', session.relationship)
+  fd.append('turns', JSON.stringify(turns))
+  if (audio) {
+    const ext = audio.type.includes('mp4')
+      ? 'mp4'
+      : audio.type.includes('ogg')
+        ? 'ogg'
+        : 'webm'
+    fd.append('audio', audio, `recording.${ext}`)
+  }
+  if (photo) fd.append('photo', photo, photo.name)
+  if (photoDescription) fd.append('photoDescription', photoDescription)
+  const res = await fetch('/api/dialogue', { method: 'POST', body: fd })
+  if (!res.ok) throw new Error('Dialogue API error')
+  return res.json()
+}
+
+async function playTTS(text: string): Promise<void> {
+  try {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    })
+    if (!res.ok) return
+    const blob = await res.blob()
+    const url = URL.createObjectURL(blob)
+    return new Promise<void>((resolve) => {
+      const audio = new Audio(url)
+      audio.onended = () => {
+        URL.revokeObjectURL(url)
+        resolve()
+      }
+      audio.onerror = () => {
+        URL.revokeObjectURL(url)
+        resolve()
+      }
+      audio.play().catch(() => resolve())
+    })
+  } catch {
+    // TTS is an enhancement â€” silent failure
+  }
+}
+
+// â”€â”€â”€ Animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+const fadeUp = keyframes`
+  from { opacity: 0; transform: translateY(0.75rem); }
   to   { opacity: 1; transform: translateY(0); }
 `
 
 const ripple = keyframes`
-  0%   { transform: scale(1);    opacity: 0.6; }
-  100% { transform: scale(2.2);  opacity: 0; }
-`
-
-const pulse = keyframes`
-  0%, 100% { transform: scale(1); }
-  50%       { transform: scale(1.04); }
+  0%   { transform: scale(1);   opacity: 0.5; }
+  100% { transform: scale(2.6); opacity: 0; }
 `
 
 const breathe = keyframes`
@@ -29,13 +120,13 @@ const breathe = keyframes`
   50%       { box-shadow: 0 12px 0 oklch(0.42 0.1 155), 0 20px 40px oklch(0.55 0.1 155 / 0.4); }
 `
 
-const recordPulse = keyframes`
+const recordAnim = keyframes`
   0%, 100% { box-shadow: 0 6px 0 oklch(0.4 0.15 20), 0 12px 30px oklch(0.55 0.15 20 / 0.4); }
   50%       { box-shadow: 0 10px 0 oklch(0.4 0.15 20), 0 18px 40px oklch(0.55 0.15 20 / 0.5); }
 `
 
 const waveBar = keyframes`
-  0%, 100% { transform: scaleY(0.3); }
+  0%, 100% { transform: scaleY(0.25); }
   50%       { transform: scaleY(1); }
 `
 
@@ -44,175 +135,130 @@ const spin = keyframes`
   to   { transform: rotate(360deg); }
 `
 
-// ─── Styled components ────────────────────────────────────────────────────────
+const bubbleIn = keyframes`
+  from { opacity: 0; transform: translateY(0.5rem) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+`
 
-const Page = styled.div({
+// â”€â”€â”€ Styled Components â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+const Wrap = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
   minHeight: '100dvh',
-  display: 'flex',
-  flexDirection: 'column',
-  padding: `${theme.spacing[6]} ${theme.spacing[5]}`,
-  maxWidth: '26rem',
-  margin: '0 auto',
-  gap: theme.spacing[6],
+  backgroundColor: 'oklch(0.97 0.015 90)',
+  overflowX: 'hidden',
 })
 
-// Top greeting
-const Greeting = styled.div({
+// â”€â”€ Header â”€â”€
+
+const TopBar = styled.div({
   display: 'flex',
-  flexDirection: 'column',
   alignItems: 'center',
-  textAlign: 'center',
-  gap: theme.spacing[3],
-  animation: `${fadeIn} 0.4s ease both`,
+  justifyContent: 'space-between',
+  padding: `${theme.spacing[4]} ${theme.spacing[5]}`,
+  borderBottom: '1px solid oklch(0.88 0.04 90)',
+  backgroundColor: 'oklch(0.97 0.015 90)',
+  position: 'sticky',
+  top: 0,
+  zIndex: 10,
 })
 
-const RootsLogo = styled.div({
+const Logo = styled.div({
   fontFamily: theme.fonts.serif,
-  fontSize: '1.125rem',
+  fontSize: '1rem',
   fontWeight: 700,
   color: theme.colors.primary,
   letterSpacing: '0.12em',
   textTransform: 'uppercase',
-  opacity: 0.7,
-  marginBottom: theme.spacing[1],
 })
 
-const StudentAvatar = styled.div({
-  width: '4.5rem',
-  height: '4.5rem',
+const TurnBadge = styled.div({
+  fontSize: '0.75rem',
+  fontWeight: 600,
+  color: 'oklch(0.5 0.08 155)',
+  backgroundColor: 'oklch(0.88 0.06 155 / 0.3)',
+  padding: '0.25rem 0.75rem',
   borderRadius: theme.radius.full,
-  background: `linear-gradient(135deg, oklch(0.75 0.1 155), oklch(0.65 0.12 50))`,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '2rem',
-  boxShadow: '0 4px 16px oklch(0.55 0.1 155 / 0.25)',
 })
 
-const GreetingText = styled.h1({
-  fontFamily: theme.fonts.serif,
-  fontSize: '1.625rem',
-  fontWeight: 700,
-  color: '#2d2a26',
-  lineHeight: 1.3,
-  '& em': {
-    fontStyle: 'normal',
-    color: theme.colors.primary,
-  },
-})
+// â”€â”€ Chat â”€â”€
 
-const GreetingSubtext = styled.p({
-  fontSize: '0.9375rem',
-  color: '#6b6560',
-  lineHeight: 1.6,
-})
-
-// Photo upload
-const PhotoSection = styled.div({
-  animation: `${fadeIn} 0.4s 0.1s ease both`,
-  opacity: 0,
-  animationFillMode: 'both',
-})
-
-const PhotoFrame = styled.div<{ $hasPhoto: boolean }>(({ $hasPhoto }) => ({
-  width: '100%',
-  aspectRatio: '4/3',
-  borderRadius: '1.5rem',
-  border: $hasPhoto ? 'none' : '2px dashed oklch(0.55 0.1 155 / 0.35)',
-  backgroundColor: $hasPhoto ? 'transparent' : 'oklch(0.88 0.06 155 / 0.1)',
+const ChatArea = styled.div({
+  flex: 1,
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  padding: `${theme.spacing[5]} ${theme.spacing[4]}`,
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: theme.spacing[3],
-  cursor: 'pointer',
-  overflow: 'hidden',
-  position: 'relative',
-  transition: `all ${theme.transitions.fast}`,
-}))
-
-const PhotoPreview = styled.img({
-  width: '100%',
-  height: '100%',
-  objectFit: 'cover',
+  gap: theme.spacing[4],
 })
 
-const PhotoPrompt = styled.div({
+const AiBubbleRow = styled.div({
   display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
+  flexDirection: 'row',
+  alignItems: 'flex-end',
   gap: theme.spacing[2],
-  color: theme.colors.primary,
-  '& svg': { width: '2.5rem', height: '2.5rem', opacity: 0.6 },
+  animation: `${bubbleIn} 0.35s ease both`,
 })
 
-const PhotoPromptText = styled.span({
+const ParentBubbleRow = styled.div({
+  display: 'flex',
+  flexDirection: 'row-reverse',
+  alignItems: 'flex-end',
+  gap: theme.spacing[2],
+  animation: `${bubbleIn} 0.35s ease both`,
+})
+
+const BubbleAvatar = styled.div({
+  width: '2rem',
+  height: '2rem',
+  borderRadius: theme.radius.full,
+  backgroundColor: 'oklch(0.88 0.08 155)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   fontSize: '1rem',
-  fontWeight: 500,
-  color: '#6b6560',
+  flexShrink: 0,
 })
 
-const PhotoOverlayActions = styled.div({
-  position: 'absolute',
-  top: theme.spacing[3],
-  right: theme.spacing[3],
-  display: 'flex',
-  gap: theme.spacing[2],
+const AiBubble = styled.div({
+  maxWidth: '80%',
+  padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
+  backgroundColor: '#fff',
+  borderRadius: '0.25rem 1.25rem 1.25rem 1.25rem',
+  boxShadow: '0 2px 12px oklch(0.55 0.1 155 / 0.1)',
+  fontFamily: theme.fonts.serif,
+  fontSize: '1.0625rem',
+  color: '#2d2a26',
+  lineHeight: 1.55,
+  border: '1px solid oklch(0.88 0.06 155 / 0.3)',
 })
 
-const IconButton = styled.button({
-  width: '2.25rem',
-  height: '2.25rem',
-  borderRadius: theme.radius.full,
-  backgroundColor: 'rgba(0,0,0,0.5)',
-  border: 'none',
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: '#fff',
-  backdropFilter: 'blur(4px)',
-  '& svg': { width: '1rem', height: '1rem' },
+const ParentBubble = styled.div({
+  maxWidth: '80%',
+  padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
+  backgroundColor: 'oklch(0.88 0.08 155 / 0.2)',
+  borderRadius: '1.25rem 0.25rem 1.25rem 1.25rem',
+  fontSize: '0.9375rem',
+  color: '#3d3a36',
+  lineHeight: 1.55,
+  fontStyle: 'italic',
+  border: '1px solid oklch(0.7 0.1 155 / 0.2)',
 })
 
-// Recording section
-const RecordSection = styled.div({
+// â”€â”€ Controls â”€â”€
+
+const ControlArea = styled.div({
+  padding: `${theme.spacing[5]} ${theme.spacing[5]} ${theme.spacing[8]}`,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   gap: theme.spacing[4],
-  animation: `${fadeIn} 0.4s 0.2s ease both`,
-  opacity: 0,
-  animationFillMode: 'both',
+  borderTop: '1px solid oklch(0.88 0.04 90)',
+  backgroundColor: 'oklch(0.97 0.015 90)',
 })
 
-const PromptCard = styled.div({
-  width: '100%',
-  padding: `${theme.spacing[4]} ${theme.spacing[5]}`,
-  backgroundColor: 'oklch(0.88 0.06 50 / 0.15)',
-  border: '1.5px solid oklch(0.65 0.12 50 / 0.25)',
-  borderRadius: '1.25rem',
-  textAlign: 'center',
-})
-
-const PromptLabel = styled.div({
-  fontSize: '0.6875rem',
-  fontWeight: 700,
-  letterSpacing: '0.1em',
-  textTransform: 'uppercase',
-  color: theme.colors.accent,
-  marginBottom: theme.spacing[2],
-})
-
-const PromptText = styled.p({
-  fontFamily: theme.fonts.serif,
-  fontSize: '1.125rem',
-  color: '#2d2a26',
-  lineHeight: 1.5,
-  fontStyle: 'italic',
-})
-
-// Waveform
 const Waveform = styled.div({
   display: 'flex',
   alignItems: 'center',
@@ -220,28 +266,27 @@ const Waveform = styled.div({
   height: '2.5rem',
 })
 
-const WaveBar = styled.div<{ $delay: number; $active: boolean }>(
-  ({ $delay, $active }) => ({
-    width: '3px',
-    height: '100%',
-    borderRadius: '2px',
-    backgroundColor: $active
-      ? theme.colors.primary
-      : 'oklch(0.55 0.1 155 / 0.2)',
-    transformOrigin: 'center',
-    animation: $active
-      ? `${waveBar} ${0.6 + $delay * 0.15}s ease-in-out infinite`
-      : 'none',
-    animationDelay: `${$delay * 0.08}s`,
-    transform: $active ? undefined : 'scaleY(0.3)',
-    transition: 'background-color 0.3s',
-    willChange: 'transform',
-  }),
-)
+const WaveBar = styled('div', {
+  shouldForwardProp: (prop) => prop !== '$i' && prop !== '$active',
+})<{ $i: number; $active: boolean }>(({ $i, $active }) => ({
+  width: '3px',
+  height: '100%',
+  borderRadius: '2px',
+  backgroundColor: $active ? theme.colors.primary : 'oklch(0.55 0.1 155 / 0.2)',
+  transformOrigin: 'center',
+  animation: $active
+    ? `${waveBar} ${0.55 + $i * 0.12}s ease-in-out infinite`
+    : 'none',
+  animationDelay: `${$i * 0.07}s`,
+  transform: $active ? undefined : 'scaleY(0.25)',
+  transition: 'background-color 0.3s',
+  willChange: 'transform',
+}))
 
-// Claymorphism record button
-const RecordButtonWrapper = styled.div({
+const MicBtnWrap = styled.div({
   position: 'relative',
+  width: '5.5rem',
+  height: '5.5rem',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -249,53 +294,44 @@ const RecordButtonWrapper = styled.div({
 
 const RippleRing = styled.div({
   position: 'absolute',
-  width: '7rem',
-  height: '7rem',
+  inset: 0,
   borderRadius: theme.radius.full,
   border: '2px solid oklch(0.55 0.15 20 / 0.4)',
   animation: `${ripple} 1.5s ease-out infinite`,
-  willChange: 'transform, opacity',
+  pointerEvents: 'none',
 })
 
-const RippleRing2 = styled(RippleRing)({
-  animationDelay: '0.5s',
-})
+const RippleRing2 = styled(RippleRing)({ animationDelay: '0.5s' })
 
-const RecordButton = styled.button<{ $recording: boolean }>(
-  ({ $recording }) => ({
-    width: '6rem',
-    height: '6rem',
-    borderRadius: theme.radius.full,
-    border: 'none',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    zIndex: 1,
-    transition: `all ${theme.transitions.normal}`,
-    // Claymorphism idle (forest green)
-    backgroundColor: $recording ? 'oklch(0.55 0.15 20)' : theme.colors.primary,
-    boxShadow: $recording
-      ? '0 6px 0 oklch(0.4 0.15 20), 0 12px 30px oklch(0.55 0.15 20 / 0.4)'
-      : '0 8px 0 oklch(0.42 0.1 155), 0 14px 30px oklch(0.55 0.1 155 / 0.3)',
-    animation: $recording
-      ? `${recordPulse} 1.2s ease infinite`
-      : `${breathe} 3s ease infinite`,
-    '&:active': { transform: 'translateY(4px)', transition: 'transform 0.1s' },
-    '& svg': { width: '2.25rem', height: '2.25rem', color: '#fff' },
-  }),
-)
-
-const RecordLabel = styled.div<{ $recording: boolean }>(({ $recording }) => ({
-  fontSize: '0.9375rem',
-  fontWeight: 600,
-  color: $recording ? 'oklch(0.55 0.15 20)' : theme.colors.primary,
-  letterSpacing: '0.02em',
-  transition: `color ${theme.transitions.fast}`,
+const MicBtn = styled('button', {
+  shouldForwardProp: (prop) => prop !== '$recording',
+})<{ $recording: boolean }>(({ $recording }) => ({
+  position: 'absolute',
+  inset: 0,
+  borderRadius: theme.radius.full,
+  border: 'none',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: $recording ? 'oklch(0.55 0.15 20)' : theme.colors.primary,
+  boxShadow: $recording
+    ? '0 6px 0 oklch(0.4 0.15 20), 0 12px 25px oklch(0.55 0.15 20 / 0.4)'
+    : '0 8px 0 oklch(0.42 0.1 155), 0 14px 28px oklch(0.55 0.1 155 / 0.3)',
+  animation: $recording
+    ? `${recordAnim} 1.2s ease infinite`
+    : `${breathe} 3s ease infinite`,
+  '&:active': { transform: 'translateY(4px)', transition: 'transform 0.1s' },
+  '& svg': { width: '2rem', height: '2rem', color: '#fff' },
 }))
 
-const TimerDisplay = styled.div({
+const StatusText = styled.div({
+  fontSize: '0.9375rem',
+  fontWeight: 600,
+  color: 'oklch(0.5 0.08 155)',
+})
+
+const TimerText = styled.div({
   fontFamily: theme.fonts.mono,
   fontSize: '1.25rem',
   fontWeight: 700,
@@ -303,268 +339,573 @@ const TimerDisplay = styled.div({
   letterSpacing: '0.05em',
 })
 
-// Submit section
-const SubmitSection = styled.div({
+const SendBtn = styled('button', {
+  shouldForwardProp: (prop) => prop !== '$loading',
+})<{ $loading?: boolean }>(({ $loading }) => ({
+  width: '100%',
+  maxWidth: '20rem',
+  padding: `${theme.spacing[4]} ${theme.spacing[6]}`,
+  borderRadius: '1.25rem',
+  border: 'none',
+  cursor: $loading ? 'not-allowed' : 'pointer',
   display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing[3],
-  animation: `${fadeIn} 0.4s 0.3s ease both`,
-  opacity: 0,
-  animationFillMode: 'both',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: theme.spacing[2],
+  backgroundColor: theme.colors.primary,
+  color: '#fff',
+  fontSize: '1.0625rem',
+  fontWeight: 700,
+  fontFamily: theme.fonts.sans,
+  boxShadow: '0 6px 0 oklch(0.42 0.1 155), 0 10px 20px oklch(0.55 0.1 155 / 0.25)',
+  '& svg': { width: '1.125rem', height: '1.125rem' },
+}))
+
+const EndBtn = styled.button({
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '0.875rem',
+  color: 'oklch(0.55 0.06 155)',
+  textDecoration: 'underline',
+  textDecorationStyle: 'dotted',
 })
 
-const SendButton = styled.button<{ $disabled: boolean; $loading: boolean }>(
-  ({ $disabled, $loading }) => ({
-    width: '100%',
-    padding: `${theme.spacing[4]} ${theme.spacing[6]}`,
-    borderRadius: '1.25rem',
-    border: 'none',
-    cursor: $disabled || $loading ? 'not-allowed' : 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: theme.spacing[2],
-    backgroundColor:
-      $disabled || $loading ? 'oklch(0.85 0.04 155)' : theme.colors.primary,
-    color: '#fff',
-    fontSize: '1.0625rem',
-    fontWeight: 700,
-    fontFamily: theme.fonts.sans,
-    // Claymorphism
-    boxShadow:
-      $disabled || $loading
-        ? 'none'
-        : '0 6px 0 oklch(0.42 0.1 155), 0 10px 20px oklch(0.55 0.1 155 / 0.25)',
-    transition: `all ${theme.transitions.fast}`,
-    '&:active': {
-      transform: 'translateY(3px)',
-      boxShadow: '0 3px 0 oklch(0.42 0.1 155)',
-    },
-    '& svg': { width: '1.125rem', height: '1.125rem' },
-  }),
-)
+// â”€â”€ Photo â”€â”€
 
-const HintText = styled.p({
+const PhotoRow = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing[3],
+  alignSelf: 'flex-start',
+})
+
+const PhotoWrap = styled.div({ position: 'relative' })
+
+const PhotoThumb = styled.img({
+  width: '3.5rem',
+  height: '3.5rem',
+  borderRadius: theme.radius.lg,
+  objectFit: 'cover',
+  boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+})
+
+const PhotoBtn = styled.button({
+  width: '3.5rem',
+  height: '3.5rem',
+  borderRadius: theme.radius.lg,
+  border: '2px dashed oklch(0.55 0.1 155 / 0.4)',
+  backgroundColor: 'oklch(0.88 0.06 155 / 0.1)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '2px',
+  cursor: 'pointer',
+  color: theme.colors.primary,
+  '& svg': { width: '1.25rem', height: '1.25rem', opacity: 0.7 },
+})
+
+const PhotoLabel = styled.span({
+  fontSize: '0.5625rem',
+  fontWeight: 700,
+  letterSpacing: '0.04em',
+  textTransform: 'uppercase',
+  color: 'oklch(0.5 0.08 155)',
+})
+
+const RemovePhotoBtn = styled.button({
+  position: 'absolute',
+  top: '-0.375rem',
+  right: '-0.375rem',
+  width: '1.25rem',
+  height: '1.25rem',
+  borderRadius: theme.radius.full,
+  border: 'none',
+  backgroundColor: 'oklch(0.55 0.15 20)',
+  color: '#fff',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  cursor: 'pointer',
+  '& svg': { width: '0.625rem', height: '0.625rem' },
+})
+
+// â”€â”€ Welcome screen â”€â”€
+
+const WelcomeWrap = styled.div({
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: `${theme.spacing[8]} ${theme.spacing[6]}`,
+  gap: theme.spacing[6],
+  animation: `${fadeUp} 0.5s ease both`,
+})
+
+const WelcomeEmoji = styled.div({ fontSize: '4rem', lineHeight: 1 })
+
+const WelcomeTitle = styled.h1({
+  fontFamily: theme.fonts.serif,
+  fontSize: '1.75rem',
+  fontWeight: 700,
+  color: '#2d2a26',
   textAlign: 'center',
-  fontSize: '0.8125rem',
-  color: '#9d9690',
+  lineHeight: 1.35,
+  '& em': { fontStyle: 'normal', color: theme.colors.primary },
+})
+
+const WelcomeSubtitle = styled.p({
+  fontSize: '0.9375rem',
+  color: '#6b6560',
+  textAlign: 'center',
+  lineHeight: 1.65,
+  maxWidth: '20rem',
+})
+
+const StartBtn = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing[2],
+  padding: `${theme.spacing[4]} ${theme.spacing[8]}`,
+  borderRadius: '1.5rem',
+  border: 'none',
+  cursor: 'pointer',
+  backgroundColor: theme.colors.primary,
+  color: '#fff',
+  fontSize: '1.0625rem',
+  fontWeight: 700,
+  fontFamily: theme.fonts.sans,
+  boxShadow: '0 8px 0 oklch(0.42 0.1 155), 0 14px 30px oklch(0.55 0.1 155 / 0.3)',
+  animation: `${breathe} 3s ease infinite`,
+  '& svg': { width: '1.125rem', height: '1.125rem' },
+})
+
+// â”€â”€ Loading / Error â”€â”€
+
+const Center = styled.div({
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: theme.spacing[4],
+  padding: theme.spacing[8],
+})
+
+const ErrorTitle = styled.p({
+  fontFamily: theme.fonts.serif,
+  fontSize: '1.25rem',
+  color: '#2d2a26',
+  textAlign: 'center',
   lineHeight: 1.5,
 })
 
-// ─── Mock session data ────────────────────────────────────────────────────────
+const ErrorHint = styled.p({
+  fontSize: '0.875rem',
+  color: '#9d9690',
+  textAlign: 'center',
+})
 
-const MOCK_SESSION = {
-  studentName: 'Minh',
-  parentName: 'Bố',
-  relationship: 'bố',
-  prompts: [
-    'Bố kể cho con nghe về ngôi nhà thời thơ ấu của mình nhé?',
-    'Bố nhớ gì về công việc đầu tiên của mình không?',
-    'Kể con nghe kỷ niệm vui nhất thời trẻ của Bố đi?',
-    'Bố và Mẹ gặp nhau lần đầu tiên ở đâu vậy?',
-  ],
-}
+// â”€â”€â”€ Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-function fmtTimer(sec: number) {
-  const m = Math.floor(sec / 60)
-    .toString()
-    .padStart(2, '0')
-  const s = (sec % 60).toString().padStart(2, '0')
-  return `${m}:${s}`
-}
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
-
-type RecordState = 'idle' | 'recording' | 'recorded' | 'sending' | 'sent'
+const WAVE_COUNT = 18
 
 export default function ParentRecordPage() {
   const params = useParams<{ token: string }>()
   const router = useRouter()
   const token = params.token
 
-  // In production: fetch session from /api/parent-sessions?token=<token>
-  const session = MOCK_SESSION
-  const promptIdx = 0 // In production: vary by session or let parent shuffle
-
-  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
-  const [recordState, setRecordState] = useState<RecordState>('idle')
+  const [phase, setPhase] = useState<Phase>('loading')
+  const [session, setSession] = useState<SessionData | null>(null)
+  const [turns, setTurns] = useState<Turn[]>([])
   const [timer, setTimer] = useState(0)
-  const [promptI, setPromptI] = useState(promptIdx)
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null)
+  const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [photoDescription, setPhotoDescription] = useState<string | null>(null)
+  const [flashError, setFlashError] = useState<string | null>(null)
 
+  // Refs for values needed in async callbacks without stale closures
+  const turnsRef = useRef<Turn[]>([])
+  const sessionRef = useRef<SessionData | null>(null)
+  const audioBlobsRef = useRef<Blob[]>([])
+  const chunksRef = useRef<Blob[]>([])
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const chatEndRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
+  const photoDescriptionRef = useRef<string | null>(null)
+
+  // Keep refs in sync
+  useEffect(() => { turnsRef.current = turns }, [turns])
+  useEffect(() => { sessionRef.current = session }, [session])
+  useEffect(() => { photoDescriptionRef.current = photoDescription }, [photoDescription])
+
+  // Auto-scroll chat
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [turns])
 
   // Recording timer
   useEffect(() => {
-    if (recordState === 'recording') {
+    if (phase === 'recording') {
       timerRef.current = setInterval(() => setTimer((t) => t + 1), 1000)
     } else {
       if (timerRef.current) clearInterval(timerRef.current)
     }
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
-    }
-  }, [recordState])
+    return () => { if (timerRef.current) clearInterval(timerRef.current) }
+  }, [phase])
 
+  // Fetch session on mount â†’ show welcome screen
+  useEffect(() => {
+    async function fetchSession() {
+      try {
+        const res = await fetch(
+          `/api/parent-sessions?token=${encodeURIComponent(token)}`,
+        )
+        if (!res.ok) { setPhase('error'); return }
+        const data: SessionData = await res.json()
+        setSession(data)
+        sessionRef.current = data
+        setPhase('welcome')
+      } catch {
+        setPhase('error')
+      }
+    }
+    fetchSession()
+  }, [token])
+
+  // "Báº¯t Ä‘áº§u" â€” unlocks audio context, fetches greeting, plays TTS
+  const handleStart = useCallback(async () => {
+    const sess = sessionRef.current
+    if (!sess) return
+    setPhase('greeting')
+    try {
+      const result = await callDialogue(token, sess, [], undefined, photoFile ?? undefined)
+      const t: Turn = { role: 'ai', text: result.aiMessage }
+      setTurns([t])
+      turnsRef.current = [t]
+      if (result.photoDescription) {
+        setPhotoDescription(result.photoDescription)
+        photoDescriptionRef.current = result.photoDescription
+      }
+    } catch {
+      const fallback = `Dáº¡ chÃ o ${sess.parentName} áº¡! Con lÃ  trá»£ lÃ½ cá»§a ${sess.studentName}. BÃ¡c cÃ³ thá»ƒ ká»ƒ cho con nghe má»™t ká»· niá»‡m Ä‘Ã¡ng nhá»› khÃ´ng áº¡?`
+      const t: Turn = { role: 'ai', text: fallback }
+      setTurns([t])
+      turnsRef.current = [t]
+    }
+    setPhase('idle')
+  }, [token, photoFile])
+
+  // Start MediaRecorder
+  const startRecording = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const mimeType = getSupportedMimeType()
+      const mr = new MediaRecorder(stream, mimeType ? { mimeType } : undefined)
+      chunksRef.current = []
+      mr.ondataavailable = (e) => { if (e.data.size > 0) chunksRef.current.push(e.data) }
+      mr.start(200)
+      mediaRecorderRef.current = mr
+      setTimer(0)
+      setFlashError(null)
+      setPhase('recording')
+    } catch {
+      alert('Vui lÃ²ng cho phÃ©p truy cáº­p microphone vÃ  thá»­ láº¡i.')
+    }
+  }, [])
+
+  // Stop recording â†’ Whisper â†’ GPT-4o â†’ TTS
+  const stopAndProcess = useCallback(() => {
+    const mr = mediaRecorderRef.current
+    if (!mr || mr.state === 'inactive') return
+
+    mr.onstop = async () => {
+      mr.stream.getTracks().forEach((t) => t.stop())
+      const blob = new Blob(chunksRef.current, { type: mr.mimeType || 'audio/webm' })
+      audioBlobsRef.current.push(blob)
+
+      const sess = sessionRef.current!
+      const current = turnsRef.current
+
+      setPhase('processing')
+      try {
+        const { transcript, aiMessage, isComplete } = await callDialogue(
+          token,
+          sess,
+          current,
+          blob,
+          undefined,
+          photoDescriptionRef.current ?? undefined,
+        )
+        const next: Turn[] = [...current]
+        if (transcript) next.push({ role: 'parent', text: transcript })
+        next.push({ role: 'ai', text: aiMessage })
+        setTurns(next)
+        turnsRef.current = next
+
+        setPhase(isComplete ? 'summary' : 'idle')
+      } catch {
+        setFlashError('Xin lỗi, có lỗi xảy ra. Vui lòng thử lại.')
+        setPhase('idle')
+      }
+    }
+
+    mr.stop()
+  }, [token])
+
+  // End conversation early (after â‰¥1 parent turn)
+  const handleEndEarly = useCallback(async () => {
+    const sess = sessionRef.current!
+    const current = turnsRef.current
+    const closing = `Dáº¡, cáº£m Æ¡n ${sess.parentName} ráº¥t nhiá»u áº¡! Nhá»¯ng cÃ¢u chuyá»‡n cá»§a ${sess.parentName} sáº½ Ä‘Æ°á»£c ${sess.studentName} trÃ¢n trá»ng mÃ£i mÃ£i. Con cáº£m Æ¡n bÃ¡c!`
+    const next: Turn[] = [...current, { role: 'ai', text: closing }]
+    setTurns(next)
+    turnsRef.current = next
+    setPhase('summary')
+  }, [])
+
+  // Submit â€” upload last audio blob + full dialogue â†’ create Memory
+  const handleSubmit = useCallback(async () => {
+    setPhase('submitting')
+    setFlashError(null)
+    try {
+      const fd = new FormData()
+      fd.append('token', token)
+      fd.append('turns', JSON.stringify(turnsRef.current))
+      const blobs = audioBlobsRef.current
+      if (blobs.length > 0) {
+        const last = blobs[blobs.length - 1]
+        const ext = last.type.includes('mp4') ? 'mp4' : 'webm'
+        fd.append('audio', last, `recording.${ext}`)
+      }
+      if (photoFile) fd.append('photo', photoFile, photoFile.name)
+      await fetch('/api/parent-sessions/save', { method: 'POST', body: fd })
+      router.push(`/parent/${token}/done`)
+    } catch {
+      setFlashError('Gửi không thành công. Vui lòng thử lại.')
+      setPhase('summary')
+    }
+  }, [token, photoFile, router])
+
+  // Photo picker
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
+    setPhotoFile(file)
     setPhotoUrl(URL.createObjectURL(file))
   }
 
-  const toggleRecord = () => {
-    if (recordState === 'idle') {
-      setTimer(0)
-      setRecordState('recording')
-    } else if (recordState === 'recording') {
-      setRecordState('recorded')
-    }
-  }
+  const parentTurnCount = turns.filter((t) => t.role === 'parent').length
+  const inConversation = ['idle', 'recording', 'processing', 'summary', 'submitting'].includes(phase)
 
-  const handleSend = async () => {
-    if (recordState !== 'recorded' && recordState !== 'idle') return
-    setRecordState('sending')
-    // Simulate upload
-    await new Promise((r) => setTimeout(r, 1800))
-    setRecordState('sent')
-    router.push(`/parent/${token}/done`)
-  }
-
-  const canSend =
-    recordState === 'recorded' || (recordState === 'idle' && photoUrl)
-
-  const waveCount = 20
-  const waveActive = recordState === 'recording'
+  // â”€â”€ Render â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
   return (
-    <Page>
-      {/* Greeting */}
-      <Greeting>
-        <RootsLogo>GỐC</RootsLogo>
-        <StudentAvatar>👨‍🎓</StudentAvatar>
-        <GreetingText>
-          Chào <em>{session.parentName}</em>,<br />
-          con đang lắng nghe đây!
-        </GreetingText>
-        <GreetingSubtext>
-          {session.studentName} muốn lưu giữ câu chuyện của {session.parentName}{' '}
-          mãi mãi.
-        </GreetingSubtext>
-      </Greeting>
+    <Wrap>
+      <input ref={fileRef} type="file" accept="image/*" capture="environment" style={{ display: 'none' }} onChange={handlePhotoChange} />
+      {/* Loading */}
+      {phase === 'loading' && (
+        <Center>
+          <Loader2 style={{ width: '2.5rem', height: '2.5rem', color: theme.colors.primary, animation: `${spin} 1s linear infinite` }} />
+          <StatusText>Äang káº¿t ná»‘i...</StatusText>
+        </Center>
+      )}
 
-      {/* Photo upload */}
-      <PhotoSection>
-        <input
-          ref={fileRef}
-          type="file"
-          accept="image/*"
-          capture="environment"
-          style={{ display: 'none' }}
-          onChange={handlePhotoChange}
-        />
-        <PhotoFrame
-          $hasPhoto={!!photoUrl}
-          onClick={() => !photoUrl && fileRef.current?.click()}
-        >
-          {photoUrl ? (
-            <>
-              <PhotoPreview src={photoUrl} alt="Ảnh đã tải" />
-              <PhotoOverlayActions>
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    fileRef.current?.click()
-                  }}
-                >
-                  <RefreshCw />
-                </IconButton>
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    setPhotoUrl(null)
-                  }}
-                >
-                  <X />
-                </IconButton>
-              </PhotoOverlayActions>
-            </>
-          ) : (
-            <PhotoPrompt>
-              <Camera />
-              <PhotoPromptText>Chụp ảnh kỷ niệm (tuỳ chọn)</PhotoPromptText>
-            </PhotoPrompt>
-          )}
-        </PhotoFrame>
-      </PhotoSection>
+      {/* Error */}
+      {phase === 'error' && (
+        <Center>
+          <span style={{ fontSize: '3rem' }}>ðŸ˜”</span>
+          <ErrorTitle>MÃ£ QR khÃ´ng há»£p lá»‡<br />hoáº·c Ä‘Ã£ háº¿t háº¡n</ErrorTitle>
+          <ErrorHint>Vui lÃ²ng xin mÃ£ QR má»›i tá»« ngÆ°á»i thÃ¢n.</ErrorHint>
+        </Center>
+      )}
 
-      {/* Recording */}
-      <RecordSection>
-        <PromptCard>
-          <PromptLabel>Câu hỏi gợi ý</PromptLabel>
-          <PromptText>"{session.prompts[promptI]}"</PromptText>
-        </PromptCard>
+      {/* Welcome */}
+      {phase === 'welcome' && session && (
+        <>
+          <TopBar><Logo>Gá»C</Logo></TopBar>
+          <WelcomeWrap>
+            <WelcomeEmoji>ðŸŒ¿</WelcomeEmoji>
+            <WelcomeTitle>
+              ChÃ o <em>{session.parentName}</em>!
+            </WelcomeTitle>
+            <WelcomeSubtitle>
+              {session.studentName} muá»‘n lÆ°u giá»¯ tiáº¿ng nÃ³i vÃ  cÃ¢u chuyá»‡n cá»§a{' '}
+              {session.relationship} Ä‘á»ƒ cÃ³ thá»ƒ nghe láº¡i mÃ£i mÃ£i.
+              <br /><br />
+              Con sáº½ trÃ² chuyá»‡n cÃ¹ng {session.parentName} â€” cá»© tá»± nhiÃªn nhÆ° Ä‘ang gá»i Ä‘iá»‡n nhÃ©!
+            </WelcomeSubtitle>
+            {/* Optional photo — analyzed by AI Vision on greeting */}
+            <PhotoRow style={{ justifyContent: 'center', marginBottom: theme.spacing[4] }}>
+              {photoUrl ? (
+                <PhotoWrap>
+                  <PhotoThumb src={photoUrl} alt="Ảnh" />
+                  <RemovePhotoBtn onClick={() => { setPhotoUrl(null); setPhotoFile(null) }}>
+                    <X />
+                  </RemovePhotoBtn>
+                </PhotoWrap>
+              ) : (
+                <PhotoBtn onClick={() => fileRef.current?.click()}>
+                  <Camera />
+                  <PhotoLabel>Thêm ảnh (không bắt buộc)</PhotoLabel>
+                </PhotoBtn>
+              )}
+            </PhotoRow>
+            <StartBtn onClick={handleStart}>
+              Báº¯t Ä‘áº§u <ChevronRight />
+            </StartBtn>
+          </WelcomeWrap>
+        </>
+      )}
 
-        {/* Waveform */}
-        <Waveform>
-          {Array.from({ length: waveCount }).map((_, i) => (
-            <WaveBar key={i} $delay={i} $active={waveActive} />
-          ))}
-        </Waveform>
+      {/* Greeting: fetching first AI message */}
+      {phase === 'greeting' && (
+        <>
+          <TopBar><Logo>Gá»C</Logo></TopBar>
+          <Center>
+            <Loader2 style={{ width: '2rem', height: '2rem', color: theme.colors.primary, animation: `${spin} 1s linear infinite` }} />
+            <StatusText>Äang chuáº©n bá»‹...</StatusText>
+          </Center>
+        </>
+      )}
 
-        {/* Timer */}
-        {(recordState === 'recording' || recordState === 'recorded') && (
-          <TimerDisplay>{fmtTimer(timer)}</TimerDisplay>
-        )}
+      {/* Conversation */}
+      {inConversation && session && (
+        <>
+          <TopBar>
+            <Logo>Gá»C</Logo>
+            {parentTurnCount > 0 && <TurnBadge>LÆ°á»£t {parentTurnCount}</TurnBadge>}
+          </TopBar>
 
-        {/* Claymorphism record button */}
-        <RecordButtonWrapper>
-          {recordState === 'recording' && (
-            <>
-              <RippleRing />
-              <RippleRing2 />
-            </>
-          )}
-          <RecordButton
-            $recording={recordState === 'recording'}
-            onClick={toggleRecord}
-          >
-            {recordState === 'recording' ? <Square /> : <Mic />}
-          </RecordButton>
-        </RecordButtonWrapper>
+          <ChatArea>
+            {turns.map((turn, i) =>
+              turn.role === 'ai' ? (
+                <AiBubbleRow key={i}>
+                  <BubbleAvatar>ðŸŒ¿</BubbleAvatar>
+                  <AiBubble>{turn.text}</AiBubble>
+                </AiBubbleRow>
+              ) : (
+                <ParentBubbleRow key={i}>
+                  <ParentBubble>ðŸŽ™ {turn.text || '[ÄÃ£ ghi Ã¢m]'}</ParentBubble>
+                </ParentBubbleRow>
+              ),
+            )}
 
-        <RecordLabel $recording={recordState === 'recording'}>
-          {recordState === 'idle' && 'Nhấn để bắt đầu kể chuyện'}
-          {recordState === 'recording' && 'Đang ghi... nhấn để dừng'}
-          {recordState === 'recorded' &&
-            `Đã ghi ${fmtTimer(timer)} — sẵn sàng gửi!`}
-        </RecordLabel>
-      </RecordSection>
+            {phase === 'processing' && (
+              <AiBubbleRow>
+                <BubbleAvatar>ðŸŒ¿</BubbleAvatar>
+                <AiBubble style={{ color: 'oklch(0.6 0.06 155)' }}>
+                  <Loader2 style={{ width: '1rem', height: '1rem', animation: `${spin} 1s linear infinite`, verticalAlign: 'middle' }} />{' '}
+                  Äang suy nghÄ©...
+                </AiBubble>
+              </AiBubbleRow>
+            )}
 
-      {/* Submit */}
-      <SubmitSection>
-        <SendButton
-          $disabled={!canSend}
-          $loading={recordState === 'sending'}
-          onClick={handleSend}
-          disabled={!canSend || recordState === 'sending'}
-        >
-          {recordState === 'sending' ? (
-            <>
-              <Loader2 style={{ animation: `${spin} 1s linear infinite` }} />
-              Đang gửi sang {session.studentName}...
-            </>
-          ) : (
-            <>
-              <Send />
-              Gửi cho {session.studentName}
-            </>
-          )}
-        </SendButton>
-        <HintText>
-          Câu chuyện của {session.parentName} sẽ được giữ gìn mãi mãi trong Gốc
-          của gia đình mình.
-        </HintText>
-      </SubmitSection>
-    </Page>
+            <div ref={chatEndRef} />
+          </ChatArea>
+
+          <ControlArea>
+            {/* Error flash */}
+            {flashError && (
+              <StatusText style={{ color: 'oklch(0.52 0.16 25)', fontSize: '0.8125rem', marginBottom: theme.spacing[2] }}>
+                ⚠️ {flashError}
+              </StatusText>
+            )}
+            {(phase === 'idle' || phase === 'summary') && (
+              <>
+                <PhotoRow>
+                  {photoUrl ? (
+                    <PhotoWrap>
+                      <PhotoThumb src={photoUrl} alt="áº¢nh" />
+                      <RemovePhotoBtn onClick={() => { setPhotoUrl(null); setPhotoFile(null) }}>
+                        <X />
+                      </RemovePhotoBtn>
+                    </PhotoWrap>
+                  ) : (
+                    <PhotoBtn onClick={() => fileRef.current?.click()}>
+                      <Camera />
+                      <PhotoLabel>áº¢nh</PhotoLabel>
+                    </PhotoBtn>
+                  )}
+                </PhotoRow>
+              </>
+            )}
+
+            {/* AI speaking (disabled — text-only mode) */}
+            {false && (
+              <>
+                <Waveform>
+                  {Array.from({ length: WAVE_COUNT }).map((_, i) => (
+                    <WaveBar key={i} $i={i} $active={true} />
+                  ))}
+                </Waveform>
+                <StatusText>Äang nÃ³i...</StatusText>
+              </>
+            )}
+
+            {/* Idle: mic button */}
+            {phase === 'idle' && (
+              <>
+                <MicBtnWrap>
+                  <MicBtn $recording={false} onClick={startRecording}>
+                    <Mic />
+                  </MicBtn>
+                </MicBtnWrap>
+                <StatusText>Nháº¥n Ä‘á»ƒ tráº£ lá»i</StatusText>
+                {parentTurnCount >= 1 && (
+                  <EndBtn onClick={handleEndEarly}>Káº¿t thÃºc sá»›m</EndBtn>
+                )}
+              </>
+            )}
+
+            {/* Recording */}
+            {phase === 'recording' && (
+              <>
+                <Waveform>
+                  {Array.from({ length: WAVE_COUNT }).map((_, i) => (
+                    <WaveBar key={i} $i={i} $active={true} />
+                  ))}
+                </Waveform>
+                <TimerText>{fmtTimer(timer)}</TimerText>
+                <MicBtnWrap>
+                  <RippleRing />
+                  <RippleRing2 />
+                  <MicBtn $recording={true} onClick={stopAndProcess}>
+                    <Square />
+                  </MicBtn>
+                </MicBtnWrap>
+                <StatusText>Äang ghi... nháº¥n Ä‘á»ƒ dá»«ng</StatusText>
+              </>
+            )}
+
+            {/* Processing */}
+            {phase === 'processing' && (
+              <StatusText>
+                <Loader2 style={{ width: '1.25rem', height: '1.25rem', animation: `${spin} 1s linear infinite`, verticalAlign: 'middle' }} />{' '}
+                Äang suy nghÄ©...
+              </StatusText>
+            )}
+
+            {/* Summary / Submitting */}
+            {(phase === 'summary' || phase === 'submitting') && (
+              <SendBtn
+                $loading={phase === 'submitting'}
+                onClick={handleSubmit}
+                disabled={phase === 'submitting'}
+              >
+                {phase === 'submitting' ? (
+                  <><Loader2 style={{ animation: `${spin} 1s linear infinite` }} /> Äang gá»­i...</>
+                ) : (
+                  <><Send /> Gá»­i cho {session.studentName}</>
+                )}
+              </SendBtn>
+            )}
+          </ControlArea>
+        </>
+      )}
+    </Wrap>
   )
 }

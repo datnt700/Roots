@@ -1,14 +1,17 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { hashEmail } from '@/lib/crypto'
+import { logger } from '@/lib/logger'
 
 export async function GET() {
   try {
     const parents = await db.parent.findMany({
       orderBy: { createdAt: 'desc' },
     })
+    logger.debug('parents', 'Listed parents', { count: parents.length })
     return NextResponse.json({ parents })
-  } catch {
+  } catch (err) {
+    logger.error('parents', 'Failed to fetch parents', {}, err)
     return NextResponse.json(
       { error: 'Failed to fetch parents' },
       { status: 500 },
@@ -17,6 +20,7 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  const t0 = Date.now()
   try {
     const body = await request.json()
     const { name, relationship, userId } = body as {
@@ -26,6 +30,7 @@ export async function POST(request: Request) {
     }
 
     if (!name || !relationship || !userId) {
+      logger.warn('parents', 'Missing required fields on POST /parents', { userId })
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 },
@@ -40,8 +45,10 @@ export async function POST(request: Request) {
       },
     })
 
+    logger.info('parents', 'Parent created', { parentId: parent.id, userId, relationship, ms: Date.now() - t0 })
     return NextResponse.json({ id: parent.id }, { status: 201 })
-  } catch {
+  } catch (err) {
+    logger.error('parents', 'Failed to create parent', { ms: Date.now() - t0 }, err)
     return NextResponse.json(
       { error: 'Failed to create parent' },
       { status: 500 },
