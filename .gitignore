@@ -9,11 +9,8 @@ next.user-config.*
 
 # Environment variables
 .env
-<<<<<<< HEAD
-=======
 .env.development
 .env.production
->>>>>>> c7655d9 (feat: config neon db)
 .env*.local
 
 # Common ignores
