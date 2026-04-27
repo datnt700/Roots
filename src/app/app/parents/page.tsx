@@ -1,10 +1,21 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import styled from '@emotion/styled'
-import { keyframes } from '@emotion/react'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import QRCode from 'qrcode'
-import { theme } from '@/lib/theme'
+import {
+  Page, PageHeader, PageTitle, PageSubtitle,
+  ParentSection, ParentHeader, ParentEmoji, ParentLabel, ParentName, RelBadge, AddSlotBtn,
+  SlotGrid, SlotCard, SlotPageNum, SlotTitle, SlotPrompt, SlotBadge, AddSlotCard,
+  ModalOverlay, ModalPanel, ModalClose, ModalTitle, ModalSubtitle,
+  QRImage, QRPlaceholder, PromptEditor, PromptLabel, PromptTextarea,
+  ModalActions, ActionBtn, EmptyState,
+  StickerPhotoGroup, StickerHiddenInput, StickerPhotoRow, StickerPhotoImg, RemoveStickerPhotoBtn, AddStickerPhotoBtn,
+  SkeletonSectionWrapper, SkeletonParentHeader, SkeletonParentInfo, SkeletonCircle, SkeletonLine, SkeletonSlotCard,
+  spin,
+} from './page.styles'
+import { useTranslations } from 'next-intl'
+import { useUserId } from '@/hooks/use-user-id'
 import {
   QrCode,
   Plus,
@@ -16,367 +27,13 @@ import {
   Edit3,
   RefreshCw,
   Check,
+  Mic,
+  ImagePlus,
 } from 'lucide-react'
 
-// ─── Animations ───────────────────────────────────────────────────────────────
+// --- Types --------------------------------------------------------------------
 
-const fadeUp = keyframes`
-  from { opacity: 0; transform: translateY(0.75rem); }
-  to   { opacity: 1; transform: translateY(0); }
-`
-
-const scaleIn = keyframes`
-  from { opacity: 0; transform: scale(0.92); }
-  to   { opacity: 1; transform: scale(1); }
-`
-
-const spin = keyframes`
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-`
-
-// ─── Layout ───────────────────────────────────────────────────────────────────
-
-const Page = styled.div({
-  padding: `${theme.spacing[4]} ${theme.spacing[4]} ${theme.spacing[8]}`,
-  maxWidth: '48rem',
-  margin: '0 auto',
-  '@media (min-width: 768px)': {
-    padding: `${theme.spacing[8]} ${theme.spacing[6]}`,
-  },
-})
-
-const PageHeader = styled.div({
-  display: 'flex',
-  alignItems: 'flex-start',
-  justifyContent: 'space-between',
-  marginBottom: theme.spacing[6],
-  animation: `${fadeUp} 0.3s ease both`,
-})
-
-const PageTitle = styled.h1({
-  fontFamily: theme.fonts.serif,
-  fontSize: '1.5rem',
-  fontWeight: 700,
-  color: theme.colors.foreground,
-})
-
-const PageSubtitle = styled.p({
-  fontSize: '0.875rem',
-  color: theme.colors.mutedForeground,
-  marginTop: theme.spacing[1],
-  lineHeight: 1.5,
-})
-
-// ─── Parent section ───────────────────────────────────────────────────────────
-
-const ParentSection = styled.section({
-  marginBottom: theme.spacing[8],
-  animation: `${fadeUp} 0.35s ease both`,
-})
-
-const ParentHeader = styled.div({
-  display: 'flex',
-  alignItems: 'center',
-  gap: theme.spacing[3],
-  marginBottom: theme.spacing[3],
-})
-
-const ParentEmoji = styled.div<{ $color: string }>(({ $color }) => ({
-  width: '2.5rem',
-  height: '2.5rem',
-  borderRadius: theme.radius.full,
-  background: `linear-gradient(135deg, ${$color}, oklch(0.65 0.12 50 / 0.7))`,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  fontSize: '1.25rem',
-  flexShrink: 0,
-}))
-
-const ParentLabel = styled.div({ flex: 1 })
-
-const ParentName = styled.div({
-  fontFamily: theme.fonts.serif,
-  fontWeight: 700,
-  fontSize: '1.125rem',
-  color: theme.colors.foreground,
-})
-
-const RelBadge = styled.span({
-  display: 'inline-block',
-  padding: '0.1rem 0.45rem',
-  borderRadius: theme.radius.full,
-  backgroundColor: 'oklch(0.55 0.1 155 / 0.1)',
-  color: theme.colors.primary,
-  fontSize: '0.7rem',
-  fontWeight: 600,
-  marginTop: '0.2rem',
-  textTransform: 'capitalize',
-})
-
-const AddSlotBtn = styled.button({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: theme.spacing[1],
-  padding: `${theme.spacing[1]} ${theme.spacing[2]}`,
-  borderRadius: theme.radius.lg,
-  border: `1.5px dashed ${theme.colors.border}`,
-  backgroundColor: 'transparent',
-  color: theme.colors.mutedForeground,
-  fontSize: '0.8rem',
-  fontWeight: 500,
-  cursor: 'pointer',
-  transition: `all ${theme.transitions.fast}`,
-  '&:hover': { borderColor: theme.colors.primary, color: theme.colors.primary },
-  '& svg': { width: '0.875rem', height: '0.875rem' },
-})
-
-// ─── Slot grid ────────────────────────────────────────────────────────────────
-
-const SlotGrid = styled.div({
-  display: 'grid',
-  gridTemplateColumns: 'repeat(auto-fill, minmax(10rem, 1fr))',
-  gap: theme.spacing[3],
-})
-
-const SlotCard = styled.div<{ $hasRecording: boolean }>(
-  ({ $hasRecording }) => ({
-    position: 'relative',
-    borderRadius: '1.25rem',
-    border: `1.5px solid ${$hasRecording ? 'oklch(0.55 0.1 155 / 0.35)' : theme.colors.border}`,
-    backgroundColor: $hasRecording
-      ? 'oklch(0.55 0.1 155 / 0.04)'
-      : theme.colors.card,
-    padding: theme.spacing[4],
-    display: 'flex',
-    flexDirection: 'column',
-    gap: theme.spacing[2],
-    cursor: 'pointer',
-    transition: `all ${theme.transitions.fast}`,
-    animation: `${fadeUp} 0.3s ease both`,
-    '&:hover': {
-      borderColor: theme.colors.primary,
-      transform: 'translateY(-2px)',
-      boxShadow: theme.shadows.sm,
-    },
-  }),
-)
-
-const SlotPageNum = styled.div({
-  fontSize: '0.7rem',
-  fontWeight: 700,
-  color: theme.colors.mutedForeground,
-  letterSpacing: '0.05em',
-  textTransform: 'uppercase',
-})
-
-const SlotTitle = styled.div({
-  fontSize: '0.9375rem',
-  fontWeight: 600,
-  color: theme.colors.foreground,
-  lineHeight: 1.3,
-  overflow: 'hidden',
-  display: '-webkit-box',
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: 'vertical',
-})
-
-const SlotPrompt = styled.div({
-  fontSize: '0.75rem',
-  color: theme.colors.mutedForeground,
-  lineHeight: 1.4,
-  overflow: 'hidden',
-  display: '-webkit-box',
-  WebkitLineClamp: 2,
-  WebkitBoxOrient: 'vertical',
-  fontStyle: 'italic',
-})
-
-const SlotBadge = styled.div<{ $hasRecording: boolean }>(
-  ({ $hasRecording }) => ({
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '0.25rem',
-    fontSize: '0.7rem',
-    fontWeight: 600,
-    color: $hasRecording ? theme.colors.primary : theme.colors.mutedForeground,
-    marginTop: 'auto',
-    '& svg': { width: '0.75rem', height: '0.75rem' },
-  }),
-)
-
-const AddSlotCard = styled.button({
-  borderRadius: '1.25rem',
-  border: `1.5px dashed ${theme.colors.border}`,
-  backgroundColor: 'transparent',
-  padding: theme.spacing[4],
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: theme.spacing[2],
-  cursor: 'pointer',
-  color: theme.colors.mutedForeground,
-  fontSize: '0.8rem',
-  transition: `all ${theme.transitions.fast}`,
-  minHeight: '8rem',
-  '&:hover': { borderColor: theme.colors.primary, color: theme.colors.primary },
-  '& svg': { width: '1.5rem', height: '1.5rem', opacity: 0.4 },
-})
-
-// ─── QR Modal ─────────────────────────────────────────────────────────────────
-
-const ModalOverlay = styled.div({
-  position: 'fixed',
-  inset: 0,
-  zIndex: 100,
-  backgroundColor: 'rgba(0,0,0,0.55)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: theme.spacing[5],
-  animation: `${fadeUp} 0.2s ease both`,
-})
-
-const ModalPanel = styled.div({
-  width: '100%',
-  maxWidth: '24rem',
-  backgroundColor: theme.colors.card,
-  borderRadius: '2rem',
-  padding: `${theme.spacing[6]} ${theme.spacing[5]}`,
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  gap: theme.spacing[4],
-  animation: `${scaleIn} 0.25s ease both`,
-  boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
-  position: 'relative',
-  maxHeight: '90vh',
-  overflowY: 'auto',
-})
-
-const ModalClose = styled.button({
-  position: 'absolute',
-  top: theme.spacing[4],
-  right: theme.spacing[4],
-  width: '2rem',
-  height: '2rem',
-  borderRadius: theme.radius.full,
-  border: 'none',
-  backgroundColor: theme.colors.muted,
-  cursor: 'pointer',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: theme.colors.mutedForeground,
-  '& svg': { width: '1rem', height: '1rem' },
-})
-
-const ModalTitle = styled.h2({
-  fontFamily: theme.fonts.serif,
-  fontSize: '1.125rem',
-  fontWeight: 700,
-  color: theme.colors.foreground,
-  textAlign: 'center',
-})
-
-const ModalSubtitle = styled.p({
-  fontSize: '0.8125rem',
-  color: theme.colors.mutedForeground,
-  textAlign: 'center',
-  lineHeight: 1.5,
-  marginTop: `-${theme.spacing[2]}`,
-})
-
-const QRImage = styled.img({
-  width: '13rem',
-  height: '13rem',
-  borderRadius: theme.radius.xl,
-  border: `1.5px solid ${theme.colors.border}`,
-})
-
-const QRPlaceholder = styled.div({
-  width: '13rem',
-  height: '13rem',
-  borderRadius: theme.radius.xl,
-  border: `1.5px solid ${theme.colors.border}`,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: theme.colors.mutedForeground,
-})
-
-const PromptEditor = styled.div({
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  gap: theme.spacing[2],
-})
-
-const PromptLabel = styled.label({
-  fontSize: '0.8rem',
-  fontWeight: 600,
-  color: theme.colors.mutedForeground,
-})
-
-const PromptTextarea = styled.textarea({
-  width: '100%',
-  minHeight: '4.5rem',
-  padding: `${theme.spacing[2]} ${theme.spacing[3]}`,
-  borderRadius: theme.radius.lg,
-  border: `1.5px solid ${theme.colors.border}`,
-  backgroundColor: theme.colors.background,
-  color: theme.colors.foreground,
-  fontSize: '0.875rem',
-  fontFamily: theme.fonts.sans,
-  lineHeight: 1.5,
-  resize: 'none',
-  outline: 'none',
-  boxSizing: 'border-box',
-  transition: `border-color ${theme.transitions.fast}`,
-  '&:focus': { borderColor: theme.colors.primary },
-})
-
-const ModalActions = styled.div({
-  display: 'flex',
-  gap: theme.spacing[2],
-  width: '100%',
-})
-
-const ActionBtn = styled.button<{ $primary?: boolean; $loading?: boolean }>(
-  ({ $primary, $loading }) => ({
-    flex: 1,
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: theme.spacing[1],
-    padding: `${theme.spacing[3]}`,
-    borderRadius: theme.radius.xl,
-    border: `1.5px solid ${$primary ? theme.colors.primary : theme.colors.border}`,
-    backgroundColor: $primary ? theme.colors.primary : 'transparent',
-    color: $primary ? '#fff' : theme.colors.foreground,
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    cursor: $loading ? 'wait' : 'pointer',
-    transition: `opacity ${theme.transitions.fast}`,
-    '&:hover': { opacity: 0.85 },
-    '& svg': {
-      width: '0.875rem',
-      height: '0.875rem',
-      animation: $loading ? `${spin} 0.8s linear infinite` : 'none',
-    },
-  }),
-)
-
-const EmptyState = styled.div({
-  textAlign: 'center',
-  padding: `${theme.spacing[16]} ${theme.spacing[4]}`,
-  color: theme.colors.mutedForeground,
-  animation: `${fadeUp} 0.4s ease both`,
-})
-
-// ─── Types ────────────────────────────────────────────────────────────────────
+// --- Types --------------------------------------------------------------------
 
 type Parent = { id: string; name: string; relationship: string }
 
@@ -394,6 +51,7 @@ type Slot = {
 
 interface ModalState {
   slotId: string
+  parentId: string
   parentName: string
   title: string
   prompt: string
@@ -403,8 +61,8 @@ interface ModalState {
 }
 
 const RELATIONSHIP_EMOJI: Record<string, string> = {
-  bố: '👨',
-  ba: '👨',
+  bố: '👴',
+  ba: '👴',
   mẹ: '👩',
   má: '👩',
   ông: '👴',
@@ -422,9 +80,8 @@ const RELATIONSHIP_COLOR: Record<string, string> = {
   other: 'oklch(0.6 0.05 100)',
 }
 
-const MOCK_USER_ID = 'demo-user'
 
-// ─── QR Modal component ───────────────────────────────────────────────────────
+// --- QR Modal component -------------------------------------------------------
 
 function QRModal({
   modal,
@@ -435,9 +92,13 @@ function QRModal({
   onClose: () => void
   onSlotUpdated: (slotId: string, title: string, prompt: string) => void
 }) {
+  const t = useTranslations('parents')
+  const router = useRouter()
   const [prompt, setPrompt] = useState(modal.prompt)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [stickerPhoto, setStickerPhoto] = useState<string | null>(null)
+  const photoInputRef = useRef<HTMLInputElement>(null)
 
   const handleSave = async () => {
     setSaving(true)
@@ -471,28 +132,64 @@ function QRModal({
     if (!modal.qrDataUrl) return
     const win = window.open('', '_blank')
     if (!win) return
-    win.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>QR – GỐC · ${modal.parentName} · Trang ${modal.pageNumber}</title>
-          <style>
-            body { margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: Georgia, serif; gap: 1.25rem; background: #fff; }
-            img { width: 240px; height: 240px; }
-            h2 { font-size: 1.25rem; color: #2d2a26; margin: 0; }
-            p { font-size: 0.875rem; color: #6b6560; text-align: center; max-width: 280px; margin: 0; line-height: 1.5; }
-            small { font-size: 0.75rem; color: #9d9690; }
-          </style>
-        </head>
-        <body>
-          <h2>GỐC · Trang ${modal.pageNumber}</h2>
-          <img src="${modal.qrDataUrl}" alt="QR Code" />
-          <p>Quét mã QR này để ghi lại câu chuyện của <strong>${modal.parentName}</strong></p>
-          ${prompt ? `<small>Chủ đề: ${prompt}</small>` : ''}
-          <script>window.onload = () => { window.print(); window.close(); }<\/script>
-        </body>
-      </html>
-    `)
+    const stickerHtml = `
+      <div class="sticker">
+        <span class="brand">G?C &middot; ROOTS</span>
+        ${stickerPhoto ? `<img class="child-photo" src="${stickerPhoto}" alt="" />` : ""}<span class="parent-name">${modal.parentName}</span>
+        <div class="qr-wrap">
+          <img class="qr" src="${modal.qrDataUrl}" alt="QR" />
+        </div>
+        <div class="divider"></div>
+        ${prompt ? `<span class="topic">&ldquo;${prompt}&rdquo;</span>` : ''}
+        <span class="instruction">Qu�t m� d? k? chuy?n<br>c�ng tr? l� AI ti?ng Vi?t</span>
+        <span class="page-num">Trang ${modal.pageNumber}</span>
+      </div>`
+    win.document.write(`<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Sticker K� ?c � ${modal.parentName} � Trang ${modal.pageNumber}</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@400;500;600&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:#ede8de;font-family:'DM Sans',system-ui,sans-serif;padding:2rem}
+    .controls{text-align:center;margin-bottom:2rem}
+    .print-btn{padding:.625rem 2rem;background:#4a7c59;color:#fff;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.9375rem;font-weight:600;cursor:pointer;letter-spacing:.02em}
+    .hint{margin-top:.5rem;font-size:.75rem;color:#7a7268;line-height:1.5}
+    .sheet-label{font-family:'Playfair Display',Georgia,serif;font-size:.875rem;color:#5a5248;text-align:center;margin-bottom:1.25rem;font-style:italic}
+    .grid{display:grid;grid-template-columns:repeat(3,200px);gap:1.5rem;justify-content:center;max-width:700px;margin:0 auto}
+    .sticker{width:200px;background:#fff;border-radius:18px;padding:1.25rem 1rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:.7rem;box-shadow:0 4px 24px rgba(0,0,0,.08),0 1px 4px rgba(0,0,0,.04);border:1.5px solid #e0d8cc;position:relative;overflow:hidden}
+    .sticker::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#5a8a6a,#a3c9a8,#5a8a6a)}
+    .brand{font-size:.5rem;font-weight:700;letter-spacing:.3em;text-transform:uppercase;color:#5a8a6a}
+    .parent-name{font-family:'Playfair Display',Georgia,serif;font-size:.9375rem;font-weight:700;color:#2d2a26;text-align:center;line-height:1.3}
+    .qr-wrap{padding:5px;border:1.5px solid #e0d8cc;border-radius:10px;background:#fff}
+    .qr{display:block;width:118px;height:118px}
+    .divider{width:30px;height:1px;background:linear-gradient(90deg,transparent,#c8bfb0,transparent)}
+    .topic{font-size:.625rem;color:#7a7268;text-align:center;font-style:italic;line-height:1.45;max-width:155px;font-family:'Playfair Display',Georgia,serif}
+    .instruction{font-size:.5625rem;color:#aaa098;text-align:center;line-height:1.6;max-width:155px}
+    .page-num{position:absolute;bottom:.5rem;right:.75rem;font-size:.5rem;color:#c8bfb0;font-family:'Playfair Display',serif;font-style:italic}
+    .child-photo{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid #e0d8cc;margin-top:-0.25rem}
+    @media print{
+      body{background:#fff;padding:.3cm}
+      .controls{display:none}
+      .grid{gap:1cm}
+      .sticker{box-shadow:none;border-color:#ccc}
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button class="print-btn" onclick="window.print()">???&nbsp; In Sticker</button>
+    <p class="hint">In tr�n gi?y decal A4 &mdash; c?t theo du?ng vi?n &mdash; d�n v�o album ?nh</p>
+  </div>
+  <p class="sheet-label">Sticker K� ?c &mdash; ${modal.parentName} &mdash; 3 b?n m?i t?</p>
+  <div class="grid">
+    ${stickerHtml}
+    ${stickerHtml}
+    ${stickerHtml}
+  </div>
+</body>
+</html>`)
     win.document.close()
   }
 
@@ -504,40 +201,112 @@ function QRModal({
         </ModalClose>
 
         <ModalTitle>
-          Trang {modal.pageNumber} · {modal.parentName}
+          {t('modal.title', { number: modal.pageNumber, name: modal.parentName })}
         </ModalTitle>
         <ModalSubtitle>
-          Mã QR vĩnh viễn — dán vào album, quét nhiều lần
+          {t('modal.subtitle')}
         </ModalSubtitle>
 
         {modal.qrDataUrl ? (
           <QRImage src={modal.qrDataUrl} alt="QR Code" />
         ) : (
           <QRPlaceholder>
-            <QrCode style={{ opacity: 0.3, width: '3rem', height: '3rem' }} />
+            <QrCode />
           </QRPlaceholder>
         )}
 
+        <StickerPhotoGroup>
+
+          <StickerHiddenInput
+
+            ref={photoInputRef}
+
+            type="file"
+
+            accept="image/*"
+
+            onChange={(e) => {
+
+              const f = e.target.files?.[0]
+
+              if (!f) return
+
+              const reader = new FileReader()
+
+              reader.onload = (ev) => setStickerPhoto(ev.target?.result as string ?? null)
+
+              reader.readAsDataURL(f)
+
+            }}
+
+          />
+
+          {stickerPhoto ? (
+
+            <StickerPhotoRow>
+
+              <StickerPhotoImg src={stickerPhoto} alt='' />
+
+              <RemoveStickerPhotoBtn
+
+                onClick={() => setStickerPhoto(null)}
+
+              >
+
+                Xoá ảnh
+
+              </RemoveStickerPhotoBtn>
+
+            </StickerPhotoRow>
+
+          ) : (
+
+            <AddStickerPhotoBtn
+
+              onClick={() => photoInputRef.current?.click()}
+
+            >
+
+              <ImagePlus size={14} />
+
+              Thêm ảnh vào sticker
+
+            </AddStickerPhotoBtn>
+
+          )}
+
+        </StickerPhotoGroup>
         <PromptEditor>
-          <PromptLabel>Câu hỏi con muốn hỏi</PromptLabel>
+          <PromptLabel>{t('modal.promptLabel')}</PromptLabel>
           <PromptTextarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
-            placeholder="VD: Kể cho con nghe về thời thơ ấu của bố..."
+            placeholder={t('modal.promptPlaceholder')}
             rows={3}
           />
         </PromptEditor>
 
         <ModalActions>
+          <ActionBtn
+            onClick={() => {
+              onClose()
+              const params = new URLSearchParams({ parentId: modal.parentId })
+              if (prompt) params.set('prompt', prompt)
+              router.push(`/app/record?${params}`)
+            }}
+          >
+            <Mic />
+            {t('modal.recordTry')}
+          </ActionBtn>
           {modal.qrDataUrl && (
             <>
               <ActionBtn onClick={handleDownload}>
                 <Download />
-                Tải về
+                {t('modal.download')}
               </ActionBtn>
               <ActionBtn onClick={handlePrint}>
                 <Printer />
-                In
+                {t('modal.print')}
               </ActionBtn>
             </>
           )}
@@ -548,7 +317,7 @@ function QRModal({
             disabled={saving}
           >
             {saved ? <Check /> : saving ? <RefreshCw /> : <Edit3 />}
-            {saved ? 'Đã lưu' : 'Lưu'}
+            {saved ? t('modal.saved') : t('modal.save')}
           </ActionBtn>
         </ModalActions>
       </ModalPanel>
@@ -556,9 +325,11 @@ function QRModal({
   )
 }
 
-// ─── Page ─────────────────────────────────────────────────────────────────────
+// --- Page ---------------------------------------------------------------------
 
 export default function ParentsPage() {
+  const t = useTranslations('parents')
+  const userId = useUserId()
   const [parents, setParents] = useState<Parent[]>([])
   const [slots, setSlots] = useState<Slot[]>([])
   const [loading, setLoading] = useState(true)
@@ -566,11 +337,12 @@ export default function ParentsPage() {
   const [creatingSlot, setCreatingSlot] = useState<string | null>(null)
 
   useEffect(() => {
+    if (!userId) return
     Promise.all([
-      fetch(`/api/parents?userId=${MOCK_USER_ID}`)
+      fetch(`/api/parents?userId=${userId}`)
         .then((r) => r.json())
         .catch(() => ({ parents: [] })),
-      fetch(`/api/slots?userId=${MOCK_USER_ID}`)
+      fetch(`/api/slots?userId=${userId}`)
         .then((r) => r.json())
         .catch(() => ({ slots: [] })),
     ])
@@ -584,6 +356,7 @@ export default function ParentsPage() {
   const handleOpenSlot = useCallback((slot: Slot) => {
     setModal({
       slotId: slot.id,
+      parentId: slot.parentId,
       parentName: slot.parentName,
       title: slot.title,
       prompt: slot.prompt,
@@ -600,9 +373,9 @@ export default function ParentsPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: MOCK_USER_ID,
+          userId: userId ?? '',
           parentId: parent.id,
-          title: `Câu chuyện với ${parent.name}`,
+      title: `${t('slotDefaultTitle', { name: parent.name })}`,
           prompt: '',
         }),
       })
@@ -624,7 +397,7 @@ export default function ParentsPage() {
       const newSlot: Slot = {
         id: slotId,
         pageNumber,
-        title: `Câu chuyện với ${parent.name}`,
+        title: t('slotDefaultTitle', { name: parent.name }),
         prompt: '',
         parentId: parent.id,
         parentName: parent.name,
@@ -636,15 +409,16 @@ export default function ParentsPage() {
 
       setModal({
         slotId,
+        parentId: parent.id,
         parentName: parent.name,
-        title: newSlot.title,
+        title: t('slotDefaultTitle', { name: parent.name }),
         prompt: '',
         pageNumber,
         qrDataUrl,
         token,
       })
     } catch {
-      alert('Không thể tạo trang album. Vui lòng thử lại.')
+      alert(t('createError'))
     } finally {
       setCreatingSlot(null)
     }
@@ -669,23 +443,51 @@ export default function ParentsPage() {
       <Page>
         <PageHeader>
           <div>
-            <PageTitle>Album gia đình</PageTitle>
-            <PageSubtitle>Mỗi trang album là một câu chuyện</PageSubtitle>
+            <PageTitle>{t('title')}</PageTitle>
+            <PageSubtitle>{t('subtitleLoading')}</PageSubtitle>
           </div>
         </PageHeader>
-        <SlotGrid>
-          {[0, 1, 2, 3].map((i) => (
-            <div
-              key={i}
-              className="skeleton"
-              style={{
-                height: '8rem',
-                borderRadius: '1.25rem',
-                animationDelay: `${i * 0.06}s`,
-              }}
-            />
-          ))}
-        </SlotGrid>
+        {[0, 1].map((pi) => (
+          <SkeletonSectionWrapper key={pi}>
+            {/* Parent section header skeleton */}
+            <SkeletonParentHeader>
+              <SkeletonCircle
+                className="skeleton"
+                style={{ animationDelay: `${pi * 0.08}s` }}
+              />
+              <SkeletonParentInfo>
+                <SkeletonLine
+                  className="skeleton"
+                  $width={pi === 0 ? '7rem' : '6rem'}
+                  style={{ animationDelay: `${pi * 0.08 + 0.04}s` }}
+                />
+                <SkeletonLine
+                  className="skeleton"
+                  $width="3.5rem"
+                  $height="0.6875rem"
+                  style={{ animationDelay: `${pi * 0.08 + 0.06}s` }}
+                />
+              </SkeletonParentInfo>
+              {/* AddSlotBtn placeholder */}
+              <SkeletonLine
+                className="skeleton"
+                $width="5.5rem"
+                $height="1.75rem"
+                style={{ flexShrink: 0, animationDelay: `${pi * 0.08 + 0.08}s` }}
+              />
+            </SkeletonParentHeader>
+            {/* Slot cards skeleton grid */}
+            <SlotGrid>
+              {[0, 1, 2].map((si) => (
+                <SkeletonSlotCard
+                  key={si}
+                  className="skeleton"
+                  style={{ animationDelay: `${(pi * 3 + si) * 0.055}s` }}
+                />
+              ))}
+            </SlotGrid>
+          </SkeletonSectionWrapper>
+        ))}
       </Page>
     )
   }
@@ -694,25 +496,17 @@ export default function ParentsPage() {
     <Page>
       <PageHeader>
         <div>
-          <PageTitle>Album gia đình</PageTitle>
+          <PageTitle>{t('title')}</PageTitle>
           <PageSubtitle>
-            Mỗi trang album là một câu chuyện — dán QR, kể mãi mãi
+            {t('subtitle')}
           </PageSubtitle>
         </div>
       </PageHeader>
 
       {parents.length === 0 ? (
         <EmptyState>
-          <Users
-            style={{
-              width: '2.5rem',
-              height: '2.5rem',
-              margin: '0 auto 1rem',
-              opacity: 0.3,
-              display: 'block',
-            }}
-          />
-          <p>Chưa có người thân nào. Thêm người thân để bắt đầu.</p>
+          <Users />
+          <p>{t('empty')}</p>
         </EmptyState>
       ) : (
         parents.map((parent, pi) => {
@@ -741,7 +535,7 @@ export default function ParentsPage() {
                   ) : (
                     <Plus />
                   )}
-                  Thêm trang
+                  {t('addPage')}
                 </AddSlotBtn>
               </ParentHeader>
 
@@ -753,21 +547,21 @@ export default function ParentsPage() {
                     onClick={() => handleOpenSlot(slot)}
                     style={{ animationDelay: `${(pi * 4 + si) * 0.05}s` }}
                   >
-                    <SlotPageNum>Trang {slot.pageNumber}</SlotPageNum>
+                    <SlotPageNum>{t('slotPage', { number: slot.pageNumber })}</SlotPageNum>
                     <SlotTitle>
-                      {slot.title || `Câu chuyện với ${slot.parentName}`}
+                      {slot.title || t('slotDefaultTitle', { name: slot.parentName })}
                     </SlotTitle>
-                    {slot.prompt && <SlotPrompt>"{slot.prompt}"</SlotPrompt>}
+                    {slot.prompt && <SlotPrompt>\u201c{slot.prompt}\u201d</SlotPrompt>}
                     <SlotBadge $hasRecording={slot.hasRecording}>
                       {slot.hasRecording ? (
                         <>
                           <BookOpen />
-                          Đã có kỷ niệm
+                          {t('recorded')}
                         </>
                       ) : (
                         <>
                           <QrCode />
-                          Chưa quét
+                          {t('notScanned')}
                         </>
                       )}
                     </SlotBadge>
@@ -785,7 +579,7 @@ export default function ParentsPage() {
                   ) : (
                     <Plus />
                   )}
-                  Trang mới
+                  {t('newPage')}
                 </AddSlotCard>
               </SlotGrid>
             </ParentSection>

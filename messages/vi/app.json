@@ -1,11 +1,11 @@
 {
   "nav": {
-    "dashboard": "Trang chủ",
+    "dashboard": "Góc Nhà",
     "record": "Ghi âm",
-    "studio": "Studio",
-    "timeline": "Dòng thời gian",
+    "studio": "Xưởng",
+    "timeline": "Thời gian",
     "feedback": "Phản hồi",
-    "parents": "Gia đình"
+    "parents": "Album"
   },
   "sidebar": {
     "parents": "Cha mẹ của tôi",

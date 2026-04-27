@@ -1,16 +1,38 @@
 {
-  "title": "Thành viên gia đình",
-  "subtitle": "Tạo QR để họ ghi lại ký ức cho bạn",
-  "addParent": "Thêm thành viên",
-  "generateQR": "Tạo QR",
-  "empty": "Chưa có thành viên nào. Thêm ngay để bắt đầu.",
-  "qrModal": {
-    "title": "In & Dán vào album",
-    "instructions": "Tải về hoặc in QR này rồi dán vào trang album vật lý",
-    "download": "Tải về",
+  "title": "Album gia \u0111\u00ecnh",
+  "subtitle": "M\u1ed7i trang album l\u00e0 m\u1ed9t c\u00e2u chuy\u1ec7n \u2014 d\u00e1n QR, k\u1ec3 m\u00e3i m\u00e3i",
+  "subtitleLoading": "M\u1ed7i trang album l\u00e0 m\u1ed9t c\u00e2u chuy\u1ec7n",
+  "empty": "Ch\u01b0a c\u00f3 ng\u01b0\u1eddi th\u00e2n n\u00e0o. Th\u00eam ng\u01b0\u1eddi th\u00e2n \u0111\u1ec3 b\u1eaft \u0111\u1ea7u.",
+  "addPage": "Th\u00eam trang",
+  "newPage": "Trang m\u1edbi",
+  "slotPage": "Trang {number}",
+  "slotDefaultTitle": "C\u00e2u chuy\u1ec7n v\u1edbi {name}",
+  "recorded": "\u0110\u00e3 c\u00f3 k\u1ef7 ni\u1ec7m",
+  "notScanned": "Ch\u01b0a qu\u00e9t",
+  "createError": "Kh\u00f4ng th\u1ec3 t\u1ea1o trang album. Vui l\u00f2ng th\u1eed l\u1ea1i.",
+  "modal": {
+    "title": "Trang {number} \u00b7 {name}",
+    "subtitle": "M\u00e3 QR v\u0129nh vi\u1ec5n \u2014 d\u00e1n v\u00e0o album, qu\u00e9t nhi\u1ec1u l\u1ea7n",
+    "promptLabel": "C\u00e2u h\u1ecfi con mu\u1ed1n h\u1ecfi",
+    "promptPlaceholder": "VD: K\u1ec3 cho con nghe v\u1ec1 th\u1eddi th\u01a1 \u1ea5u c\u1ee7a b\u1ed1...",
+    "recordTry": "Ghi \u00e2m th\u1eed",
+    "download": "T\u1ea3i v\u1ec1",
     "print": "In",
-    "expires": "Hết hạn sau 72 giờ",
-    "close": "Đóng",
-    "generating": "Đang tạo QR…"
+    "save": "L\u01b0u",
+    "saved": "\u0110\u00e3 l\u01b0u",
+    "printTitle": "G\u1ed0C \u00b7 Trang {number}",
+    "printCaption": "Qu\u00e9t m\u00e3 QR n\u00e0y \u0111\u1ec3 ghi l\u1ea1i c\u00e2u chuy\u1ec7n c\u1ee7a {name}",
+    "printTopic": "Ch\u1ee7 \u0111\u1ec1: {prompt}"
+  },
+  "addParent": "Th\u00eam th\u00e0nh vi\u00ean",
+  "generateQR": "T\u1ea1o QR",
+  "qrModal": {
+    "title": "In & D\u00e1n v\u00e0o album",
+    "instructions": "T\u1ea3i v\u1ec1 ho\u1eb7c in QR n\u00e0y r\u1ed3i d\u00e1n v\u00e0o trang album v\u1eadt l\u00fd",
+    "download": "T\u1ea3i v\u1ec1",
+    "print": "In",
+    "expires": "H\u1ebft h\u1ea1n sau 72 gi\u1edd",
+    "close": "\u0110\u00f3ng",
+    "generating": "\u0110ang t\u1ea1o QR\u2026"
   }
 }

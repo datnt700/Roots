@@ -75,11 +75,12 @@ async function main() {
   console.log('🌱  Seeding database...\n')
 
   // Clean existing seed data
-  await db.memory.deleteMany({})
-  await db.parentSession.deleteMany({})
+  await db.$executeRaw`DELETE FROM memory_slots WHERE TRUE`
+  await db.$executeRaw`DELETE FROM memories WHERE TRUE`
   await db.parent.deleteMany({})
   await db.account.deleteMany({})
   await db.user.deleteMany({ where: { emailHash: hashEmail('dev@roots.app') } })
+  await db.user.deleteMany({ where: { id: 'demo-user' } })
 
   // Create dev user
   const rawEmail = 'dev@roots.app'
@@ -93,6 +94,20 @@ async function main() {
     },
   })
   console.log(`✅  User created: ${rawEmail} (id: ${user.id})`)
+
+  // Create demo user with fixed ID (used by MOCK_USER_ID in dev pages)
+  const demoEmail = 'demo@roots.app'
+  const demoUser = await db.user.create({
+    data: {
+      id: 'demo-user',
+      email: encrypt(demoEmail),
+      emailHash: hashEmail(demoEmail),
+      displayName: encrypt('Demo User'),
+      passwordHash: hashPassword('password123'),
+      locale: 'vi',
+    },
+  })
+  console.log(`✅  Demo user created: ${demoEmail} (id: ${demoUser.id})`)
 
   // Create parents
   const parents = await Promise.all([

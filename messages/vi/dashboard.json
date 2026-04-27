@@ -21,7 +21,9 @@
     "newRecording": "Ghi âm mới",
     "openStudio": "Mở Studio",
     "viewTimeline": "Xem dòng thời gian",
-    "seeFeedback": "Xem phản hồi"
+    "seeFeedback": "Xem phản hồi",
+    "exportData": "Xuất dữ liệu"
   },
-  "pendingFeedback": "phản hồi đang chờ"
+  "pendingFeedback": "phản hồi đang chờ",
+  "untitledMemory": "Ký ức chưa đặt tên"
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { encrypt, encryptOptional } from '@/lib/crypto'
+import { decrypt, encryptOptional } from '@/lib/crypto'
 import { logger } from '@/lib/logger'
 
 export async function GET(request: Request) {
@@ -13,10 +13,59 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'userId is required' }, { status: 400 })
     }
 
-    const memories = await db.memory.findMany({
+    const rows = await db.memory.findMany({
       where: { userId },
-      include: { transcript: true, reflection: true },
+      include: {
+        parent: true,
+        transcript: { include: { aiSummary: true } },
+        reflection: true,
+      },
       orderBy: { createdAt: 'desc' },
+    })
+
+    const memories = rows.map((m) => {
+      // Decrypt parent name
+      let parentName = m.parent?.name ?? ''
+      try { if (parentName) parentName = decrypt(parentName) } catch { /* plaintext in dev */ }
+
+      // Decrypt transcript
+      let transcriptContent: string | null = null
+      if (m.transcript?.content) {
+        try { transcriptContent = decrypt(m.transcript.content) } catch { transcriptContent = m.transcript.content }
+      }
+
+      // Decrypt AI summary fields
+      let aiTitle: string | null = null
+      let aiSummary: string | null = null
+      let aiTags: string[] = []
+      if (m.transcript?.aiSummary) {
+        const s = m.transcript.aiSummary
+        try { aiTitle = decrypt(s.title) } catch { aiTitle = s.title }
+        try { aiSummary = decrypt(s.summary) } catch { aiSummary = s.summary }
+        try { aiTags = JSON.parse(JSON.stringify(s.tags)) as string[] } catch { aiTags = [] }
+      }
+
+      // Decrypt reflection
+      let reflection: string | null = null
+      if (m.reflection?.content) {
+        try { reflection = decrypt(m.reflection.content) } catch { reflection = m.reflection.content }
+      }
+
+      return {
+        id: m.id,
+        prompt: m.prompt ?? '',
+        parentName,
+        relationship: m.parent?.relationship ?? '',
+        decade: m.decade ?? '',
+        isProcessed: m.isProcessed,
+        hasPhoto: !!m.photoKey,
+        transcript: transcriptContent,
+        reflection,
+        aiTitle,
+        aiSummary,
+        aiTags,
+        createdAt: m.createdAt.toISOString(),
+      }
     })
 
     logger.debug('memories', 'Fetched memories', { userId, count: memories.length })
@@ -37,13 +86,13 @@ export async function POST(request: Request) {
     const { userId, parentId, prompt, decade, audioKey, photoKey } = body as {
       userId: string
       parentId: string
-      prompt: string
+      prompt?: string
       decade?: string
-      audioKey?: string // raw S3 key from /api/upload — encrypted here before DB write
-      photoKey?: string // raw S3 key from /api/upload — encrypted here before DB write
+      audioKey?: string
+      photoKey?: string
     }
 
-    if (!userId || !parentId || !prompt) {
+    if (!userId || !parentId) {
       logger.warn('memories', 'POST /memories missing required fields', { userId, parentId })
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -55,7 +104,7 @@ export async function POST(request: Request) {
       data: {
         userId,
         parentId,
-        prompt,
+        prompt: prompt ?? '',
         decade: decade ?? null,
         // Encrypt S3 keys before storage (biometric-adjacent per Decree 13/2023)
         audioKey: encryptOptional(audioKey),

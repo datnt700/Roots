@@ -1,4 +1,8 @@
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
 import createNextIntlPlugin from 'next-intl/plugin'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
@@ -12,6 +16,9 @@ const nextConfig = {
   },
   experimental: {
     viewTransition: true,
+  },
+  turbopack: {
+    root: __dirname,
   },
 }
 

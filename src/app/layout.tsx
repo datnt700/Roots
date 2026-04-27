@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { NextIntlClientProvider } from 'next-intl'
 import { getLocale, getMessages } from 'next-intl/server'
 import { EmotionRegistry } from '@/components/emotion-registry'
+import { SessionProvider } from '@/components/session-provider'
 import './globals.css'
 
 const dmSans = DM_Sans({
@@ -54,9 +55,11 @@ export default async function RootLayout({
     <html lang={locale} suppressHydrationWarning>
       <body className={`${dmSans.variable} ${playfair.variable}`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <EmotionRegistry>
-            {children}
-          </EmotionRegistry>
+          <SessionProvider>
+            <EmotionRegistry>
+              {children}
+            </EmotionRegistry>
+          </SessionProvider>
         </NextIntlClientProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

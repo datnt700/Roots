@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { encryptOptional } from '@/lib/crypto'
+import { decrypt, encryptOptional } from '@/lib/crypto'
 import { logger } from '@/lib/logger'
 
 export async function GET(request: Request) {
@@ -13,10 +13,35 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'userId is required' }, { status: 400 })
     }
 
-    const feedback = await db.feedback.findMany({
+    const rows = await db.feedback.findMany({
       where: { memory: { userId } },
-      include: { memory: true },
+      include: { memory: { include: { parent: true } } },
       orderBy: { createdAt: 'desc' },
+    })
+
+    const feedback = rows.map((f) => {
+      let parentName = f.memory.parent?.name ?? ''
+      try { if (parentName) parentName = decrypt(parentName) } catch { /* plaintext in dev */ }
+
+      let content: string | null = null
+      if (f.content) {
+        try { content = decrypt(f.content) } catch { content = f.content }
+      }
+
+      const daysAgo = Math.floor((Date.now() - f.createdAt.getTime()) / 86400000)
+      const dateLabel = daysAgo === 0 ? 'Hôm nay' : daysAgo === 1 ? '1 ngày trước' : `${daysAgo} ngày trước`
+
+      return {
+        id: f.id,
+        memoryId: f.memoryId,
+        parentName,
+        relationship: f.memory.parent?.relationship ?? '',
+        memoryPrompt: f.memory.prompt ?? '',
+        date: dateLabel,
+        isPlayed: f.isPlayed,
+        response: content,
+        createdAt: f.createdAt.toISOString(),
+      }
     })
 
     logger.debug('feedback', 'Fetched feedback', { userId, count: feedback.length })

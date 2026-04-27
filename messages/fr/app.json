@@ -2,10 +2,10 @@
   "nav": {
     "dashboard": "Accueil",
     "record": "Enregistrer",
-    "studio": "Studio",
+    "studio": "Atelier",
     "timeline": "Chronologie",
     "feedback": "Retours",
-    "parents": "Famille"
+    "parents": "Album"
   },
   "sidebar": {
     "parents": "Mes Parents",

@@ -21,7 +21,9 @@
     "newRecording": "New Recording",
     "openStudio": "Open Studio",
     "viewTimeline": "View Timeline",
-    "seeFeedback": "See Feedback"
+    "seeFeedback": "See Feedback",
+    "exportData": "Export Data"
   },
-  "pendingFeedback": "responses waiting"
+  "pendingFeedback": "responses waiting",
+  "untitledMemory": "Untitled memory"
 }

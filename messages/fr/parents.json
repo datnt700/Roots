@@ -1,16 +1,38 @@
 {
-  "title": "Membres de la famille",
-  "subtitle": "Créez des QR codes pour qu'ils enregistrent des souvenirs",
+  "title": "Album familial",
+  "subtitle": "Chaque page d\u2019album est une histoire \u2014 collez un QR, racontez pour toujours",
+  "subtitleLoading": "Chaque page d\u2019album est une histoire",
+  "empty": "Aucun membre de la famille. Ajoutez-en un pour commencer.",
+  "addPage": "Ajouter une page",
+  "newPage": "Nouvelle page",
+  "slotPage": "Page {number}",
+  "slotDefaultTitle": "Histoire avec {name}",
+  "recorded": "Souvenir enregistr\u00e9",
+  "notScanned": "Pas encore scann\u00e9",
+  "createError": "Impossible de cr\u00e9er la page. Veuillez r\u00e9essayer.",
+  "modal": {
+    "title": "Page {number} \u00b7 {name}",
+    "subtitle": "QR permanent \u2014 collez dans l\u2019album, scannez autant que vous voulez",
+    "promptLabel": "Question \u00e0 poser",
+    "promptPlaceholder": "Ex\u00a0: Parlez-moi de votre maison d\u2019enfance...",
+    "recordTry": "Essayer l\u2019enregistrement",
+    "download": "T\u00e9l\u00e9charger",
+    "print": "Imprimer",
+    "save": "Enregistrer",
+    "saved": "Enregistr\u00e9",
+    "printTitle": "G\u1ed0C \u00b7 Page {number}",
+    "printCaption": "Scannez ce QR pour enregistrer l\u2019histoire de {name}",
+    "printTopic": "Sujet\u00a0: {prompt}"
+  },
   "addParent": "Ajouter un membre",
-  "generateQR": "Générer QR",
-  "empty": "Aucun membre encore. Ajoutez-en un pour commencer.",
+  "generateQR": "G\u00e9n\u00e9rer QR",
   "qrModal": {
     "title": "Imprimer et coller",
-    "instructions": "Téléchargez ou imprimez ce QR et collez-le dans votre album",
-    "download": "Télécharger",
+    "instructions": "T\u00e9l\u00e9chargez ou imprimez ce QR et collez-le dans votre album",
+    "download": "T\u00e9l\u00e9charger",
     "print": "Imprimer",
     "expires": "Expire dans 72 heures",
     "close": "Fermer",
-    "generating": "Génération du QR…"
+    "generating": "G\u00e9n\u00e9ration du QR\u2026"
   }
 }

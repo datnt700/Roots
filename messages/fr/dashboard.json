@@ -21,7 +21,9 @@
     "newRecording": "Nouvel enregistrement",
     "openStudio": "Ouvrir le Studio",
     "viewTimeline": "Voir la chronologie",
-    "seeFeedback": "Voir les retours"
+    "seeFeedback": "Voir les retours",
+    "exportData": "Exporter les données"
   },
-  "pendingFeedback": "réponses en attente"
+  "pendingFeedback": "réponses en attente",
+  "untitledMemory": "Souvenir sans titre"
 }

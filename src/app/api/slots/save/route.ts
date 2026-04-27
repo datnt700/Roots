@@ -20,6 +20,7 @@ import { db } from '@/lib/db'
 import { hashToken, encrypt, encryptOptional, decrypt } from '@/lib/crypto'
 import { uploadFile } from '@/lib/storage'
 import { logger } from '@/lib/logger'
+import { sendNewMemoryEmail } from '@/lib/email'
 
 export const runtime = 'nodejs'
 export const maxDuration = 60
@@ -118,6 +119,19 @@ export async function POST(request: Request) {
       hasTranscript: !!parentText,
       ms: Date.now() - t0,
     })
+
+    // Fire-and-forget: notify the student by email
+    const studentEmail = decrypt(slot.parent.user.email)
+    const studentName = decrypt(slot.parent.user.displayName)
+    sendNewMemoryEmail({
+      to: studentEmail,
+      studentName,
+      parentName,
+      relationship: slot.parent.relationship,
+      decade: null,
+      memoryId: memory.id,
+    }).catch(() => {})
+
     return NextResponse.json({ memoryId: memory.id }, { status: 201 })
   } catch (err) {
     logger.error(
