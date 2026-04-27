@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
 import { Button } from '@/components/ui/button'
-import { ArrowDown, Play } from 'lucide-react'
+import { ArrowDown, Play, X } from 'lucide-react'
 import { theme } from '@/lib/theme'
 import { useMessages } from 'next-intl'
 
@@ -36,6 +36,17 @@ const pulse = keyframes`
   }
   50% {
     opacity: 0.5;
+  }
+`
+
+const popIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(1rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 `
 
@@ -227,9 +238,82 @@ const ScrollDotInner = styled.div({
   animation: `${pulse} 2s cubic-bezier(0.4, 0, 0.6, 1) infinite`,
 })
 
+const ModalOverlay = styled.div({
+  position: 'fixed',
+  inset: 0,
+  zIndex: 60,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: theme.spacing[6],
+  backgroundColor: 'rgba(28, 24, 20, 0.6)',
+  backdropFilter: 'blur(6px)',
+})
+
+const ModalCard = styled.div({
+  position: 'relative',
+  width: '100%',
+  maxWidth: '48rem',
+  maxHeight: '82vh',
+  overflowY: 'auto',
+  backgroundColor: theme.colors.card,
+  color: theme.colors.foreground,
+  border: `1px solid ${theme.colors.border}`,
+  borderRadius: theme.radius['2xl'],
+  boxShadow: theme.shadows.lg,
+  padding: theme.spacing[8],
+  animation: `${popIn} ${theme.transitions.normal}`,
+  '@media (min-width: 768px)': {
+    padding: theme.spacing[10],
+  },
+})
+
+const ModalCloseButton = styled.button({
+  position: 'absolute',
+  top: theme.spacing[4],
+  right: theme.spacing[4],
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '2.25rem',
+  height: '2.25rem',
+  borderRadius: theme.radius.full,
+  border: `1px solid ${theme.colors.border}`,
+  backgroundColor: theme.colors.background,
+  color: theme.colors.mutedForeground,
+  cursor: 'pointer',
+  transition: `all ${theme.transitions.fast}`,
+  '&:hover': {
+    color: theme.colors.foreground,
+    backgroundColor: theme.colors.muted,
+  },
+})
+
+const ModalTitle = styled.h3({
+  fontFamily: theme.fonts.serif,
+  fontSize: '1.5rem',
+  color: theme.colors.foreground,
+  marginBottom: theme.spacing[6],
+  paddingRight: theme.spacing[10],
+})
+
+const ModalParagraph = styled.p({
+  marginBottom: theme.spacing[5],
+  color: theme.colors.mutedForeground,
+  lineHeight: 1.8,
+  fontSize: '1rem',
+  '&:last-of-type': {
+    marginBottom: 0,
+  },
+})
+
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
+  const [isStoryOpen, setIsStoryOpen] = useState(false)
   const messages = useMessages()
+  const storyParagraphs = String(messages.hero.secondaryPopupContent).split(
+    '\n\n',
+  )
 
   useEffect(() => {
     const section = sectionRef.current
@@ -248,6 +332,32 @@ export function HeroSection() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (!isStoryOpen) return
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsStoryOpen(false)
+      }
+    }
+
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', handleEscape)
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+      window.removeEventListener('keydown', handleEscape)
+    }
+  }, [isStoryOpen])
+
+  const scrollToProblem = () => {
+    const problemSection = document.getElementById('problem')
+    if (problemSection) {
+      problemSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   return (
     <Section ref={sectionRef}>
@@ -308,13 +418,17 @@ export function HeroSection() {
           <Description>{messages.hero.description}</Description>
 
           <ButtonGroup>
-            <PrimaryButton size="lg">
+            <PrimaryButton size="lg" onClick={scrollToProblem}>
               {messages.hero.primaryButton}
               <ArrowDown
                 style={{ marginLeft: '0.5rem', width: 16, height: 16 }}
               />
             </PrimaryButton>
-            <SecondaryButton variant="outline" size="lg">
+            <SecondaryButton
+              variant="outline"
+              size="lg"
+              onClick={() => setIsStoryOpen(true)}
+            >
               <Play style={{ marginRight: '0.5rem', width: 16, height: 16 }} />
               {messages.hero.secondaryButton}
             </SecondaryButton>
@@ -327,6 +441,33 @@ export function HeroSection() {
           </ScrollDot>
         </ScrollIndicator>
       </Content>
+
+      {isStoryOpen ? (
+        <ModalOverlay
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="hero-story-modal-title"
+          onClick={() => setIsStoryOpen(false)}
+        >
+          <ModalCard onClick={(event) => event.stopPropagation()}>
+            <ModalCloseButton
+              type="button"
+              onClick={() => setIsStoryOpen(false)}
+              aria-label={messages.hero.secondaryPopupCloseLabel}
+            >
+              <X size={16} />
+            </ModalCloseButton>
+            <ModalTitle id="hero-story-modal-title">
+              {messages.hero.secondaryPopupTitle}
+            </ModalTitle>
+            {storyParagraphs.map((paragraph, index) => (
+              <ModalParagraph key={`story-paragraph-${index}`}>
+                {paragraph}
+              </ModalParagraph>
+            ))}
+          </ModalCard>
+        </ModalOverlay>
+      ) : null}
     </Section>
   )
 }

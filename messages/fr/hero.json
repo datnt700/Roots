@@ -5,5 +5,8 @@
   "headlineHighlight": "mais les âmes se touchent toujours.",
   "description": "Transformer des milliers de kilomètres en moments de compréhension. Nous aidons les étudiants internationaux à préserver la voix et les chapitres inédits de leurs parents avant que le temps n'efface tout.",
   "primaryButton": "Commencer le Voyage de Connexion",
-  "secondaryButton": "Le Calcul du Temps"
+  "secondaryButton": "Le Calcul du Temps",
+  "secondaryPopupTitle": "Pourquoi j'ai créé ce projet",
+  "secondaryPopupContent": "Je viens d'une famille de classe moyenne à Hanoï. Nous ne manquions de rien, sauf de lien affectif. Même lorsque je vivais près de ma famille, je ne ressentais pas vraiment ce fil émotionnel. J'avais même, par moments, une vision négative de l'idée même de la famille.\n\nCe n'est qu'après mon installation en France, au fil des hauts, des bas et de longues périodes de solitude, que j'ai commencé à penser davantage à ma famille. Les questions revenaient sans cesse: Pourquoi suis-je comme ça? Pourquoi suis-je parfois si strict avec eux ? Et pourquoi ai-je tant voulu les quitter autrefois?\n\nEn essayant de relire ma vie depuis l'enfance, j'ai eu un choc: tout ce que je possède aujourd'hui vient du meilleur que mes parents ont économisé et sacrifié pour moi. Cette prise de conscience m'a poussé à renouer avec eux, surtout avec mon père, avec qui je n'avais jamais réussi à tenir une conversation de plus de 30 secondes.\n\nLe mur que j'avais construit entre mon père et moi était solide. Je n'ai pas pu m'ouvrir d'un seul coup, alors ce projet est devenu ma manière de prendre un marteau et de commencer à le briser. Si vous cherchez vous aussi le chemin du retour vers votre famille, nous marcherons ensemble.",
+  "secondaryPopupCloseLabel": "Fermer la fenêtre"
 }

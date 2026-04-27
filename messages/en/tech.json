@@ -3,15 +3,41 @@
   "sectionTitle": "Family Heritage Connection Solution",
   "sectionDescription": "The perfect blend of traditional physical albums and modern technology to fully preserve life stories.",
   "features": [
-    { "title": "Phygital Bridge", "description": "Premium physical album with unique QR codes, allowing parents to take photos and record stories with a single touch.", "status": "MVP" },
-    { "title": "Memory Management System", "description": "Gives the child the role of 'Editor-in-Chief' to organize, label, and add emotions to each memory fragment.", "status": "Core" },
-    { "title": "Legacy Timeline", "description": "Customizable timeline interface, weaving scattered storytelling fragments into a continuous family narrative.", "status": "Core" },
-    { "title": "Future Sharing Mode", "description": "Set access rights for future generations, turning memories into a living 'digital testament' for grandchildren anywhere.", "status": "Legacy" }
+    {
+      "title": "Phygital Bridge",
+      "description": "A set of 50 psychological questions combined with the \"Your Own Questions\" feature. This is a premium physical product that helps break the ice. Children can customize questions on the App to print/send to parents, making each deck a limited edition version unique to that family.",
+      "status": "Intro"
+    },
+    {
+      "title": "Empathetic AI Assistant",
+      "description": "An empathetic AI assistant that personalizes the connection journey. Based on the data already shared, the AI proactively suggests deeper follow-up questions or connects with current news to 'spark' the most natural storytelling.",
+      "status": "Sustain"
+    },
+    {
+      "title": "Memory Editing",
+      "description": "Provides 'Editor-in-Chief' rights to the child combined with an AI Autopilot. The system automatically transcribes audio to text, corrects typos, summarizes key points, and suggests arranging memories in Chronological Order. The child only needs to review or lightly tweak to complete the memoir.",
+      "status": "Core"
+    },
+    {
+      "title": "Memory Revival",
+      "description": "An intuitive timeline interface that displays memories in a 'Multi-layered' structure: Restored photos (Visual) + Noise-filtered narration (Auditory) + Edited memoir (Linguistic). Integrates map view by location and emotional themes.",
+      "status": "Core"
+    },
+    {
+      "title": "Absolute Security",
+      "description": "An architecture of absolute security: All audio and image data is end-to-end encrypted (E2EE). Even Roots' technical team does not have the keys to decrypt, ensuring family secrets are inviolable.",
+      "status": "Security"
+    },
+    {
+      "title": "Future Sharing Mode",
+      "description": "Set up data inheritance rights for future generations (grandchildren, great-grandchildren). When a child stops using it, the legacy still has mechanisms for exporting or transferring administrative rights, ensuring parents' stories are never 'futurized' or lost.",
+      "status": "Legacy"
+    }
   ],
   "marketLabel": "Opportunity for the Expat Community",
   "marketTitle": "Why the time to act is now",
   "metrics": [
-    { "value": "500k+", "label": "Vietnamese students worldwide" },
+    { "value": "5M+", "label": "Vietnamese people abroad" },
     { "value": "100%", "label": "Time cannot be reversed" },
     { "value": "0", "label": "Reason to delay any longer" }
   ],

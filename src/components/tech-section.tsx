@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from 'react'
 import styled from '@emotion/styled'
-import { Smartphone, Cpu, Image, Mic, Lock, Cloud } from 'lucide-react'
+import { Cable, Cpu, Image, Mic, Lock, Brain } from 'lucide-react'
 import { theme } from '@/lib/theme'
 import { useMessages } from 'next-intl'
 
-const techIcons = [Smartphone, Cloud, Mic, Image, Cpu, Lock]
+const techIcons = [Cable, Brain, Mic, Image, Lock, Cpu]
 
 const Section = styled.section({
   position: 'relative',

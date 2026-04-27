@@ -3,15 +3,41 @@
   "sectionTitle": "Solution de Connexion à l'Héritage Familial",
   "sectionDescription": "La combinaison parfaite entre albums physiques traditionnels et technologie moderne pour préserver pleinement les histoires de vie.",
   "features": [
-    { "title": "Pont Phygital", "description": "Album physique premium avec codes QR uniques, permettant aux parents de prendre des photos et d'enregistrer des histoires d'un seul geste.", "status": "MVP" },
-    { "title": "Système de Gestion de Mémoire", "description": "Donne à l'enfant le rôle de 'Rédacteur en chef' pour organiser, étiqueter et ajouter des émotions à chaque fragment de souvenir.", "status": "Core" },
-    { "title": "Chronologie de l'Héritage", "description": "Interface chronologique personnalisable, reliant les histoires éparpillées en un récit familial continu.", "status": "Core" },
-    { "title": "Mode de Partage Futur", "description": "Définissez l'accès pour les générations futures, transformant les souvenirs en un 'testament numérique' vivant pour les petits-enfants partout.", "status": "Héritage" }
+    {
+      "title": "Pont Phygital",
+      "description": "Un ensemble de 50 questions psychologiques combiné à la fonctionnalité \"Vos Propres Questions\". Il s'agit d'un produit physique premium qui aide à briser la glace. Les enfants peuvent personnaliser les questions sur l'App pour les imprimer/envoyer aux parents, faisant de chaque deck une version limitée unique à cette famille.",
+      "status": "Intro"
+    },
+    {
+      "title": "Assistant IA Empathique",
+      "description": "Un assistant IA empathique qui personnalise le parcours de connexion. Basé sur les données déjà partagées, l'IA suggère de manière proactive des questions de suivi plus approfondies ou se connecte avec les actualités pour 'susciter' le récit le plus naturel.",
+      "status": "Sustain"
+    },
+    {
+      "title": "Édition de Souvenirs",
+      "description": "Fournit des droits de 'Rédacteur en Chef' à l'enfant combinés à un AI Autopilot. Le système transcrit automatiquement l'audio en texte, corrige les fautes de frappe, résume les points clés et suggère d'organiser les souvenirs en ordre chronologique. L'enfant n'a qu'à revoir ou ajuster légèrement pour compléter le mémoire.",
+      "status": "Core"
+    },
+    {
+      "title": "Renaissance des Souvenirs",
+      "description": "Une interface de timeline intuitive qui affiche les souvenirs dans une structure 'Multicouche': Photos restaurées (Visuel) + Narration filtrée (Auditif) + Mémoire édité (Linguistique). Intègre une vue par carte par lieu et thèmes émotionnels.",
+      "status": "Core"
+    },
+    {
+      "title": "Sécurité Absolue",
+      "description": "Une architecture de sécurité absolue: Toutes les données audio et image sont cryptées de bout en bout (E2EE). Même l'équipe technique de Roots n'a pas les clés pour déchiffrer, garantissant que les secrets familiaux sont inviolables.",
+      "status": "Security"
+    },
+    {
+      "title": "Mode Partage Futur",
+      "description": "Configurez les droits d'héritage des données pour les générations futures (petits-enfants, arrière-petits-enfants). Lorsqu'un enfant cesse de l'utiliser, l'héritage dispose toujours de mécanismes d'exportation ou de transfert des droits administratifs, garantissant que les histoires des parents ne sont jamais 'futurisées' ou perdues.",
+      "status": "Legacy"
+    }
   ],
   "marketLabel": "Opportunité pour la Communauté Expatriée",
   "marketTitle": "Pourquoi c'est le moment d'agir",
   "metrics": [
-    { "value": "500k+", "label": "Étudiants vietnamiens dans le monde" },
+    { "value": "5M+", "label": "Personnes vietnamiennes à l'étranger" },
     { "value": "100%", "label": "Le temps ne peut pas faire marche arrière" },
     { "value": "0", "label": "Raison d'attendre plus longtemps" }
   ],

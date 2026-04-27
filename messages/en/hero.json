@@ -5,5 +5,8 @@
   "headlineHighlight": "yet souls still touch.",
   "description": "Turn thousands of miles into moments of understanding. We help international students preserve the voices and untold chapters of their parents before time erases everything.",
   "primaryButton": "Begin the Connection Journey",
-  "secondaryButton": "The Time Equation"
+  "secondaryButton": "The Time Equation",
+  "secondaryPopupTitle": "Why I Built This Project",
+  "secondaryPopupContent": "I come from a middle-class family in Hanoi. We had what we needed, except emotional connection. Even when I lived close to my family, I could not really feel that bond. At times, I even held a negative view of the very idea of family.\n\nOnly after moving to France for life and work, through many ups and downs and long moments alone, did I start thinking more about my family. Questions kept circling in my mind: Why am I like this? Why am I sometimes so strict with them? And why did I once long so much to leave them behind?\n\nWhen I tried to revisit my life from childhood, I was shaken by one realization: everything I have today came from the very best my parents could sacrifice to give me. That pushed me to reconnect with them, especially my father, the person I had never been able to talk with for more than 30 seconds.\n\nThe wall I built between my father and me was strong. I could not open up right away, so this project became my way of picking up a hammer and starting to break that wall down. If you are also searching for your way back to family, we will walk together.",
+  "secondaryPopupCloseLabel": "Close popup"
 }

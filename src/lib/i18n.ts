@@ -290,7 +290,7 @@ export const translations: Record<Locale, TranslationSchema> = {
       marketLabel: 'Opportunity for the Expat Community',
       marketTitle: 'Why the time to act is now',
       metrics: [
-        { value: '500k+', label: 'Vietnamese students worldwide' },
+        { value: '5M+', label: 'Vietnamese people abroad' },
         { value: '100%', label: 'Time cannot be reversed' },
         {
           value: '0',
@@ -354,21 +354,21 @@ export const translations: Record<Locale, TranslationSchema> = {
         {
           title: 'Con số 20 hữu hạn',
           description:
-            'Nếu mỗi năm bạn về một lần, bạn có thể chỉ còn đúng 20 lần được ngồi ăn cơm cùng cha mẹ. Mỗi năm trôi qua là một cơ hội vĩnh viễn mất đi.',
+            'Thống kê cho thấy một người Việt tại hải ngoại trung bình chỉ về thăm nhà 1 lần/năm. Nếu cha mẹ đã ngoài 60, thực tế bạn chỉ còn đúng 20 lần được trực tiếp ngồi chung mâm cơm. Mỗi chuyến bay khứ hồi là một con số bị trừ đi, không bao giờ lấy lại được.',
           quote:
             'Tôi bàng hoàng nhận ra mình chỉ còn chưa đầy 30 ngày thực sự ở bên cha mẹ trong suốt phần đời còn lại.',
         },
         {
           title: 'Nỗi sợ "Người lạ quen thuộc"',
           description:
-            'Zalo vẫn báo tin nhắn, FaceTime vẫn thấy mặt, nhưng bạn dần không còn biết cha mẹ đang thực sự nghĩ gì. Bạn đang mất họ ngay khi họ vẫn còn sống.',
+            '90% nội dung các cuộc gọi về nhà hiện nay chỉ xoay quanh: "Ăn cơm chưa?", "Hôm nay thế nào?". Chúng ta nhìn thấy mặt nhau qua màn hình độ phân giải cao, nhưng lại hoàn toàn "mù chữ" về thế giới nội tâm của cha mẹ. Khoảng cách địa lý đang dần biến cha mẹ thành "những người lạ quen thuộc"',
           quote:
-            'Sợ nhất là khi trở về, tôi nhận ra mình đã bỏ lỡ cả một chương đời quan trọng nhất của mẹ.',
+            'Đau đớn nhất không phải là xa cách, mà là khi FaceTime vẫn sáng đèn nhưng chúng tôi chẳng còn biết nói gì sâu sắc với nhau.',
         },
         {
           title: 'Tiếng vọng trống rỗng',
           description:
-            'Các ứng dụng nhắn tin chỉ là công cụ liên lạc nhanh, không phải nơi lưu giữ báu vật. Một ngày nào đó, bạn sẽ khao khát được nghe lại một lời dặn dò, nhưng chỉ còn là im lặng.',
+            'Trung bình một người già Việt Nam sở hữu hàng nghìn câu chuyện về thời cuộc, bài học xương máu và ký ức dòng họ. Tuy nhiên, hơn 80% số đó không bao giờ được ghi chép lại. Khi một người già nằm xuống, một "thư viện di sản" bị thiêu rụi. Zalo hay Facebook không được thiết kế để lưu giữ báu vật, chúng chỉ là những "dòng thác" trôi đi không để lại dấu vết.',
           quote:
             'Lướt lại tin nhắn cũ không giống như được nghe giọng nói ấm áp của cha.',
         },
@@ -483,8 +483,7 @@ export const translations: Record<Locale, TranslationSchema> = {
     tech: {
       sectionLabel: 'Tính năng cốt lõi',
       sectionTitle: 'Giải pháp kết nối di sản gia đình',
-      sectionDescription:
-        'Sự kết hợp hoàn hảo giữa Album vật lý truyền thống và công nghệ hiện đại, giúp lưu giữ những câu chuyện đời người một cách trọn vẹn nhất.',
+      sectionDescription: '"/bảo tàng số/"\' đầu tiên cho gia đình Việt',
       features: [
         {
           title: 'Phygital Bridge',
@@ -514,7 +513,7 @@ export const translations: Record<Locale, TranslationSchema> = {
       marketLabel: 'Cơ hội cho cộng đồng xa xứ',
       marketTitle: 'Vì sao bây giờ là lúc phải hành động',
       metrics: [
-        { value: '500k+', label: 'Du học sinh Việt Nam toàn cầu' },
+        { value: '5M+', label: 'Người Việt Nam ở nước ngoài' },
         { value: '100%', label: 'Thời gian không thể quay lại' },
         {
           value: '0',
@@ -737,7 +736,7 @@ export const translations: Record<Locale, TranslationSchema> = {
       marketLabel: 'Opportunité pour la Communauté Expatriée',
       marketTitle: 'Pourquoi c’est le moment d’agir',
       metrics: [
-        { value: '500k+', label: 'Étudiants vietnamiens dans le monde' },
+        { value: '5M+', label: 'Personnes vietnamiennes à l’étranger' },
         { value: '100%', label: 'Le temps ne peut pas faire marche arrière' },
         {
           value: '0',
