@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { Smartphone, Cpu, Image, Mic, Lock, Cloud } from 'lucide-react'
+import { Cable, Cpu, Image, Mic, Lock, Brain } from 'lucide-react'
 import { theme } from '@/lib/theme'
 import { useTranslations } from 'next-intl'
 import {
@@ -11,7 +11,7 @@ import {
   MetricValue, MetricLabel, MarketFooter, MarketText,
 } from './tech-section.styles'
 
-const techIcons = [Smartphone, Cloud, Mic, Image, Cpu, Lock]
+const techIcons = [Cable, Brain, Mic, Image, Lock, Cpu]
 
 export function TechSection() {
   const sectionRef = useRef<HTMLElement>(null)

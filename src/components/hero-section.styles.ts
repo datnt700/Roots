@@ -225,3 +225,85 @@ export const ScrollDotInner = styled.div({
   borderRadius: theme.radius.full,
   animation: `${pulse} 2s cubic-bezier(0.4, 0, 0.6, 1) infinite`,
 })
+
+// ─── Modal ────────────────────────────────────────────────────────────────────
+
+export const popIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(1rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+`
+
+export const ModalOverlay = styled.div({
+  position: 'fixed',
+  inset: 0,
+  zIndex: 60,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: theme.spacing[6],
+  backgroundColor: 'rgba(28, 24, 20, 0.6)',
+  backdropFilter: 'blur(6px)',
+})
+
+export const ModalCard = styled.div({
+  position: 'relative',
+  width: '100%',
+  maxWidth: '48rem',
+  maxHeight: '82vh',
+  overflowY: 'auto',
+  backgroundColor: theme.colors.card,
+  color: theme.colors.foreground,
+  border: `1px solid ${theme.colors.border}`,
+  borderRadius: theme.radius['2xl'],
+  boxShadow: theme.shadows.lg,
+  padding: theme.spacing[8],
+  animation: `${popIn} ${theme.transitions.normal}`,
+  '@media (min-width: 768px)': {
+    padding: theme.spacing[10],
+  },
+})
+
+export const ModalCloseButton = styled.button({
+  position: 'absolute',
+  top: theme.spacing[4],
+  right: theme.spacing[4],
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '2.25rem',
+  height: '2.25rem',
+  borderRadius: theme.radius.full,
+  border: `1px solid ${theme.colors.border}`,
+  backgroundColor: theme.colors.background,
+  color: theme.colors.mutedForeground,
+  cursor: 'pointer',
+  transition: `all ${theme.transitions.fast}`,
+  '&:hover': {
+    color: theme.colors.foreground,
+    backgroundColor: theme.colors.muted,
+  },
+})
+
+export const ModalTitle = styled.h3({
+  fontFamily: theme.fonts.serif,
+  fontSize: '1.5rem',
+  color: theme.colors.foreground,
+  marginBottom: theme.spacing[6],
+  paddingRight: theme.spacing[10],
+})
+
+export const ModalParagraph = styled.p({
+  marginBottom: theme.spacing[5],
+  color: theme.colors.mutedForeground,
+  lineHeight: 1.8,
+  fontSize: '1rem',
+  '&:last-of-type': {
+    marginBottom: 0,
+  },
+})

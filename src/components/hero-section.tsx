@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
-import { ArrowDown, Play } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { ArrowDown, Play, X } from 'lucide-react'
 import { theme } from '@/lib/theme'
 import { useTranslations } from 'next-intl'
 import {
@@ -9,12 +9,14 @@ import {
   Content, AnimatedContent, Tagline, MainTitle, Subtitle, Headline, HighlightText,
   Description, ButtonGroup, PrimaryButton, SecondaryButton, ScrollIndicator,
   ScrollDot, ScrollDotInner,
+  ModalOverlay, ModalCard, ModalCloseButton, ModalTitle, ModalParagraph,
 } from './hero-section.styles'
-
 
 export function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
+  const [isStoryOpen, setIsStoryOpen] = useState(false)
   const t = useTranslations('hero')
+  const storyParagraphs = t('secondaryPopupContent').split('\n\n')
 
   useEffect(() => {
     const section = sectionRef.current
@@ -33,6 +35,32 @@ export function HeroSection() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  useEffect(() => {
+    if (!isStoryOpen) return
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsStoryOpen(false)
+      }
+    }
+
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', handleEscape)
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+      window.removeEventListener('keydown', handleEscape)
+    }
+  }, [isStoryOpen])
+
+  const scrollToProblem = () => {
+    const problemSection = document.getElementById('problem')
+    if (problemSection) {
+      problemSection.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   return (
     <Section ref={sectionRef}>
@@ -93,13 +121,17 @@ export function HeroSection() {
           <Description>{t('description')}</Description>
 
           <ButtonGroup>
-            <PrimaryButton size="lg">
+            <PrimaryButton size="lg" onClick={scrollToProblem}>
               {t('primaryButton')}
               <ArrowDown
                 style={{ marginLeft: '0.5rem', width: 16, height: 16 }}
               />
             </PrimaryButton>
-            <SecondaryButton variant="outline" size="lg">
+            <SecondaryButton
+              variant="outline"
+              size="lg"
+              onClick={() => setIsStoryOpen(true)}
+            >
               <Play style={{ marginRight: '0.5rem', width: 16, height: 16 }} />
               {t('secondaryButton')}
             </SecondaryButton>
@@ -112,6 +144,33 @@ export function HeroSection() {
           </ScrollDot>
         </ScrollIndicator>
       </Content>
+
+      {isStoryOpen ? (
+        <ModalOverlay
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="hero-story-modal-title"
+          onClick={() => setIsStoryOpen(false)}
+        >
+          <ModalCard onClick={(event) => event.stopPropagation()}>
+            <ModalCloseButton
+              type="button"
+              onClick={() => setIsStoryOpen(false)}
+              aria-label={t('secondaryPopupCloseLabel')}
+            >
+              <X size={16} />
+            </ModalCloseButton>
+            <ModalTitle id="hero-story-modal-title">
+              {t('secondaryPopupTitle')}
+            </ModalTitle>
+            {storyParagraphs.map((paragraph, index) => (
+              <ModalParagraph key={`story-paragraph-${index}`}>
+                {paragraph}
+              </ModalParagraph>
+            ))}
+          </ModalCard>
+        </ModalOverlay>
+      ) : null}
     </Section>
   )
 }

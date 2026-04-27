@@ -7,12 +7,41 @@
   "othersTitle": "App giao tiếp",
   "othersSubtitle": "Kho chứa dữ liệu thô",
   "comparisons": [
-    { "feature": "Cốt lõi", "roots": "Sự thấu cảm & Gắn kết sâu", "others": "Tiện lợi & Nhanh chóng" },
-    { "feature": "Kết quả", "roots": "Một cuốn hồi ký sống động", "others": "Dòng tin nhắn lộn xộn, dễ mất" },
-    { "feature": "Cách dẫn dắt", "roots": "Kịch bản giúp bố mẹ 'mở lòng'", "others": "Đợi chờ tương tác ngẫu nhiên" },
-    { "feature": "Truy cập", "roots": "Quét mã QR, dùng ngay trên Web", "others": "Bắt buộc cài App, đăng nhập" },
-    { "feature": "Yếu Tố Vật Lý", "roots": "Album vật lý làm 'ngòi nổ'", "others": "Chỉ kỹ thuật số hời hợt" },
-    { "feature": "Tính Năng AI", "roots": "Nâng tầm và bảo tồn di sản", "others": "Gợi ý nội dung giải trí" }
+    {
+      "feature": "Cốt lõi",
+      "roots": "Sự thấu hiểu & Di sản dòng họ",
+      "others": "Sự tiện lợi & Kết nối tức thời"
+    },
+    {
+      "feature": "Kết quả",
+      "roots": "Một cuốn hồi ký sống động",
+      "others": "Dòng tin nhắn lộn xộn, dễ mất"
+    },
+    {
+      "feature": "Cách dẫn dắt",
+      "roots": "\"Kịch bản\" tâm lý gợi mở câu chuyện",
+      "others": "Đợi chờ tương tác ngẫu nhiên"
+    },
+    {
+      "feature": "Truy cập",
+      "roots": "Quét mã QR, dùng ngay trên Web",
+      "others": "Bắt buộc cài App, đăng nhập"
+    },
+    {
+      "feature": "Yếu Tố Vật Lý",
+      "roots": "Bộ bài vật lý làm 'ngòi nổ'",
+      "others": "Chỉ kỹ thuật số hời hợt"
+    },
+    {
+      "feature": "Tính Năng AI",
+      "roots": "Nâng tầm và bảo tồn di sản",
+      "others": "Gợi ý nội dung giải trí"
+    },
+    {
+      "feature": "Bảo Mật",
+      "roots": "Mã hóa đầu cuối, không thương mại hóa dữ liệu",
+      "others": "Khai thác dữ liệu để quảng cáo"
+    }
   ],
   "advantages": [
     {
