@@ -47,17 +47,43 @@ npx prisma db pull
 
 > Always run `npx prisma generate` after editing `prisma/schema.prisma`.
 
-## Adding a New Section
+## Adding a New Landing Page Section
 
-1. Create `components/{name}-section.tsx` with `'use client'` directive
-2. Add all translation keys to all 3 locales in `lib/i18n.ts`
-3. Import and add to `app/page.tsx`
+1. Create `src/components/{name}-section.tsx` with `'use client'` directive
+2. Add all translation keys to all 3 locales in `messages/{locale}/{namespace}.json`
+3. Import and add to `src/app/page.tsx`
+
+## Adding a New App Page
+
+1. Create `src/app/app/{page}/page.tsx` and `src/app/app/{page}/page.styles.ts`
+2. Add all translation keys to `messages/{locale}/{namespace}.json` (all 3 locales)
+3. Import `useTranslations('{namespace}')` in the page component
+4. Styled components go ONLY in `page.styles.ts`
+5. Use glass surface for all cards (see `DESIGN.md`)
+6. Wrap hover effects in `'@media (hover: hover)'`
+
+## Adding Translation Keys (next-intl)
+
+Files live in `messages/{locale}/{namespace}.json` — one namespace per feature area:
+
+```json
+// messages/en/timeline.json
+{ "title": "Timeline", "albums": "Albums" }
+
+// messages/vi/timeline.json  ← always add
+{ "title": "Dòng thời gian", "albums": "Album" }
+
+// messages/fr/timeline.json  ← always add
+{ "title": "Chronologie", "albums": "Albums" }
+```
+
+In the component: `const t = useTranslations('timeline')` → `t('albums')`
 
 ## Adding a New DB Model
 
 1. Add model to `prisma/schema.prisma`
 2. Run `npx prisma migrate dev --name <description>`
-3. Create an API route in `app/api/{resource}/route.ts`
+3. Create an API route in `src/app/api/{resource}/route.ts`
 4. Import `db` from `@/lib/db` in the route
 
 ## Adding Dependencies
@@ -77,6 +103,10 @@ No monorepo catalog — just regular pnpm. Version can be explicit in `package.j
 ```powershell
 # .env — local development (gitignored)
 DATABASE_URL="postgresql://..."
+ENCRYPTION_KEY="<64-char hex>"      # generate: openssl rand -hex 32
+EMAIL_HASH_PEPPER="<64-char hex>"   # generate: openssl rand -hex 32
+AUTH_SECRET="<random string>"       # generate: openssl rand -base64 32
+NEXTAUTH_URL="http://localhost:3000"
 
 # .env.local — additional local overrides (also gitignored)
 NEXT_PUBLIC_SOME_KEY="value"

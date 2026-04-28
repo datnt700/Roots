@@ -39,7 +39,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Invalid QR code' }, { status: 404 })
       }
 
-      const parentName = decrypt(slot.parent.name)
+      const parentName = slot.parent.relationship
       const studentName = decrypt(slot.parent.user.displayName)
 
       logger.info('slots', 'QR token validated', {
@@ -93,10 +93,12 @@ export async function GET(request: Request) {
       const result = slots.map((s) => ({
         id: s.id,
         pageNumber: s.pageNumber,
-        title: s.title,
+        // If the stored title embeds an encrypted name (iv:tag:ciphertext contains ':'),
+        // return empty string so the client uses its i18n fallback with the relationship.
+        title: s.title.includes(':') ? '' : s.title,
         prompt: s.prompt,
         parentId: s.parentId,
-        parentName: decrypt(s.parent.name),
+        parentName: s.parent.relationship,
         relationship: s.parent.relationship,
         coverPhotoKey: s.coverPhotoKey ?? null,
         latestMemory: s.memories[0] ?? null,
@@ -227,5 +229,26 @@ export async function PATCH(request: Request) {
       { error: 'Failed to update slot' },
       { status: 500 },
     )
+  }
+}
+
+// ─── DELETE — remove a slot (and cascade its memories) ───────────────────────
+
+export async function DELETE(request: Request) {
+  const t0 = Date.now()
+  const { searchParams } = new URL(request.url)
+  const slotId = searchParams.get('slotId')
+
+  if (!slotId) {
+    return NextResponse.json({ error: 'slotId is required' }, { status: 400 })
+  }
+
+  try {
+    await db.memorySlot.delete({ where: { id: slotId } })
+    logger.info('slots', 'Slot deleted', { slotId, ms: Date.now() - t0 })
+    return NextResponse.json({ ok: true })
+  } catch (err) {
+    logger.error('slots', 'Failed to delete slot', { slotId, ms: Date.now() - t0 }, err)
+    return NextResponse.json({ error: 'Failed to delete slot' }, { status: 500 })
   }
 }

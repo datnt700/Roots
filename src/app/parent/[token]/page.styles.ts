@@ -1,3 +1,8 @@
+// ─── Parent-view Font Scale ─────────────────────────────────────────────────
+// This page is used by elderly parents (bố mẹ) on mobile.
+// Minimum readable size: 1.125rem (18px). Nothing smaller for body copy.
+// UI chrome (badges, small labels) may use 0.875rem–1rem.
+
 import styled from '@emotion/styled'
 import { keyframes } from '@emotion/react'
 import { theme } from '@/lib/theme'
@@ -73,7 +78,7 @@ export const Logo = styled.div({
 })
 
 export const TurnBadge = styled.div({
-  fontSize: '0.75rem',
+  fontSize: '0.875rem', // UI badge — smaller is OK
   fontWeight: 600,
   color: 'oklch(0.5 0.08 155)',
   backgroundColor: 'oklch(0.88 0.06 155 / 0.3)',
@@ -89,7 +94,7 @@ export const HelpBtn = styled.button<{ $sent?: boolean }>(({ $sent }) => ({
   borderRadius: theme.radius.full,
   border: 'none',
   cursor: $sent ? 'default' : 'pointer',
-  fontSize: '0.8125rem',
+  fontSize: '1rem', // topbar button — 1rem minimum
   fontWeight: 600,
   backgroundColor: $sent
     ? 'oklch(0.88 0.06 155 / 0.3)'
@@ -147,9 +152,9 @@ export const AiBubble = styled.div({
   borderRadius: '0.25rem 1.25rem 1.25rem 1.25rem',
   boxShadow: '0 2px 12px oklch(0.55 0.1 155 / 0.1)',
   fontFamily: theme.fonts.serif,
-  fontSize: '1.0625rem',
+  fontSize: '1.125rem', // ≥1.125rem — readable for elderly parents
   color: theme.colors.foreground,
-  lineHeight: 1.55,
+  lineHeight: 1.6,
   border: '1px solid oklch(0.88 0.06 155 / 0.3)',
 })
 
@@ -158,9 +163,9 @@ export const ParentBubble = styled.div({
   padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
   backgroundColor: 'oklch(0.88 0.08 155 / 0.2)',
   borderRadius: '1.25rem 0.25rem 1.25rem 1.25rem',
-  fontSize: '0.9375rem',
+  fontSize: '1.125rem', // ≥1.125rem — readable for elderly parents
   color: theme.colors.foreground,
-  lineHeight: 1.55,
+  lineHeight: 1.6,
   fontStyle: 'italic',
   border: '1px solid oklch(0.7 0.1 155 / 0.2)',
 })
@@ -244,7 +249,7 @@ export const MicBtn = styled('button', {
 }))
 
 export const StatusText = styled.div({
-  fontSize: '0.9375rem',
+  fontSize: '1.125rem', // ≥1.125rem — readable for elderly parents
   fontWeight: 600,
   color: 'oklch(0.5 0.08 155)',
 })
@@ -270,21 +275,28 @@ export const SendBtn = styled('button', {
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing[2],
-  backgroundColor: theme.colors.primary,
+  // Disabled (loading) → flat clay: no depth, desaturated, reduced opacity
+  // so parents can clearly see the button is not actionable.
+  background: $loading
+    ? theme.clay.disabledBg
+    : theme.clay.primaryBg,
+  boxShadow: $loading
+    ? theme.clay.disabledShadow
+    : '0 6px 0 oklch(0.42 0.1 155), 0 10px 20px oklch(0.55 0.1 155 / 0.25)',
+  opacity: $loading ? 0.72 : 1,
   color: '#fff',
-  fontSize: '1.0625rem',
+  fontSize: '1.25rem', // ≥1.125rem — readable for elderly parents
   fontWeight: 700,
   fontFamily: theme.fonts.sans,
-  boxShadow:
-    '0 6px 0 oklch(0.42 0.1 155), 0 10px 20px oklch(0.55 0.1 155 / 0.25)',
-  '& svg': { width: '1.125rem', height: '1.125rem' },
+  transition: `all ${theme.transitions.normal}`,
+  '& svg': { width: '1.25rem', height: '1.25rem' },
 }))
 
 export const EndBtn = styled.button({
   background: 'none',
   border: 'none',
   cursor: 'pointer',
-  fontSize: '0.875rem',
+  fontSize: '1rem', // 1rem minimum for all interactive elements
   color: 'oklch(0.55 0.06 155)',
   textDecoration: 'underline',
   textDecorationStyle: 'dotted',
@@ -297,10 +309,10 @@ export const OfflineBanner = styled.div({
   padding: '0.625rem 1rem',
   backgroundColor: 'oklch(0.55 0.15 40 / 0.12)',
   borderBottom: '1px solid oklch(0.55 0.15 40 / 0.25)',
-  fontSize: '0.8125rem',
+  fontSize: '1rem', // 1rem minimum — offline banner must be readable
   color: 'oklch(0.4 0.1 40)',
   fontWeight: 500,
-  '& svg': { width: '0.875rem', height: '0.875rem', flexShrink: 0 },
+  '& svg': { width: '1rem', height: '1rem', flexShrink: 0 },
 })
 
 export const RetryBtn = styled.button({
@@ -313,10 +325,10 @@ export const RetryBtn = styled.button({
   border: '1px solid oklch(0.55 0.15 40 / 0.4)',
   backgroundColor: 'transparent',
   color: 'oklch(0.4 0.1 40)',
-  fontSize: '0.75rem',
+  fontSize: '0.875rem', // secondary action label
   fontWeight: 600,
   cursor: 'pointer',
-  '& svg': { width: '0.75rem', height: '0.75rem' },
+  '& svg': { width: '0.875rem', height: '0.875rem' },
 })
 
 // ── Photo ──
@@ -405,7 +417,7 @@ export const WelcomeTitle = styled.h1({
 })
 
 export const WelcomeSubtitle = styled.p({
-  fontSize: '0.9375rem',
+  fontSize: '1.125rem', // ≥1.125rem — readable for elderly parents
   color: theme.colors.mutedForeground,
   textAlign: 'center',
   lineHeight: 1.65,
@@ -420,15 +432,15 @@ export const StartBtn = styled.button({
   borderRadius: '1.5rem',
   border: 'none',
   cursor: 'pointer',
-  backgroundColor: theme.colors.primary,
+  background: theme.clay.primaryBg,
   color: '#fff',
-  fontSize: '1.0625rem',
+  fontSize: '1.25rem', // ≥1.125rem — readable for elderly parents
   fontWeight: 700,
   fontFamily: theme.fonts.sans,
   boxShadow:
     '0 8px 0 oklch(0.42 0.1 155), 0 14px 30px oklch(0.55 0.1 155 / 0.3)',
   animation: `${breathe} 3s ease infinite`,
-  '& svg': { width: '1.125rem', height: '1.125rem' },
+  '& svg': { width: '1.25rem', height: '1.25rem' },
 })
 
 // ── Loading / Error ──
@@ -452,7 +464,7 @@ export const ErrorTitle = styled.p({
 })
 
 export const ErrorHint = styled.p({
-  fontSize: '0.875rem',
+  fontSize: '1rem', // 1rem minimum for error messages
   color: theme.colors.mutedForeground,
   textAlign: 'center',
 })

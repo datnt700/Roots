@@ -67,25 +67,40 @@ export const StatsGrid = styled.div({
   },
 })
 
-export const StatCard = styled.div({
-  backgroundColor: theme.colors.card,
+export const StatCard = styled('div', { shouldForwardProp: (p) => p !== '$hero' })<{ $hero?: boolean }>(({ $hero }) => ({
+  // Glass surface
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
   borderRadius: theme.radius['2xl'],
-  padding: `${theme.spacing[4]} ${theme.spacing[4]}`,
-  border: `1px solid ${theme.colors.border}`,
+  padding: $hero ? theme.spacing[5] : `${theme.spacing[4]} ${theme.spacing[4]}`,
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing[1],
   animation: `${fadeUp} 0.4s ease both`,
   willChange: 'transform, opacity',
-})
+  ...($hero && {
+    gridColumn: 'span 2',
+    background: `linear-gradient(135deg, var(--glass-bg) 0%, oklch(0.88 0.06 155 / 0.18) 100%)`,
+    '@media (min-width: 640px)': {
+      gridColumn: 'span 1',
+      background: 'var(--glass-bg)',
+    },
+  }),
+}))
 
-export const StatValue = styled.div({
+export const StatValue = styled('div', { shouldForwardProp: (p) => p !== '$hero' })<{ $hero?: boolean }>(({ $hero }) => ({
   fontFamily: theme.fonts.serif,
-  fontSize: '2rem',
+  fontSize: $hero ? '2.5rem' : '2rem',
   fontWeight: 700,
   color: theme.colors.foreground,
   lineHeight: 1,
-})
+  '@media (min-width: 640px)': {
+    fontSize: '2rem',
+  },
+}))
 
 export const StatLabel = styled.div({
   fontSize: '0.75rem',
@@ -134,25 +149,37 @@ export const QuickActionsGrid = styled.div({
   },
 })
 
-export const QuickActionCard = styled(Link, { shouldForwardProp: (prop) => prop !== 'viewTransition' })<{ $accent?: string }>(({ $accent }) => ({
+export const QuickActionCard = styled(Link, { shouldForwardProp: (prop) => prop !== 'viewTransition' && prop !== '$featured' })<{ $accent?: string; $featured?: boolean }>(({ $featured }) => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
   gap: theme.spacing[3],
   padding: theme.spacing[4],
-  backgroundColor: $accent ?? theme.colors.card,
+  // Glass surface
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
   borderRadius: theme.radius['2xl'],
-  border: `1px solid ${theme.colors.border}`,
   textDecoration: 'none',
   transition: `all ${theme.transitions.fast}`,
-  minHeight: '6.5rem',
+  // Bento: featured tile (New Recording) is taller and full-width on mobile
+  minHeight: $featured ? '8rem' : '6.5rem',
+  ...($featured && {
+    gridColumn: 'span 2',
+    background: `linear-gradient(135deg, oklch(0.88 0.06 155 / 0.25) 0%, var(--glass-bg) 60%)`,
+    '@media (min-width: 640px)': {
+      gridColumn: 'span 2',
+    },
+  }),
   willChange: 'transform',
   animation: `${fadeUp} 0.4s ease both`,
   '&:active': { opacity: 0.8, transform: 'scale(0.98)' },
   '@media (hover: hover)': {
     '&:hover': {
-      boxShadow: theme.shadows.md,
-      transform: 'translateY(-1px)',
+      boxShadow: `${theme.shadows.md}, var(--glass-inset)`,
+      transform: 'translateY(-2px)',
     },
   },
 }))
@@ -192,10 +219,14 @@ export const ParentCard = styled.div({
   flexShrink: 0,
   scrollSnapAlign: 'start',
   width: '10rem',
-  backgroundColor: theme.colors.card,
+  // Glass surface
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(12px) saturate(1.3)',
+  WebkitBackdropFilter: 'blur(12px) saturate(1.3)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
   borderRadius: theme.radius['2xl'],
   padding: theme.spacing[4],
-  border: `1px solid ${theme.colors.border}`,
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing[2],
@@ -265,15 +296,22 @@ export const MemoryItem = styled(Link, { shouldForwardProp: (prop) => prop !== '
   alignItems: 'center',
   gap: theme.spacing[3],
   padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
-  backgroundColor: theme.colors.card,
+  // Glass surface
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(12px) saturate(1.3)',
+  WebkitBackdropFilter: 'blur(12px) saturate(1.3)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
   borderRadius: theme.radius['2xl'],
-  border: `1px solid ${theme.colors.border}`,
   textDecoration: 'none',
   transition: `all ${theme.transitions.fast}`,
   willChange: 'transform',
   '&:active': { opacity: 0.8, transform: 'scale(0.99)' },
   '@media (hover: hover)': {
-    '&:hover': { transform: 'translateX(2px)' },
+    '&:hover': {
+      transform: 'translateX(2px)',
+      boxShadow: `${theme.shadows.md}, var(--glass-inset)`,
+    },
   },
 })
 

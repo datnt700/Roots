@@ -117,7 +117,7 @@ function FeedbackCardItem({
 
       {/* Memory context */}
       <MemoryContext>
-        <ContextLabel>In response to</ContextLabel>
+        <ContextLabel>{t('inResponseTo')}</ContextLabel>
         <ContextText>"{item.memoryPrompt}"</ContextText>
       </MemoryContext>
 

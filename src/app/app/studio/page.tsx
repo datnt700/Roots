@@ -33,10 +33,12 @@ type Memory = {
   aiTags: string[]
   createdAt: string
 }
+import { DecryptingOverlay } from '@/components/decrypting-overlay'
 import {
   Page, PageHeader, PageTitle, PageSubtitle,
   FilterBar, FilterChip, SortBtn,
   MemoryCard, MemoryCardHeader, ParentAvatar, MemoryMeta, MemoryTitle, MemorySubMeta, StatusBadge,
+  SplitBody, SplitLeft, SplitRight,
   PhotoThumb, PhotoImg,
   CardSection, SectionLabel, TranscriptText, TranscriptPending,
   ReflectionInput, ReflectionDisplay, AddReflectionBtn,
@@ -86,6 +88,8 @@ function MemoryCardItem({
   const parentColor = RELATIONSHIP_COLOR[memory.relationship] ?? 'oklch(0.7 0.06 100)'
   const [hearted, setHearted] = useState(false)
   const [heartSending, setHeartSending] = useState(false)
+  // Show decrypting overlay on first mount (content is encrypted at rest)
+  const [showDecrypting, setShowDecrypting] = useState(memory.isProcessed)
 
   const handleSaveReflection = () => {
     setSavedReflection(reflectionText)
@@ -111,7 +115,13 @@ function MemoryCardItem({
   }
 
   return (
-    <MemoryCard style={{ animationDelay: `${delay}s` }}>
+    <MemoryCard style={{ animationDelay: `${delay}s`, position: 'relative' }}>
+      {showDecrypting && (
+        <DecryptingOverlay
+          duration={650}
+          label="Đang mở khóa…"
+        />
+      )}
       {/* Header */}
       <MemoryCardHeader>
         <ParentAvatar $color={parentColor}>
@@ -130,112 +140,119 @@ function MemoryCardItem({
         </StatusBadge>
       </MemoryCardHeader>
 
-      {/* Photo */}
-      {memory.hasPhoto && (
-        <PhotoThumb>
-          <Image />
-        </PhotoThumb>
-      )}
-
-      {/* AI Summary */}
-      {memory.isProcessed && memory.aiTitle && (
-        <AiSection>
-          <AiLabel>
-            <Sparkles />
-            Tóm tắt AI
-          </AiLabel>
-          <AiTitle>{memory.aiTitle}</AiTitle>
-          {memory.aiSummary && (
-            <AiSummaryText>{memory.aiSummary}</AiSummaryText>
+      {/* Photo + AI Summary — split left pane */}
+      <SplitBody>
+        <SplitLeft>
+          {/* Photo */}
+          {memory.hasPhoto && (
+            <PhotoThumb>
+              <Image />
+            </PhotoThumb>
           )}
-          {memory.aiTags.length > 0 && (
-            <TagRow>
-              {memory.aiTags.map((tag) => (
-                <Tag key={tag}>#{tag}</Tag>
-              ))}
-            </TagRow>
+
+          {/* AI Summary */}
+          {memory.isProcessed && memory.aiTitle && (
+            <AiSection>
+              <AiLabel>
+                <Sparkles />
+                {t('aiSummary')}
+              </AiLabel>
+              <AiTitle>{memory.aiTitle}</AiTitle>
+              {memory.aiSummary && (
+                <AiSummaryText>{memory.aiSummary}</AiSummaryText>
+              )}
+              {memory.aiTags.length > 0 && (
+                <TagRow>
+                  {memory.aiTags.map((tag) => (
+                    <Tag key={tag}>#{tag}</Tag>
+                  ))}
+                </TagRow>
+              )}
+            </AiSection>
           )}
-        </AiSection>
-      )}
+        </SplitLeft>
 
-      {/* Transcript */}
-      <CardSection>
-        <SectionLabel>
-          <FileText />
-          {t('memoryCard.transcript')}
-        </SectionLabel>
-        {memory.isProcessed && memory.transcript ? (
-          <TranscriptText>{memory.transcript}</TranscriptText>
-        ) : (
-          <TranscriptPending>
-            <span className="sr-only">Loading</span>
-              {t('memoryCard.noTranscript')}
-          </TranscriptPending>
-        )}
-      </CardSection>
+        <SplitRight>
+          {/* Transcript */}
+          <CardSection>
+            <SectionLabel>
+              <FileText />
+              {t('memoryCard.transcript')}
+            </SectionLabel>
+            {memory.isProcessed && memory.transcript ? (
+              <TranscriptText>{memory.transcript}</TranscriptText>
+            ) : (
+              <TranscriptPending>
+                <span className="sr-only">Loading</span>
+                  {t('memoryCard.noTranscript')}
+              </TranscriptPending>
+            )}
+          </CardSection>
 
-      {/* Reflection */}
-      <CardSection>
-        <SectionLabel>
-          <BookOpen />
-          {t('memoryCard.reflection')}
-        </SectionLabel>
-        {editingReflection ? (
-          <>
-            <ReflectionInput
-              value={reflectionText}
-              onChange={(e) => setReflectionText(e.target.value)}
-              placeholder={t('memoryCard.addReflection')}
-              autoFocus
-            />
-            <ReflectionActions>
-              <SaveReflBtn onClick={handleSaveReflection}>
-                <Check />
-                {t('saveReflection')}
-              </SaveReflBtn>
-              <FooterBtn onClick={() => setEditingReflection(false)}>
-                <X />
-                Cancel
-              </FooterBtn>
-            </ReflectionActions>
-          </>
-        ) : savedReflection ? (
-          <>
-            <ReflectionDisplay>{savedReflection}</ReflectionDisplay>
-            <AddReflectionBtn
-              $mt
-              onClick={() => {
-                setReflectionText(savedReflection)
-                setEditingReflection(true)
-              }}
+          {/* Reflection */}
+          <CardSection>
+            <SectionLabel>
+              <BookOpen />
+              {t('memoryCard.reflection')}
+            </SectionLabel>
+            {editingReflection ? (
+              <>
+                <ReflectionInput
+                  value={reflectionText}
+                  onChange={(e) => setReflectionText(e.target.value)}
+                  placeholder={t('memoryCard.addReflection')}
+                  autoFocus
+                />
+                <ReflectionActions>
+                  <SaveReflBtn onClick={handleSaveReflection}>
+                    <Check />
+                    {t('saveReflection')}
+                  </SaveReflBtn>
+                  <FooterBtn onClick={() => setEditingReflection(false)}>
+                    <X />
+                    Cancel
+                  </FooterBtn>
+                </ReflectionActions>
+              </>
+            ) : savedReflection ? (
+              <>
+                <ReflectionDisplay>{savedReflection}</ReflectionDisplay>
+                <AddReflectionBtn
+                  $mt
+                  onClick={() => {
+                    setReflectionText(savedReflection)
+                    setEditingReflection(true)
+                  }}
+                >
+                  <Pencil />
+                  {t('editReflection')}
+                </AddReflectionBtn>
+              </>
+            ) : (
+              <AddReflectionBtn onClick={() => setEditingReflection(true)}>
+                <Pencil />
+                  {t('memoryCard.addReflection')}
+              </AddReflectionBtn>
+            )}
+          </CardSection>
+
+          {/* Footer */}
+          <CardFooter>
+            <FooterBtn $danger onClick={() => alert(t('confirmDelete'))}>
+              <Trash2 />
+              {t('deleteMemory')}
+            </FooterBtn>
+            <HeartBtn
+              $active={hearted}
+              onClick={handleHeart}
+              disabled={heartSending}
             >
-              <Pencil />
-              {t('editReflection')}
-            </AddReflectionBtn>
-          </>
-        ) : (
-          <AddReflectionBtn onClick={() => setEditingReflection(true)}>
-            <Pencil />
-              {t('memoryCard.addReflection')}
-          </AddReflectionBtn>
-        )}
-      </CardSection>
-
-      {/* Footer */}
-      <CardFooter>
-        <FooterBtn $danger onClick={() => alert(t('confirmDelete'))}>
-          <Trash2 />
-          {t('deleteMemory')}
-        </FooterBtn>
-        <HeartBtn
-          $active={hearted}
-          onClick={handleHeart}
-          disabled={heartSending}
-        >
-          <Heart style={{ fill: hearted ? 'currentColor' : 'none' }} />
-          {hearted ? t('hearted') : t('heart')}
-        </HeartBtn>
-      </CardFooter>
+              <Heart style={{ fill: hearted ? 'currentColor' : 'none' }} />
+              {hearted ? t('hearted') : t('heart')}
+            </HeartBtn>
+          </CardFooter>
+        </SplitRight>
+      </SplitBody>
     </MemoryCard>
   )
 }

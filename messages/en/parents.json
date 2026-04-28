@@ -20,6 +20,12 @@
     "print": "Print",
     "save": "Save",
     "saved": "Saved",
+    "deletePage": "Delete page",
+    "deleteConfirmTitle": "Delete this page?",
+    "deleteConfirmBody": "This will permanently delete the QR code and all memories recorded on this page.",
+    "deleteConfirmYes": "Yes, delete",
+    "deleteConfirmNo": "Cancel",
+    "deleteError": "Failed to delete page. Please try again.",
     "printTitle": "G\u1ed0C \u00b7 Page {number}",
     "printCaption": "Scan this QR to record a story from {name}",
     "printTopic": "Topic: {prompt}"

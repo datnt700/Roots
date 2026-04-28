@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
-import { hashEmail } from '@/lib/crypto'
+import { encrypt } from '@/lib/crypto'
 import { logger } from '@/lib/logger'
 
 export async function GET() {
@@ -8,8 +8,12 @@ export async function GET() {
     const parents = await db.parent.findMany({
       orderBy: { createdAt: 'desc' },
     })
+    const result = parents.map((p) => ({
+      ...p,
+      name: p.relationship,
+    }))
     logger.debug('parents', 'Listed parents', { count: parents.length })
-    return NextResponse.json({ parents })
+    return NextResponse.json({ parents: result })
   } catch (err) {
     logger.error('parents', 'Failed to fetch parents', {}, err)
     return NextResponse.json(
@@ -40,7 +44,7 @@ export async function POST(request: Request) {
     const parent = await db.parent.create({
       data: {
         userId,
-        name, // encrypted by caller — stored as-is for stub
+        name: encrypt(name),
         relationship,
       },
     })

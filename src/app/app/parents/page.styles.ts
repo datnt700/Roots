@@ -129,11 +129,15 @@ export const SlotGrid = styled.div({
 export const SlotCard = styled.div<{ $hasRecording: boolean }>(
   ({ $hasRecording }) => ({
     position: 'relative',
-    borderRadius: '1.25rem',
-    border: `1.5px solid ${$hasRecording ? 'oklch(0.55 0.1 155 / 0.35)' : theme.colors.border}`,
-    backgroundColor: $hasRecording
-      ? 'oklch(0.55 0.1 155 / 0.04)'
-      : theme.colors.card,
+    borderRadius: theme.radius['2xl'],
+    // Glass surface — same as all other app cards
+    backgroundColor: 'var(--glass-bg)',
+    backdropFilter: 'blur(12px) saturate(1.3)',
+    WebkitBackdropFilter: 'blur(12px) saturate(1.3)',
+    border: `1px solid ${$hasRecording ? 'oklch(0.55 0.1 155 / 0.4)' : 'var(--glass-border)'}`,
+    boxShadow: $hasRecording
+      ? `var(--glass-shadow), var(--glass-inset), inset 0 0 0 1px oklch(0.55 0.1 155 / 0.08)`
+      : 'var(--glass-shadow), var(--glass-inset)',
     padding: theme.spacing[4],
     display: 'flex',
     flexDirection: 'column',
@@ -141,11 +145,14 @@ export const SlotCard = styled.div<{ $hasRecording: boolean }>(
     cursor: 'pointer',
     transition: `all ${theme.transitions.fast}`,
     animation: `${fadeUp} 0.3s ease both`,
-    '&:hover': {
-      borderColor: theme.colors.primary,
-      transform: 'translateY(-2px)',
-      boxShadow: theme.shadows.sm,
+    willChange: 'transform, opacity',
+    '@media (hover: hover)': {
+      '&:hover': {
+        transform: 'translateY(-2px)',
+        boxShadow: `${theme.shadows.md}, var(--glass-inset)`,
+      },
     },
+    '&:active': { transform: 'scale(0.98)', opacity: 0.85 },
   }),
 )
 
@@ -217,29 +224,43 @@ export const ModalOverlay = styled.div({
   position: 'fixed',
   inset: 0,
   zIndex: 100,
-  backgroundColor: 'rgba(0,0,0,0.55)',
+  // Richer backdrop: dark tint + blur over the page content
+  backgroundColor: 'oklch(0.15 0.02 155 / 0.55)',
+  backdropFilter: 'blur(8px) saturate(0.8)',
+  WebkitBackdropFilter: 'blur(8px) saturate(0.8)',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: theme.spacing[5],
+  padding: `${theme.spacing[4]} ${theme.spacing[4]}`,
   animation: `${fadeUp} 0.2s ease both`,
+  overflowY: 'auto',
 })
 
 export const ModalPanel = styled.div({
   width: '100%',
-  maxWidth: '24rem',
-  backgroundColor: theme.colors.card,
+  maxWidth: '22rem',
+  // Strong glass surface
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(28px) saturate(1.8)',
+  WebkitBackdropFilter: 'blur(28px) saturate(1.8)',
+  border: '1px solid var(--glass-border)',
   borderRadius: '2rem',
   padding: `${theme.spacing[6]} ${theme.spacing[5]}`,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   gap: theme.spacing[4],
-  animation: `${scaleIn} 0.25s ease both`,
-  boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+  animation: `${scaleIn} 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both`,
+  boxShadow: [
+    '0 24px 64px oklch(0.15 0.05 155 / 0.3)',
+    '0 2px 0 rgba(255,255,255,0.06) inset',
+    'var(--glass-shadow)',
+  ].join(', '),
   position: 'relative',
-  maxHeight: '90vh',
+  overflowX: 'hidden',
   overflowY: 'auto',
+  maxHeight: 'calc(100dvh - 4rem)',
+  margin: 'auto',
 })
 
 export const ModalClose = styled.button({
@@ -249,13 +270,22 @@ export const ModalClose = styled.button({
   width: '2rem',
   height: '2rem',
   borderRadius: theme.radius.full,
-  border: 'none',
-  backgroundColor: theme.colors.muted,
+  border: '1px solid var(--glass-border)',
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(8px)',
+  WebkitBackdropFilter: 'blur(8px)',
   cursor: 'pointer',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   color: theme.colors.mutedForeground,
+  transition: `all ${theme.transitions.fast}`,
+  '@media (hover: hover)': {
+    '&:hover': {
+      backgroundColor: theme.colors.muted,
+      color: theme.colors.foreground,
+    },
+  },
   '& svg': { width: '1rem', height: '1rem' },
 })
 
@@ -327,6 +357,7 @@ export const PromptTextarea = styled.textarea({
 
 export const ModalActions = styled.div({
   display: 'flex',
+  flexWrap: 'wrap',
   gap: theme.spacing[2],
   width: '100%',
 })
@@ -421,6 +452,132 @@ export const AddStickerPhotoBtn = styled.button({
   cursor: 'pointer',
   '& svg': { width: '0.875rem', height: '0.875rem' },
 })
+
+// ─── Delete button ───────────────────────────────────────────────────────────
+
+export const DeletePageBtn = styled.button({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0.375rem',
+  width: '100%',
+  padding: `${theme.spacing[2]} ${theme.spacing[3]}`,
+  borderRadius: theme.radius.lg,
+  border: '1px solid oklch(0.65 0.18 25 / 0.25)',
+  backgroundColor: 'oklch(0.97 0.01 25 / 0.5)',
+  color: 'oklch(0.55 0.18 25)',
+  fontSize: '0.8125rem',
+  fontWeight: 500,
+  cursor: 'pointer',
+  transition: `all ${theme.transitions.fast}`,
+  '@media (hover: hover)': {
+    '&:hover': {
+      backgroundColor: 'oklch(0.93 0.04 25 / 0.6)',
+      borderColor: 'oklch(0.55 0.18 25 / 0.4)',
+    },
+  },
+  '& svg': { width: '0.875rem', height: '0.875rem' },
+})
+
+// ─── Confirm dialog ───────────────────────────────────────────────────────────
+
+export const ConfirmOverlay = styled.div({
+  position: 'fixed',
+  inset: 0,
+  zIndex: 200,
+  backgroundColor: 'oklch(0.15 0.02 155 / 0.6)',
+  backdropFilter: 'blur(6px)',
+  WebkitBackdropFilter: 'blur(6px)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: theme.spacing[4],
+})
+
+export const ConfirmPanel = styled.div({
+  width: '100%',
+  maxWidth: '20rem',
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(24px) saturate(1.6)',
+  WebkitBackdropFilter: 'blur(24px) saturate(1.6)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: '0 16px 48px oklch(0.15 0.05 25 / 0.25), var(--glass-shadow)',
+  borderRadius: '1.5rem',
+  padding: theme.spacing[6],
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing[4],
+})
+
+export const ConfirmIcon = styled.div({
+  width: '3rem',
+  height: '3rem',
+  borderRadius: theme.radius.full,
+  backgroundColor: 'oklch(0.93 0.04 25 / 0.5)',
+  border: '1px solid oklch(0.65 0.18 25 / 0.25)',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0 auto',
+  '& svg': { width: '1.25rem', height: '1.25rem', color: 'oklch(0.55 0.18 25)' },
+})
+
+export const ConfirmTitle = styled.h3({
+  fontFamily: theme.fonts.serif,
+  fontSize: '1.0625rem',
+  fontWeight: 700,
+  color: theme.colors.foreground,
+  textAlign: 'center',
+})
+
+export const ConfirmBody = styled.p({
+  fontSize: '0.8125rem',
+  color: theme.colors.mutedForeground,
+  textAlign: 'center',
+  lineHeight: 1.55,
+})
+
+export const ConfirmActions = styled.div({
+  display: 'flex',
+  gap: theme.spacing[2],
+})
+
+export const ConfirmCancelBtn = styled.button({
+  flex: 1,
+  padding: `${theme.spacing[3]}`,
+  borderRadius: theme.radius.xl,
+  border: `1.5px solid ${theme.colors.border}`,
+  backgroundColor: 'transparent',
+  color: theme.colors.foreground,
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  cursor: 'pointer',
+  transition: `opacity ${theme.transitions.fast}`,
+  '@media (hover: hover)': { '&:hover': { opacity: 0.7 } },
+})
+
+export const ConfirmDeleteBtn = styled.button<{ $loading?: boolean }>(({ $loading }) => ({
+  flex: 1,
+  padding: `${theme.spacing[3]}`,
+  borderRadius: theme.radius.xl,
+  border: 'none',
+  backgroundColor: 'oklch(0.55 0.18 25)',
+  color: '#fff',
+  fontSize: '0.875rem',
+  fontWeight: 600,
+  cursor: $loading ? 'wait' : 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '0.375rem',
+  transition: `opacity ${theme.transitions.fast}`,
+  opacity: $loading ? 0.7 : 1,
+  '& svg': {
+    width: '0.875rem',
+    height: '0.875rem',
+    animation: $loading ? `${spin} 0.8s linear infinite` : 'none',
+  },
+}))
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 

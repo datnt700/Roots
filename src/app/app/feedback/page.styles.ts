@@ -18,7 +18,7 @@ export const pulse = keyframes`
 
 export const Page = styled.div({
   padding: `${theme.spacing[4]} ${theme.spacing[4]} ${theme.spacing[8]}`,
-  maxWidth: '44rem',
+  maxWidth: '48rem',
   margin: '0 auto',
   '@media (min-width: 768px)': {
     padding: `${theme.spacing[8]} ${theme.spacing[6]}`,
@@ -46,8 +46,12 @@ export const PageSubtitle = styled.p({
 // ─── Feedback card ────────────────────────────────────────────────────────────
 
 export const FeedbackCard = styled.div({
-  backgroundColor: theme.colors.card,
-  border: `1px solid ${theme.colors.border}`,
+  // Glass surface — consistent with all other app cards
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
   borderRadius: theme.radius['2xl'],
   overflow: 'hidden',
   marginBottom: theme.spacing[4],
@@ -367,12 +371,29 @@ export const EmptyStateIcon = styled.div({
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
+export const shimmer = keyframes`
+  from { background-position: -400px 0; }
+  to   { background-position: 400px 0; }
+`
+
+const skeletonShimmer = {
+  backgroundColor: theme.colors.muted,
+  backgroundImage: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%)',
+  backgroundSize: '400px 100%',
+  backgroundRepeat: 'no-repeat' as const,
+  animation: `${shimmer} 1.4s ease-in-out infinite`,
+}
+
 export const SkeletonCard = styled.div({
-  backgroundColor: theme.colors.card,
-  borderRadius: '1.25rem',
-  border: `1px solid ${theme.colors.border}`,
+  // Glass surface — matches real FeedbackCard
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
+  borderRadius: theme.radius['2xl'],
   padding: '1.25rem',
-  marginBottom: '1rem',
+  marginBottom: theme.spacing[4],
   display: 'flex',
   flexDirection: 'column',
   gap: '0.75rem',
@@ -393,6 +414,7 @@ export const SkeletonCircle = styled.div({
   height: '2.5rem',
   borderRadius: '50%',
   flexShrink: 0,
+  ...skeletonShimmer,
 })
 
 export const SkeletonLine = styled.div<{ $width?: string; $height?: string; $marginBottom?: string }>(
@@ -401,6 +423,7 @@ export const SkeletonLine = styled.div<{ $width?: string; $height?: string; $mar
     height: $height,
     borderRadius: '0.375rem',
     marginBottom: $marginBottom,
+    ...skeletonShimmer,
   }),
 )
 
@@ -409,5 +432,6 @@ export const SkeletonBlock = styled.div<{ $height?: string }>(
     width: '100%',
     height: $height,
     borderRadius: '0.75rem',
+    ...skeletonShimmer,
   }),
 )

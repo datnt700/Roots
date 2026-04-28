@@ -9,6 +9,7 @@
   "sendResponse": "Envoyer",
   "markPlayed": "Marquer comme écouté",
   "played": "Écouté",
+  "inResponseTo": "En réponse à",
   "noFeedback": "Aucun retour pour l'instant. Partagez un souvenir !",
   "respondedAt": "Répondu le"
 }

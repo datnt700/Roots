@@ -13,7 +13,7 @@ export const fadeUp = keyframes`
 
 export const Page = styled.div({
   padding: `${theme.spacing[4]} ${theme.spacing[4]} ${theme.spacing[8]}`,
-  maxWidth: '48rem',
+  maxWidth: '52rem',
   margin: '0 auto',
   '@media (min-width: 768px)': {
     padding: `${theme.spacing[8]} ${theme.spacing[6]}`,
@@ -87,13 +87,47 @@ export const SortBtn = styled.button({
 // ─── Memory card ─────────────────────────────────────────────────────────────
 
 export const MemoryCard = styled.div({
-  backgroundColor: theme.colors.card,
-  border: `1px solid ${theme.colors.border}`,
+  // Glass surface
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
   borderRadius: theme.radius['2xl'],
   overflow: 'hidden',
   marginBottom: theme.spacing[4],
   animation: `${fadeUp} 0.35s ease both`,
   willChange: 'transform, opacity',
+})
+
+// ─── Split-view body (desktop: audio-left / transcript-right) ───────────────
+
+export const SplitBody = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  '@media (min-width: 640px)': {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+  },
+})
+
+export const SplitLeft = styled.div({
+  // Media pane: photo + AI summary
+  display: 'flex',
+  flexDirection: 'column',
+  '@media (min-width: 640px)': {
+    width: '44%',
+    flexShrink: 0,
+    borderRight: '1px solid var(--glass-border)',
+  },
+})
+
+export const SplitRight = styled.div({
+  // Text pane: transcript + reflection + footer
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  minWidth: 0,
 })
 
 export const MemoryCardHeader = styled.div({
@@ -385,12 +419,29 @@ export const ReflectionActions = styled.div({
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
+export const shimmer = keyframes`
+  from { background-position: -400px 0; }
+  to   { background-position: 400px 0; }
+`
+
+const skeletonShimmer = {
+  backgroundColor: theme.colors.muted,
+  backgroundImage: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%)',
+  backgroundSize: '400px 100%',
+  backgroundRepeat: 'no-repeat' as const,
+  animation: `${shimmer} 1.4s ease-in-out infinite`,
+}
+
 export const SkeletonCard = styled.div({
-  backgroundColor: theme.colors.card,
-  borderRadius: '1.25rem',
-  border: `1px solid ${theme.colors.border}`,
+  // Glass surface — matches real MemoryCard
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
+  borderRadius: theme.radius['2xl'],
   padding: '1.25rem',
-  marginBottom: '1rem',
+  marginBottom: theme.spacing[4],
   display: 'flex',
   flexDirection: 'column',
   gap: '0.75rem',
@@ -411,6 +462,7 @@ export const SkeletonCircle = styled.div({
   height: '2.5rem',
   borderRadius: '50%',
   flexShrink: 0,
+  ...skeletonShimmer,
 })
 
 export const SkeletonLine = styled.div<{ $width?: string; $height?: string; $marginBottom?: string }>(
@@ -419,6 +471,7 @@ export const SkeletonLine = styled.div<{ $width?: string; $height?: string; $mar
     height: $height,
     borderRadius: '0.375rem',
     marginBottom: $marginBottom,
+    ...skeletonShimmer,
   }),
 )
 
@@ -427,5 +480,6 @@ export const SkeletonBlock = styled.div<{ $height?: string; $radius?: string }>(
     width: '100%',
     height: $height,
     borderRadius: $radius,
+    ...skeletonShimmer,
   }),
 )

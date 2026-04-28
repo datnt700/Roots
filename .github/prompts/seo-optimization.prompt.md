@@ -13,19 +13,19 @@ Optimize SEO for the ROOTS (GỐC) landing page.
 
 ## Context Files
 
-- #file:../app/layout.tsx - Current metadata
-- #file:../lib/i18n.ts - Translation strings (used in meta descriptions)
+- #file:../src/app/layout.tsx - Current metadata
+- `messages/{locale}/*.json` — Translation strings (used in meta descriptions)
 
 ## Current Setup
 
 - **Framework**: Next.js 16 App Router
-- **Metadata**: Defined in `app/layout.tsx` via `export const metadata`
+- **Metadata**: Defined in `src/app/layout.tsx` via `export const metadata`
 - **URL**: Production Vercel deployment
 - **Audience**: Vietnamese families + diaspora (en/vi/fr)
 
 ## SEO Checklist
 
-### Metadata (`app/layout.tsx`)
+### Metadata (`src/app/layout.tsx`)
 
 - [ ] `title` — brand name + value prop (< 60 chars)
 - [ ] `description` — compelling, keyword-rich (120–160 chars)

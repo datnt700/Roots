@@ -6,40 +6,98 @@ applyTo: '**/*.{ts,tsx}'
 
 ## App Router Conventions
 
-All interactive sections use `'use client'`. Server components are only used
-in `app/layout.tsx` and `app/page.tsx` (the page itself is a thin shell).
+All interactive components use `'use client'`. Server components are used only
+in layout files and thin page shells.
 
 ```typescript
-// ✅ CORRECT — all section components are client components
+// ✅ CORRECT — client component
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import { useI18n } from '@/components/i18n-provider'
+import { useTranslations } from 'next-intl'
 ```
+
+## Two Surfaces: Landing vs App
+
+| Surface | Path | Auth | i18n namespace |
+|---|---|---|---|
+| Landing page | `src/app/page.tsx` | None | Loaded via `getTranslations` / layout |
+| App dashboard | `src/app/app/**` | Required (next-auth) | Per-page namespace |
+
+**App pages** are protected by next-auth and wrapped by `AppShell` in
+`src/app/app/layout.tsx`. Each page has `page.tsx` + `page.styles.ts`.
+
+## i18n with next-intl
+
+Translation files live in `messages/{locale}/*.json` (NOT in `lib/i18n.ts`).
+
+```typescript
+// ✅ CORRECT — use next-intl in client components
+'use client'
+import { useTranslations } from 'next-intl'
+
+export function MyComponent() {
+  const t = useTranslations('myNamespace') // matches messages/en/myNamespace.json
+  return <h1>{t('title')}</h1>
+}
+```
+
+**Rules:**
+- Keys go in `messages/en/{namespace}.json`, `messages/vi/{namespace}.json`, `messages/fr/{namespace}.json`
+- The namespace is the filename without `.json` (e.g., `messages/en/timeline.json` → `useTranslations('timeline')`)
+- **Never** hardcode user-facing strings; always use `t('key')`
+- Always add new keys to all 3 locales: en, vi, fr
+
+```json
+// messages/en/record.json
+{ "start": "Start Recording", "stop": "Stop" }
+
+// messages/vi/record.json  ← must add
+{ "start": "Bắt đầu ghi", "stop": "Dừng" }
+
+// messages/fr/record.json  ← must add
+{ "start": "Commencer", "stop": "Arrêter" }
+```
+
+## Auth (next-auth v5)
+
+```typescript
+// In client components — check session
+'use client'
+import { useSession, signOut } from 'next-auth/react'
+
+export function UserMenu() {
+  const { data: session } = useSession()
+  const name = session?.user?.name ?? 'You'
+  return <button onClick={() => signOut()}>Sign out {name}</button>
+}
+```
+
+Auth config is in `src/auth.ts`. The `SessionProvider` wraps all app pages
+via `src/components/session-provider.tsx`.
 
 ## Root Layout Rules
 
 ```typescript
-// app/layout.tsx — ONLY providers and font setup
+// src/app/layout.tsx — providers only, NO Emotion components
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${dmSans.variable} ${playfair.variable}`}>
-        <I18nProvider>{children}</I18nProvider>
+        <EmotionRegistry>
+          <ThemeProvider>{children}</ThemeProvider>
+        </EmotionRegistry>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
-  );
+  )
 }
 ```
 
-- ✅ Root layout = fonts + providers + analytics only
-- ❌ Do NOT add Emotion components to root layout (hydration mismatch)
-- ✅ `suppressHydrationWarning` on `<html>` if needed for theme toggle
+- ✅ `EmotionRegistry` (from `src/components/emotion-registry.tsx`) is required for SSR
+- ❌ Do NOT add Emotion styled components directly to root layout
 
-## Scroll Animation Pattern
-
-Use `IntersectionObserver` with a `isVisible` boolean state:
+## Scroll Animation Pattern (Landing page sections)
 
 ```typescript
 const [isVisible, setIsVisible] = useState(false)
@@ -47,33 +105,21 @@ const ref = useRef<HTMLDivElement>(null)
 
 useEffect(() => {
   const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) setIsVisible(true)
-    },
+    ([entry]) => { if (entry.isIntersecting) setIsVisible(true) },
     { threshold: 0.1 },
   )
   if (ref.current) observer.observe(ref.current)
   return () => observer.disconnect()
 }, [])
-
-// Use in styled component
-const Card = styled.div<{ isVisible: boolean; index: number }>(
-  ({ isVisible, index }) => ({
-    opacity: isVisible ? 1 : 0,
-    transform: isVisible ? 'translateY(0)' : 'translateY(2rem)',
-    transition: `all ${theme.transitions.slow}`,
-    transitionDelay: `${index * 100}ms`,
-  }),
-)
 ```
 
 ## API Routes (Database Operations)
 
-API routes in `app/api/` are used exclusively for database operations.
+API routes in `src/app/api/` are used exclusively for database operations.
 Keep them thin — validate input, call `db`, return JSON.
 
 ```typescript
-// app/api/waitlist/route.ts
+// src/app/api/waitlist/route.ts
 import { db } from '@/lib/db'
 import { NextResponse } from 'next/server'
 
@@ -92,19 +138,17 @@ export async function POST(request: Request) {
 }
 ```
 
+- ✅ DB access ONLY inside `src/app/api/` routes
+- ❌ No server actions — use API routes + `fetch` from client
+- ❌ No React Query — plain `fetch` in client components is fine
+
 ## Encryption — Sensitive Fields
 
 Fields annotated `[ENCRYPTED]` in `prisma/schema.prisma` must be encrypted
-before any DB write and decrypted after read, using `lib/crypto.ts`.
+before any DB write and decrypted after read, using `src/lib/crypto.ts`.
 
 ```typescript
-import {
-  encrypt,
-  decrypt,
-  hashEmail,
-  encryptOptional,
-  decryptOptional,
-} from '@/lib/crypto'
+import { encrypt, decrypt, hashEmail } from '@/lib/crypto'
 
 // Writing
 await db.user.create({
@@ -128,7 +172,7 @@ Encrypted fields: `User.email`, `User.displayName`, `Parent.name`,
 
 ## File Storage
 
-All file operations go through `lib/storage.ts` (currently mocked).
+All file operations go through `src/lib/storage.ts` (currently mocked).
 S3 keys returned by `uploadFile()` must be encrypted before DB storage.
 
 ```typescript
@@ -148,10 +192,10 @@ Never expose S3 object keys directly to the client.
 ## Prisma Client — Always Use the Singleton
 
 ```typescript
-// ✅ CORRECT — import from lib/db.ts
+// ✅ CORRECT — import from src/lib/db.ts
 import { db } from '@/lib/db'
 
-// ❌ WRONG — never instantiate directly (Prisma 7 requires the PrismaPg adapter)
+// ❌ WRONG — never instantiate directly
 import { PrismaClient } from '@/generated/prisma'
 const prisma = new PrismaClient() // missing adapter + creates multiple connections
 ```
@@ -161,12 +205,7 @@ const prisma = new PrismaClient() // missing adapter + creates multiple connecti
 - Strict mode is enabled
 - Prefix unused vars/params with `_`
 - Infer return types — do not annotate `: JSX.Element`
-- Use `as unknown as T` sparingly for unavoidable type casts
-
-## Image Optimization
-
-Images are unoptimized (`images: { unoptimized: true }` in `next.config.mjs`).
-Use `<img>` or Next.js `<Image>` for static assets in `public/`.
+- Avoid `any` without justification
 
 ## Font Usage
 

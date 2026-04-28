@@ -15,7 +15,7 @@ organic reach for Vietnamese families searching for family heritage tools.
 
 - **Target audience**: Vietnamese families and diaspora (vi, en, fr)
 - **Key terms**: gia phả, lịch sử gia đình, family tree, digital heritage
-- **Framework**: Next.js 16 — metadata API in `app/layout.tsx`
+- **Framework**: Next.js 16 — metadata API in `src/app/layout.tsx`
 - **Deployment**: Vercel — production URL to be confirmed
 
 ## Metadata (`app/layout.tsx`)

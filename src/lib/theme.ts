@@ -77,6 +77,44 @@ export const theme = {
     lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
     xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
   },
+  // ─── Surface effects ──────────────────────────────────────────────────────
+  glass: {
+    background: 'var(--glass-bg)',
+    border: 'var(--glass-border)',
+    shadow: 'var(--glass-shadow)',
+    inset: 'var(--glass-inset)',
+    blur: 'blur(14px) saturate(1.4)',
+  },
+  clay: {
+    // Primary (green) — for main action buttons
+    primaryBg: 'linear-gradient(145deg, oklch(0.52 0.12 155), oklch(0.38 0.12 155))',
+    primaryShadow: [
+      '6px 6px 14px rgba(0,0,0,0.18)',
+      '-3px -3px 8px var(--clay-highlight)',
+      'inset 2px 2px 6px var(--clay-highlight)',
+      'inset -3px -3px 8px var(--clay-depth)',
+    ].join(', '),
+    // Danger (red) — for recording-active state
+    dangerBg: 'linear-gradient(145deg, #ef4444, #b91c1c)',
+    dangerShadow: [
+      '6px 6px 14px rgba(220,38,38,0.28)',
+      '-3px -3px 8px var(--clay-highlight)',
+      'inset 2px 2px 6px var(--clay-highlight)',
+      'inset -3px -3px 8px rgba(0,0,0,0.22)',
+    ].join(', '),
+    // Pressed state (shared)
+    pressedShadow: [
+      '2px 2px 6px rgba(0,0,0,0.14)',
+      '-1px -1px 4px var(--clay-highlight)',
+      'inset 4px 4px 10px var(--clay-depth)',
+      'inset -2px -2px 6px var(--clay-highlight)',
+    ].join(', '),
+    // Disabled state — flat, desaturated, no depth
+    // Use when an action is unavailable (e.g. upload in progress).
+    // The button should look "deflated" so users don't try to press it.
+    disabledBg: 'linear-gradient(145deg, oklch(0.78 0.03 155), oklch(0.72 0.03 155))',
+    disabledShadow: '0 2px 4px rgba(0,0,0,0.08)',
+  },
   transitions: {
     fast: '150ms ease',
     normal: '300ms ease',

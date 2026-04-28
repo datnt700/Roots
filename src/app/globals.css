@@ -20,6 +20,16 @@
   --input: #e5e1db;
   --ring: #3d6b4f;
   --radius: 0.75rem;
+
+  /* ─── Glassmorphism tokens ─────────────────────────────────── */
+  --glass-bg: rgba(252, 251, 249, 0.72);
+  --glass-border: rgba(255, 255, 255, 0.72);
+  --glass-shadow: 0 2px 16px -2px rgba(61, 107, 79, 0.1);
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+
+  /* ─── Claymorphism tokens ──────────────────────────────────── */
+  --clay-highlight: rgba(255, 255, 255, 0.22);
+  --clay-depth: rgba(0, 0, 0, 0.18);
 }
 
 .dark {
@@ -42,6 +52,32 @@
   --border: #3d3b39;
   --input: #363432;
   --ring: #6b9b7a;
+
+  /* ─── Glassmorphism tokens (dark) ─────────────────────────── */
+  --glass-bg: rgba(36, 34, 32, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.45);
+  --glass-inset: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  /* ─── Claymorphism tokens (dark) ───────────────────────────── */
+  --clay-highlight: rgba(255, 255, 255, 0.1);
+  --clay-depth: rgba(0, 0, 0, 0.35);
+}
+
+/* ─── Glass surface: fallback for devices without backdrop-filter ───────────
+   Old Android phones in Vietnam may not support backdrop-filter (blur).
+   On those devices we use a near-opaque solid background so glass cards
+   remain readable without the blur effect.
+   ─────────────────────────────────────────────────────────────────────────── */
+@supports not (backdrop-filter: blur(1px)) {
+  :root {
+    --glass-bg: rgba(252, 251, 249, 0.97);
+    --glass-border: rgba(200, 195, 185, 0.7);
+  }
+  .dark {
+    --glass-bg: rgba(36, 34, 32, 0.97);
+    --glass-border: rgba(255, 255, 255, 0.14);
+  }
 }
 
 /* Reset and base styles */

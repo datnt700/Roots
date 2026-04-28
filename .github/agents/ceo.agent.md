@@ -16,6 +16,17 @@ ROOTS (GỐC) is the **first digital museum for ancestral storytelling in Vietna
 We help Vietnamese families — both in Vietnam and the diaspora — preserve and
 share the voices, memories, and life stories of their elders.
 
+## Two-Surface Product
+
+ROOTS ships as one Next.js app with two distinct surfaces:
+
+1. **Landing page** (`/`) — Converts visitors to waitlist signups. One job.
+2. **Family app** (`/app/*`) — Authenticated dashboard where families record,
+   review, and curate memories. Pages: Dashboard, Studio, Timeline, Feedback,
+   Parents, Record.
+3. **Parent QR flow** (`/parent/[token]`) — No-login mobile page for elderly
+   relatives. They scan a QR sticker and record voice stories via AI guide.
+
 ## Target Audience
 
 1. **Primary**: Vietnamese families with elderly relatives whose stories risk being lost

@@ -1,5 +1,5 @@
 ﻿name: Feature Request
-description: Suggest a new section or feature for the ROOTS landing page
+description: Suggest a new feature for ROOTS (landing page or app)
 title: '[feat]: '
 labels: ['enhancement']
 body:
@@ -12,7 +12,7 @@ body:
     id: problem
     attributes:
       label: What problem does this solve?
-      description: What visitor need or conversion goal does this address?
+      description: What user need, conversion goal, or family workflow does this address?
     validations:
       required: true
 
@@ -20,14 +20,14 @@ body:
     id: solution
     attributes:
       label: Proposed solution
-      description: Describe the new section, component, or feature you'd like to see.
+      description: Describe the new section, page, component, or feature you'd like to see.
     validations:
       required: true
 
   - type: dropdown
     id: area
     attributes:
-      label: Which area of the landing page?
+      label: Which area?
       options:
         - Hero section
         - Problem section
@@ -37,7 +37,15 @@ body:
         - Final CTA section
         - Navbar
         - Footer
-        - New section
+        - New landing section
+        - Login / Auth
+        - Dashboard
+        - Timeline
+        - Studio
+        - Feedback
+        - Parents page
+        - Record page
+        - Parent QR flow
         - i18n / translations
         - Performance
         - SEO

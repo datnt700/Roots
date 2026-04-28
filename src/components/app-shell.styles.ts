@@ -8,7 +8,8 @@ import { theme } from '@/lib/theme'
 
 export const BOTTOM_NAV_HEIGHT = '4.5rem'
 export const TOP_HEADER_HEIGHT = '3.5rem'
-export const SIDEBAR_WIDTH = '16rem'
+export const SIDEBAR_WIDTH = '15rem'
+export const SIDEBAR_WIDTH_COLLAPSED = '4.5rem'
 
 // ─── Animations ───────────────────────────────────────────────────────────────
 
@@ -47,28 +48,43 @@ export const Shell = styled.div({
 })
 
 // Left sidebar — desktop only
-export const Sidebar = styled.aside({
+export const Sidebar = styled('aside', { shouldForwardProp: (p) => p !== '$collapsed' })<{ $collapsed?: boolean }>(({ $collapsed }) => ({
   display: 'none',
   '@media (min-width: 1024px)': {
     display: 'flex',
     flexDirection: 'column',
-    width: SIDEBAR_WIDTH,
+    width: $collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
     minHeight: '100dvh',
+    // Glass surface
+    backgroundColor: 'var(--glass-bg)',
+    backdropFilter: 'blur(16px) saturate(1.4)',
+    WebkitBackdropFilter: 'blur(16px) saturate(1.4)',
     borderRight: `1px solid ${theme.colors.border}`,
-    backgroundColor: theme.colors.card,
     position: 'fixed',
     top: 0,
     left: 0,
     bottom: 0,
     zIndex: 30,
     padding: `${theme.spacing[6]} 0`,
+    transition: `width 350ms cubic-bezier(0.4, 0, 0.2, 1)`,
+    overflow: 'hidden',
   },
-})
+}))
 
 export const SidebarLogo = styled.div({
-  padding: `0 ${theme.spacing[6]} ${theme.spacing[6]}`,
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing[2],
+  padding: `0 ${theme.spacing[4]} ${theme.spacing[5]}`,
   borderBottom: `1px solid ${theme.colors.border}`,
   marginBottom: theme.spacing[4],
+  flexShrink: 0,
+})
+
+export const SidebarLogoMark = styled.div({
+  flex: 1,
+  minWidth: 0,
+  overflow: 'hidden',
 })
 
 export const SidebarLogoText = styled.span({
@@ -109,45 +125,72 @@ export const SidebarNav = styled.nav({
 export const SidebarLink = styled(Link, {
   shouldForwardProp: (prop) => prop !== '$active' && prop !== 'viewTransition',
 })<{ $active: boolean }>(({ $active }) => ({
+  position: 'relative',
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing[3],
-  padding: `${theme.spacing[3]} ${theme.spacing[3]}`,
-  borderRadius: theme.radius.lg,
+  padding: `${theme.spacing[2]} ${theme.spacing[3]}`,
+  paddingLeft: `calc(${theme.spacing[3]} + 8px)`, // space for left indicator
+  borderRadius: theme.radius.xl,
   textDecoration: 'none',
   fontSize: '0.875rem',
   fontWeight: $active ? 600 : 400,
   color: $active ? theme.colors.primary : theme.colors.mutedForeground,
-  backgroundColor: $active ? 'oklch(0.88 0.06 155 / 0.15)' : 'transparent',
-  transition: `all ${theme.transitions.fast}`,
+  backgroundColor: 'transparent',
+  whiteSpace: 'nowrap',
+  transition: `color ${theme.transitions.fast}`,
+  // Left accent indicator
+  '&::before': {
+    content: '""',
+    position: 'absolute',
+    left: '4px',
+    top: '22%',
+    height: '56%',
+    width: '3px',
+    borderRadius: theme.radius.full,
+    backgroundColor: theme.colors.primary,
+    opacity: $active ? 1 : 0,
+    transform: $active ? 'scaleY(1)' : 'scaleY(0.3)',
+    transition: `opacity ${theme.transitions.fast}, transform ${theme.transitions.normal}`,
+  },
+  // Hover: lift icon
   '&:hover': {
-    backgroundColor: $active
-      ? 'oklch(0.88 0.06 155 / 0.2)'
-      : theme.colors.muted,
     color: $active ? theme.colors.primary : theme.colors.foreground,
+    '& svg': { transform: 'translateY(-1.5px)' },
   },
   '& svg': {
     flexShrink: 0,
     width: '1.125rem',
     height: '1.125rem',
+    transition: `transform ${theme.transitions.fast}`,
+  },
+  // Collapsed: center icons, hide text
+  '[data-collapsed="true"] &': {
+    justifyContent: 'center',
+    padding: `${theme.spacing[2]}`,
+    paddingLeft: theme.spacing[2],
+    '&::before': { display: 'none' },
+    '& > span': { display: 'none' },
   },
 }))
 
 export const SidebarBottom = styled.div({
-  padding: `${theme.spacing[4]} ${theme.spacing[3]}`,
+  padding: `${theme.spacing[3]} ${theme.spacing[3]}`,
   borderTop: `1px solid ${theme.colors.border}`,
   marginTop: 'auto',
   display: 'flex',
   flexDirection: 'column',
   gap: theme.spacing[1],
+  flexShrink: 0,
 })
 
 export const SidebarAction = styled.button({
   display: 'flex',
   alignItems: 'center',
   gap: theme.spacing[3],
-  padding: `${theme.spacing[3]} ${theme.spacing[3]}`,
-  borderRadius: theme.radius.lg,
+  padding: `${theme.spacing[2]} ${theme.spacing[3]}`,
+  paddingLeft: `calc(${theme.spacing[3]} + 8px)`,
+  borderRadius: theme.radius.xl,
   border: 'none',
   background: 'none',
   cursor: 'pointer',
@@ -155,20 +198,30 @@ export const SidebarAction = styled.button({
   color: theme.colors.mutedForeground,
   width: '100%',
   textAlign: 'left',
-  transition: `all ${theme.transitions.fast}`,
+  whiteSpace: 'nowrap',
+  transition: `color ${theme.transitions.fast}, background ${theme.transitions.fast}`,
   '&:hover': {
     backgroundColor: theme.colors.muted,
     color: theme.colors.foreground,
+    '& svg': { transform: 'translateY(-1.5px)' },
   },
   '& svg': {
     flexShrink: 0,
     width: '1.125rem',
     height: '1.125rem',
+    transition: `transform ${theme.transitions.fast}`,
+  },
+  // Collapsed: center icons
+  '[data-collapsed="true"] &': {
+    justifyContent: 'center',
+    padding: `${theme.spacing[2]}`,
+    paddingLeft: theme.spacing[2],
+    '& > span': { display: 'none' },
   },
 })
 
 // Main content wrapper
-export const MainContent = styled.div({
+export const MainContent = styled('div', { shouldForwardProp: (p) => p !== '$collapsed' })<{ $collapsed?: boolean }>(({ $collapsed }) => ({
   position: 'fixed',
   top: TOP_HEADER_HEIGHT,
   bottom: BOTTOM_NAV_HEIGHT,
@@ -182,13 +235,14 @@ export const MainContent = styled.div({
   '@media (min-width: 1024px)': {
     position: 'static',
     flex: 1,
-    marginLeft: SIDEBAR_WIDTH,
+    marginLeft: $collapsed ? SIDEBAR_WIDTH_COLLAPSED : SIDEBAR_WIDTH,
     minHeight: '100dvh',
     overflowY: 'visible',
     bottom: 'auto',
     top: 'auto',
+    transition: `margin-left 350ms cubic-bezier(0.4, 0, 0.2, 1)`,
   },
-})
+}))
 
 // Top header — mobile only
 export const TopHeader = styled.header({
@@ -457,7 +511,10 @@ export const MobileSidebarPanel = styled.div({
   width: '80vw',
   maxWidth: '18rem',
   zIndex: 51,
-  backgroundColor: theme.colors.card,
+  // Glass surface (same as desktop sidebar)
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(20px) saturate(1.5)',
+  WebkitBackdropFilter: 'blur(20px) saturate(1.5)',
   borderRight: `1px solid ${theme.colors.border}`,
   display: 'flex',
   flexDirection: 'column',
@@ -524,4 +581,147 @@ export const RecordFAB = styled(Link)({
     bottom: theme.spacing[6],
     right: theme.spacing[6],
   },
+})
+
+// ─── Sidebar additions ────────────────────────────────────────────────────────
+
+// Clay-style Record button — most prominent item in sidebar
+export const SidebarRecordLink = styled(Link)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing[3],
+  padding: `${theme.spacing[2]} ${theme.spacing[3]}`,
+  borderRadius: theme.radius['2xl'],
+  textDecoration: 'none',
+  fontSize: '0.875rem',
+  fontWeight: 600,
+  color: '#fff',
+  whiteSpace: 'nowrap',
+  // Clay surface
+  background: 'linear-gradient(145deg, oklch(0.52 0.12 155), oklch(0.38 0.12 155))',
+  boxShadow: [
+    '4px 4px 10px var(--clay-depth)',
+    '-2px -2px 6px var(--clay-highlight)',
+    'inset 1px 1px 4px var(--clay-highlight)',
+    'inset -2px -2px 5px var(--clay-depth)',
+  ].join(', '),
+  transition: `all ${theme.transitions.fast}`,
+  '&:hover': {
+    '& svg': { transform: 'translateY(-1.5px)' },
+  },
+  '&:active': {
+    transform: 'scale(0.97)',
+    boxShadow: [
+      '1px 1px 4px rgba(0,0,0,0.14)',
+      'inset 3px 3px 8px var(--clay-depth)',
+      'inset -1px -1px 4px var(--clay-highlight)',
+    ].join(', '),
+  },
+  '& svg': {
+    flexShrink: 0,
+    width: '1.125rem',
+    height: '1.125rem',
+    transition: `transform ${theme.transitions.fast}`,
+  },
+  // Collapsed: icon only, centered
+  '[data-collapsed="true"] &': {
+    justifyContent: 'center',
+    padding: `${theme.spacing[2]}`,
+    '& > span': { display: 'none' },
+  },
+})
+
+// Notification dot on sidebar nav items
+export const SidebarNotifDot = styled.span({
+  marginLeft: 'auto',
+  width: '0.4rem',
+  height: '0.4rem',
+  borderRadius: theme.radius.full,
+  backgroundColor: theme.colors.destructive,
+  flexShrink: 0,
+  '[data-collapsed="true"] &': { display: 'none' },
+})
+
+// Thin separator between sections
+export const SidebarSeparator = styled.div({
+  height: '1px',
+  backgroundColor: theme.colors.border,
+  margin: `${theme.spacing[2]} ${theme.spacing[3]}`,
+  flexShrink: 0,
+})
+
+// Collapse toggle button in logo area
+export const SidebarCollapseBtn = styled.button({
+  flexShrink: 0,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '1.625rem',
+  height: '1.625rem',
+  borderRadius: theme.radius.md,
+  border: `1px solid ${theme.colors.border}`,
+  backgroundColor: 'transparent',
+  color: theme.colors.mutedForeground,
+  cursor: 'pointer',
+  transition: `all ${theme.transitions.fast}`,
+  '&:hover': {
+    backgroundColor: theme.colors.muted,
+    color: theme.colors.foreground,
+  },
+  '& svg': { width: '0.875rem', height: '0.875rem' },
+})
+
+// User profile row at bottom
+export const SidebarUserSection = styled.div({
+  display: 'flex',
+  alignItems: 'center',
+  gap: theme.spacing[2],
+  padding: `${theme.spacing[2]} ${theme.spacing[3]}`,
+  paddingLeft: `calc(${theme.spacing[3]} + 8px)`,
+  borderRadius: theme.radius.xl,
+  cursor: 'default',
+  whiteSpace: 'nowrap',
+  marginBottom: theme.spacing[1],
+  '[data-collapsed="true"] &': {
+    justifyContent: 'center',
+    padding: `${theme.spacing[2]}`,
+    paddingLeft: theme.spacing[2],
+  },
+})
+
+export const SidebarAvatar = styled.div({
+  width: '1.875rem',
+  height: '1.875rem',
+  borderRadius: theme.radius.full,
+  background: 'linear-gradient(145deg, oklch(0.52 0.12 155), oklch(0.40 0.12 155))',
+  color: '#fff',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  fontSize: '0.6875rem',
+  fontWeight: 700,
+  flexShrink: 0,
+})
+
+export const SidebarUserInfo = styled.div({
+  flex: 1,
+  minWidth: 0,
+  overflow: 'hidden',
+  '[data-collapsed="true"] &': { display: 'none' },
+})
+
+export const SidebarUserName = styled.div({
+  fontSize: '0.8125rem',
+  fontWeight: 600,
+  color: theme.colors.foreground,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  lineHeight: 1.3,
+})
+
+export const SidebarUserRole = styled.div({
+  fontSize: '0.7rem',
+  color: theme.colors.mutedForeground,
+  lineHeight: 1.3,
 })

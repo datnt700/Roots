@@ -7,7 +7,14 @@
 # GitHub config
 /.github/ @roots-team/maintainers
 
-# Core app files
-/app/ @roots-team/maintainers
-/components/ @roots-team/maintainers
-/lib/ @roots-team/maintainers
+# Source code
+/src/ @roots-team/maintainers
+/src/app/ @roots-team/maintainers
+/src/components/ @roots-team/maintainers
+/src/lib/ @roots-team/maintainers
+
+# Database schema
+/prisma/ @roots-team/maintainers
+
+# i18n translation files
+/messages/ @roots-team/maintainers

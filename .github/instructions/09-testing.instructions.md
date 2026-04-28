@@ -6,22 +6,24 @@ applyTo: '**/*.test.{ts,tsx},**/*.spec.{ts,tsx}'
 
 ## Stack
 
-This is a simple landing page with no testing framework currently installed.
+No testing framework is currently installed.
 If tests are needed, use **Vitest** + **React Testing Library**.
 
 ## What to Test
 
-Focus on the few pieces of logic in this project:
+Focus on the pieces with actual logic:
 
-1. **`useI18n` hook** — locale switching, `t()` function returns correct string
-2. **`useMobile` hook** — breakpoint detection
-3. **Utility functions** in `lib/utils.ts`
+1. **`useMobile` hook** — breakpoint detection
+2. **Utility functions** in `src/lib/utils.ts`
+3. **Crypto functions** in `src/lib/crypto.ts` — encrypt/decrypt round-trips, hash determinism
+4. **API routes** — validate input handling and DB responses (with mock db)
+5. **Auth flows** — token verification (with next-auth test helpers)
 
 ## What NOT to Test
 
 - Styled components (visual-only)
 - Section layout (no logic)
-- Static translation strings (they are the source of truth)
+- Translation strings in `messages/` (they are the source of truth)
 
 ## Adding Vitest
 

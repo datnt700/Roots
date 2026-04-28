@@ -1,14 +1,14 @@
 ﻿---
 description: >
   General developer for ROOTS (GỐC). Implements features and fixes across
-  the Next.js landing page following established patterns.
+  the landing page and authenticated app following established patterns.
 name: Developer
 model: Claude Sonnet 4.5
 ---
 
 # Developer Agent — ROOTS (GỐC)
 
-You implement features and fixes for the ROOTS (GỐC) landing page.
+You implement features and fixes for ROOTS (GỐC) — landing page + family app.
 
 ## Quick Reference
 
@@ -25,53 +25,56 @@ npx prisma studio                     # Visual DB browser
 
 Before writing code:
 
+- [ ] Read `DESIGN.md` — glass/clay surfaces, hover rules, animation patterns
 - [ ] Read `.github/copilot-instructions.md`
 - [ ] Read `.github/instructions/06-styling.instructions.md` (Emotion patterns)
-- [ ] Check `lib/theme.ts` for design tokens
-- [ ] Check `lib/i18n.ts` for existing translation keys
-- [ ] Check `components/ui/` for reusable components
+- [ ] Check `src/lib/theme.ts` for design tokens (`theme.glass.*`, `theme.clay.*`)
+- [ ] Check `messages/en/*.json` for existing translation keys
+- [ ] Check `src/components/ui/` for reusable components
 
 After writing code:
 
-- [ ] All strings use `t()` — no hardcoded text
+- [ ] All strings use `t()` from `useTranslations()` — no hardcoded text
 - [ ] All styles use `theme.*` tokens — no raw values
-- [ ] New translations added to en, vi, AND fr
-- [ ] Transient styled props use `$` prefix
+- [ ] Cards use glass surface (`var(--glass-bg)` + backdrop-filter) — not `theme.colors.card`
+- [ ] Hover effects wrapped in `'@media (hover: hover)'` — no bare `'&:hover'`
+- [ ] New translations added to `messages/en/`, `messages/vi/`, `messages/fr/`
+- [ ] Transient styled props use `$` prefix + `shouldForwardProp`
 - [ ] `'use client'` at top of component file
-- [ ] DB calls only in `app/api/` routes via `db` from `@/lib/db`
+- [ ] Styled components in `page.styles.ts`, JSX in `page.tsx` (for app pages)
+- [ ] DB calls only in `src/app/api/` routes via `db` from `@/lib/db`
 - [ ] `npx prisma generate` run after any schema change
 - [ ] `pnpm lint` passes
-- [ ] `pnpm build` passes
 
 ## Key Patterns
 
 ```typescript
-// Section template
-'use client';
-import { useEffect, useRef, useState } from 'react';
-import styled from '@emotion/styled';
-import { theme } from '@/lib/theme';
-import { useI18n } from '@/components/i18n-provider';
+// App page template
+// page.styles.ts
+'use client'
+import styled from '@emotion/styled'
+import { theme } from '@/lib/theme'
 
-const Section = styled.section({
-  padding: `${theme.spacing[32]} 0`,
-  backgroundColor: theme.colors.background,
-});
+export const Card = styled.div({
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
+  borderRadius: theme.radius['2xl'],
+  '@media (hover: hover)': {
+    '&:hover': { transform: 'translateY(-2px)', boxShadow: `${theme.shadows.md}, var(--glass-inset)` },
+  },
+  '&:active': { transform: 'scale(0.98)', opacity: 0.8 },
+})
 
-export function MySection() {
-  const { t } = useI18n();
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+// page.tsx
+'use client'
+import { useTranslations } from 'next-intl'
+import { Card } from './page.styles'
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  return <Section ref={ref}>{t('mySection.title')}</Section>;
+export default function MyPage() {
+  const t = useTranslations('myNamespace')
+  return <Card>{t('title')}</Card>
 }
 ```

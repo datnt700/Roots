@@ -20,6 +20,12 @@
     "print": "Imprimer",
     "save": "Enregistrer",
     "saved": "Enregistr\u00e9",
+    "deletePage": "Supprimer la page",
+    "deleteConfirmTitle": "Supprimer cette page ?",
+    "deleteConfirmBody": "Cela supprimera d\u00e9finitivement le QR et tous les souvenirs enregistr\u00e9s sur cette page.",
+    "deleteConfirmYes": "Oui, supprimer",
+    "deleteConfirmNo": "Annuler",
+    "deleteError": "Impossible de supprimer la page. Veuillez r\u00e9essayer.",
     "printTitle": "G\u1ed0C \u00b7 Page {number}",
     "printCaption": "Scannez ce QR pour enregistrer l\u2019histoire de {name}",
     "printTopic": "Sujet\u00a0: {prompt}"

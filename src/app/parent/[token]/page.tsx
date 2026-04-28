@@ -299,6 +299,38 @@ export default function ParentRecordPage() {
     }
   }, [])
 
+    // Retry a failed recording
+  const handleRetry = useCallback(async () => {
+    if (!pendingBlob || !pendingTurns || !sessionRef.current) return
+    setRetrying(true)
+    setFlashError(null)
+    const sess = sessionRef.current
+    const current = pendingTurns
+    try {
+      const { transcript, aiMessage, isComplete } = await callDialogue(
+        token,
+        sess,
+        current,
+        pendingBlob,
+        undefined,
+        photoDescriptionRef.current ?? undefined,
+      )
+      deletePendingRecording(token).catch(() => {})
+      setPendingBlob(null)
+      setPendingTurns(null)
+      const next: Turn[] = [...current]
+      if (transcript) next.push({ role: 'parent', text: transcript })
+      next.push({ role: 'ai', text: aiMessage })
+      setTurns(next)
+      turnsRef.current = next
+      setPhase(isComplete ? 'summary' : 'idle')
+    } catch {
+      setFlashError('Van chua gui duoc. Kiem tra mang va thu lai.')
+    } finally {
+      setRetrying(false)
+    }
+  }, [pendingBlob, pendingTurns, token])
+
   // Auto-retry on reconnect when there is a pending recording
   useEffect(() => {
     if (!isOffline && pendingBlob && pendingTurns && !retrying) {
@@ -464,37 +496,7 @@ export default function ParentRecordPage() {
 
   // Submit â€” upload last audio blob + full dialogue â†’ create Memory
 
-  // Retry a failed recording
-  const handleRetry = useCallback(async () => {
-    if (!pendingBlob || !pendingTurns || !sessionRef.current) return
-    setRetrying(true)
-    setFlashError(null)
-    const sess = sessionRef.current
-    const current = pendingTurns
-    try {
-      const { transcript, aiMessage, isComplete } = await callDialogue(
-        token,
-        sess,
-        current,
-        pendingBlob,
-        undefined,
-        photoDescriptionRef.current ?? undefined,
-      )
-      deletePendingRecording(token).catch(() => {})
-      setPendingBlob(null)
-      setPendingTurns(null)
-      const next: Turn[] = [...current]
-      if (transcript) next.push({ role: 'parent', text: transcript })
-      next.push({ role: 'ai', text: aiMessage })
-      setTurns(next)
-      turnsRef.current = next
-      setPhase(isComplete ? 'summary' : 'idle')
-    } catch {
-      setFlashError('Van chua gui duoc. Kiem tra mang va thu lai.')
-    } finally {
-      setRetrying(false)
-    }
-  }, [pendingBlob, pendingTurns, token])
+
   const handleSubmit = useCallback(async () => {
     setPhase('submitting')
     setFlashError(null)
@@ -620,8 +622,8 @@ export default function ParentRecordPage() {
                 </PhotoBtn>
               )}
             </PhotoRow>
-            <StartBtn onClick={handleStart}>
-              Báº¯t Ä‘áº§u <ChevronRight />
+            <StartBtn onClick={handleStart} aria-label="Bắt đầu chia sẻ ký ức">
+              Bắt đầu <ChevronRight />
             </StartBtn>
           </WelcomeWrap>
         </>
@@ -655,9 +657,13 @@ export default function ParentRecordPage() {
             {parentTurnCount > 0 && (
               <TurnBadge>LÆ°á»£t {parentTurnCount}</TurnBadge>
             )}
-            <HelpBtn $sent={helpSent} onClick={handleHelp}>
+            <HelpBtn
+              $sent={helpSent}
+              onClick={handleHelp}
+              aria-label={helpSent ? 'Đã nhắn con đến hỗ trợ' : 'Nhắn con đến giúp bạn'}
+            >
               <Phone size={14} />
-              {helpSent ? 'ÄÃ£ gá»­i' : 'Gá»i cho con'}
+              {helpSent ? 'Đã gửi' : 'Gọi cho con'}
             </HelpBtn>
           </TopBar>
 
@@ -767,7 +773,11 @@ export default function ParentRecordPage() {
             {phase === 'idle' && (
               <>
                 <MicBtnWrap>
-                  <MicBtn $recording={false} onClick={startRecording}>
+                  <MicBtn
+                    $recording={false}
+                    onClick={startRecording}
+                    aria-label="Nhấn để bắt đầu ghi âm"
+                  >
                     <Mic />
                   </MicBtn>
                 </MicBtnWrap>
@@ -790,7 +800,11 @@ export default function ParentRecordPage() {
                 <MicBtnWrap>
                   <RippleRing />
                   <RippleRing2 />
-                  <MicBtn $recording={true} onClick={stopAndProcess}>
+                  <MicBtn
+                    $recording={true}
+                    onClick={stopAndProcess}
+                    aria-label="Nhấn để dừng ghi âm"
+                  >
                     <Square />
                   </MicBtn>
                 </MicBtnWrap>
@@ -819,6 +833,7 @@ export default function ParentRecordPage() {
                 $loading={phase === 'submitting'}
                 onClick={handleSubmit}
                 disabled={phase === 'submitting'}
+                aria-label={phase === 'submitting' ? 'Đang gửi ký ức...' : `Gửi ký ức cho ${session.studentName}`}
               >
                 {phase === 'submitting' ? (
                   <>

@@ -24,6 +24,7 @@
   "saveReflection": "Sauvegarder",
   "deleteMemory": "Supprimer le souvenir",
   "confirmDelete": "Êtes-vous sûr ? Cette action est irréversible.",
+  "aiSummary": "Résumé IA",
   "emptyState": "Aucun souvenir dans le studio. Allez en enregistrer un !",
   "heart": "Envoyer ❤️",
   "hearted": "Envoyé ❤️"

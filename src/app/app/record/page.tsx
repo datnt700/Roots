@@ -155,7 +155,7 @@ export default function RecordPage() {
         setDraftRestored(true)
       } catch { /* silent */ }
     })()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [])
 
   // Fetch parents + apply URL params
@@ -192,11 +192,19 @@ export default function RecordPage() {
     }
   }
 
+  const haptic = (pattern: number | number[]) => {
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      navigator.vibrate(pattern)
+    }
+  }
+
   const handleRecord = async () => {
     if (recordState === 'recording') {
       mediaRecorderRef.current?.stop()
       setPaused(false)
       setRecordState('recorded')
+      // Short double-tap: "stopped"
+      haptic([60, 40, 60])
       return
     }
 
@@ -224,6 +232,8 @@ export default function RecordPage() {
       setElapsed(0)
       setPlayPct(0)
       setRecordState('recording')
+      // Long buzz: "recording started"
+      haptic(200)
     } catch {
       alert(t('micPermission'))
     }

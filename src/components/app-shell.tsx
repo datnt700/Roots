@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
-import Link from 'next/link'
 import {
   Home,
   Mic,
@@ -15,14 +14,17 @@ import {
   Users,
   Menu,
   Bell,
-  Plus,
+  ChevronLeft,
+  ChevronRight as ChevronRightIcon,
 } from 'lucide-react'
 import { useTranslations } from 'next-intl'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import {
-  BOTTOM_NAV_HEIGHT, TOP_HEADER_HEIGHT, SIDEBAR_WIDTH,
-  Shell, Sidebar, SidebarLogo, SidebarLogoText, SidebarLogoSub, BrandName,
-  NavChevron, SidebarNav, SidebarLink, SidebarBottom, SidebarAction,
+  Shell, Sidebar, SidebarLogo, SidebarLogoMark, SidebarLogoText, SidebarLogoSub, SidebarCollapseBtn,
+  BrandName,
+  SidebarNav, SidebarLink, SidebarRecordLink, SidebarSeparator, SidebarNotifDot,
+  SidebarBottom, SidebarAction,
+  SidebarUserSection, SidebarAvatar, SidebarUserInfo, SidebarUserName, SidebarUserRole,
   MainContent, TopHeader, TopHeaderLogo, HeaderActions, IconButton,
   NotifBadgeWrap, NotifBadge, PageContent,
   NotifDropdown, NotifDropdownHeader, NotifDropdownTitle, NotifDropdownSeeAll,
@@ -73,12 +75,17 @@ const MOCK_NOTIFS = [
 export function AppShell({ children }: AppShellProps) {
   const t = useTranslations('app')
   const pathname = usePathname()
+  const { data: session } = useSession()
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [collapsed, setCollapsed] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
 
   const unreadCount = MOCK_NOTIFS.filter((n) => n.unread).length
+
+  const userName = session?.user?.name ?? 'You'
+  const userInitial = userName[0]?.toUpperCase() ?? 'U'
 
   const isActive = (href: string) =>
     mounted
@@ -90,32 +97,48 @@ export function AppShell({ children }: AppShellProps) {
   const sidebarNav = (
     <>
       <SidebarNav>
+        {/* Record — Claymorphism featured button */}
+        <SidebarRecordLink
+          href="/app/record"
+          onClick={() => setSidebarOpen(false)}
+        >
+          <Mic />
+          <span>{t('nav.record')}</span>
+        </SidebarRecordLink>
+
+        <SidebarSeparator />
+
         {NAV_ITEMS.map(({ key, href, icon: Icon }) => (
           <SidebarLink
             key={key}
             href={href}
             $active={isActive(href)}
             onClick={() => setSidebarOpen(false)}
-            viewTransition
+            //viewTransition
           >
             <Icon />
-            {t(`nav.${key}` as Parameters<typeof t>[0])}
-            {isActive(href) && <NavChevron />}
+            <span>{t(`nav.${key}` as Parameters<typeof t>[0])}</span>
+            {key === 'feedback' && unreadCount > 0 && <SidebarNotifDot />}
           </SidebarLink>
         ))}
       </SidebarNav>
       <SidebarBottom>
-        <SidebarAction>
-          <Users />
-          {t('sidebar.parents')}
-        </SidebarAction>
-        <SidebarAction>
+        {/* User profile */}
+        <SidebarUserSection>
+          <SidebarAvatar>{userInitial}</SidebarAvatar>
+          <SidebarUserInfo>
+            <SidebarUserName>{userName}</SidebarUserName>
+            <SidebarUserRole>Người con</SidebarUserRole>
+          </SidebarUserInfo>
+        </SidebarUserSection>
+
+        <SidebarAction onClick={() => {}}>
           <Settings />
-          {t('sidebar.settings')}
+          <span>{t('sidebar.settings')}</span>
         </SidebarAction>
         <SidebarAction style={{ color: 'var(--destructive)' }} onClick={() => signOut({ redirectTo: '/login' })}>
           <LogOut />
-          {t('sidebar.logout')}
+          <span>{t('sidebar.logout')}</span>
         </SidebarAction>
       </SidebarBottom>
     </>
@@ -124,10 +147,18 @@ export function AppShell({ children }: AppShellProps) {
   return (
     <Shell>
       {/* Desktop sidebar */}
-      <Sidebar>
+      <Sidebar $collapsed={collapsed} data-collapsed={collapsed ? 'true' : undefined}>
         <SidebarLogo>
-          <SidebarLogoText>GỐC</SidebarLogoText>
-          <SidebarLogoSub>ROOTS</SidebarLogoSub>
+          <SidebarLogoMark>
+            <SidebarLogoText>GỐC</SidebarLogoText>
+            {!collapsed && <SidebarLogoSub>ROOTS</SidebarLogoSub>}
+          </SidebarLogoMark>
+          <SidebarCollapseBtn
+            onClick={() => setCollapsed((c) => !c)}
+            aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            {collapsed ? <ChevronRightIcon /> : <ChevronLeft />}
+          </SidebarCollapseBtn>
         </SidebarLogo>
         {sidebarNav}
       </Sidebar>
@@ -151,7 +182,7 @@ export function AppShell({ children }: AppShellProps) {
       )}
 
       {/* Main content */}
-      <MainContent>
+      <MainContent $collapsed={collapsed}>
         {/* Mobile top header */}
         <TopHeader>
           <TopHeaderLogo>GỐC</TopHeaderLogo>
@@ -214,7 +245,7 @@ export function AppShell({ children }: AppShellProps) {
               key={key}
               href={href}
               $active={active}
-              viewTransition
+              //viewTransition
             >
               <BottomNavDot $active={active} />
               <NavIcon $active={active}>

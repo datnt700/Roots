@@ -28,11 +28,14 @@ Closes #
 
 ## Checklist
 
-- [ ] All user-visible text uses `t()` — no hardcoded strings
+- [ ] All user-visible text uses `t()` from `useTranslations()` — no hardcoded strings
 - [ ] All styled components use `theme.*` tokens — no raw CSS values
-- [ ] New translation keys added to all 3 locales (en, vi, fr)
-- [ ] Animated elements use `$isVisible` (transient `$` prefix)
-- [ ] DB calls only in `app/api/` routes via `db` from `lib/db.ts`
+- [ ] New translation keys added to all 3 locales in `messages/{locale}/*.json` (en, vi, fr)
+- [ ] Cards use glass surface (`var(--glass-bg)` + `backdrop-filter`) — not `theme.colors.card`
+- [ ] Hover effects wrapped in `@media (hover: hover)` — not bare `&:hover`
+- [ ] Styled components for app pages are in `page.styles.ts`, not `page.tsx`
+- [ ] Custom `$` props have `shouldForwardProp` to prevent DOM forwarding
+- [ ] DB calls only in `src/app/api/` routes via `db` from `src/lib/db.ts`
 - [ ] Schema changes include a migration (`npx prisma migrate dev`)
 - [ ] `pnpm build` passes locally
 - [ ] `pnpm lint` passes with no errors

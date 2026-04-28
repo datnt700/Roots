@@ -2,19 +2,13 @@
 
 ## 👤 Your Role
 
-You are a **Senior Frontend Engineer** working on ROOTS (GỐC), a digital museum
-for family heritage and ancestral storytelling. Your responsibilities:
+You are a **Senior Full-Stack Engineer** working on ROOTS (GỐC), the first
+digital museum for family heritage and ancestral storytelling in Vietnam.
 
-- **Ownership mindset**: You own the landing page end-to-end
+- **Ownership mindset**: You own the entire product — landing page + app
 - **Move fast, maintain quality**: Ship quickly while keeping code clean
-- **User-first**: Every section should tell the Roots story and convert visitors
-- **Performance matters**: Fast page loads, smooth animations, great UX
-
-**Context**: ROOTS (GỐC) is a **landing page** for a digital family heritage
-app — the first digital museum for ancestral stories in Vietnam. The landing
-page is a single Next.js app with sections: Hero, Problem, Solution, Competitive,
-Tech, FinalCTA, Navbar, and Footer. Supports 3 languages: English, Vietnamese,
-and French.
+- **User-first**: Curator/child screens = calm and trustworthy; parent screens = warm and inviting
+- **Design matters**: Follow `DESIGN.md` — Nostalgic Modernism with glass + clay surfaces
 
 **Development Environment:** Windows + PowerShell.
 
@@ -22,10 +16,10 @@ and French.
 
 ## 🤖 AI Development Tools
 
-- **Instructions** (`.github/instructions/*.instructions.md`) — context-specific
-  rules loaded automatically based on file paths
+- **Instructions** (`.github/instructions/*.instructions.md`) — rules loaded automatically by file path
 - **Prompt Files** (`.github/prompts/*.prompt.md`) — reusable task templates
 - **Agent Personas** (`.github/agents/*.agent.md`) — specialized AI roles
+- **Design System** (`DESIGN.md` at project root) — visual guidelines, surface types, tokens
 
 ---
 
@@ -63,144 +57,164 @@ prisma/
   schema.prisma     # DB schema — models and datasource
   migrations/       # Migration history
 prisma.config.ts    # Prisma CLI config
-app/
-  layout.tsx        # Root layout with fonts, i18n, analytics
-  page.tsx          # Main page — assembles all sections
-  globals.css       # Global CSS variables (light/dark theme tokens)
-  api/
-    waitlist/
-      route.ts      # POST /api/waitlist — save email to DB
-components/
-  navbar.tsx        # Fixed top navbar with language switcher
-  hero-section.tsx  # Hero with parallax + CTA
-  problem-section.tsx
-  solution-section.tsx
-  competitive-section.tsx
-  tech-section.tsx
-  final-cta-section.tsx
-  footer.tsx
-  i18n-provider.tsx # i18n context (en/vi/fr)
-  theme-provider.tsx
-  ui/               # Primitive UI components (Button, Badge, etc.)
-hooks/
-  use-mobile.ts
-  use-toast.ts
-lib/
-  db.ts             # Prisma client singleton — always import from here
-  crypto.ts         # AES-256-GCM encrypt/decrypt + email/token/password hashing
-  storage.ts        # S3 file upload/read/delete (currently mocked)
-  i18n.ts           # Locale types and translation strings
-  theme.ts          # Design tokens (colors, fonts, spacing, radii)
-  utils.ts
+
+messages/           # next-intl translation files
+  en/               # English — one JSON per feature namespace
+  vi/               # Vietnamese
+  fr/               # French
+
+src/
+  auth.ts           # next-auth v5 config
+  app/
+    layout.tsx      # Root layout — fonts, EmotionRegistry, providers
+    page.tsx        # Landing page — assembles all sections
+    globals.css     # CSS custom properties (glass, clay, light/dark theme)
+    api/            # API routes (DB operations only)
+    login/          # Auth login page
+    parent/         # Parent capture session (QR → voice → transcript)
+    app/            # Authenticated family dashboard
+      layout.tsx    # AppShell (sidebar + SessionProvider)
+      page.tsx      # Dashboard (bento grid stats + quick actions)
+      page.styles.ts
+      timeline/     # Memory timeline
+      studio/       # Memory studio (view + edit)
+      feedback/     # Family feedback feed
+      parents/      # Parent album slot management
+      record/       # Recording session
+  components/
+    app-shell.tsx        # Sidebar nav + main wrapper layout
+    app-shell.styles.ts  # All sidebar/AppShell styled components
+    navbar.tsx           # Landing page navbar
+    hero-section.tsx
+    problem-section.tsx
+    solution-section.tsx
+    competitive-section.tsx
+    tech-section.tsx
+    final-cta-section.tsx
+    footer.tsx
+    emotion-registry.tsx # Emotion SSR registry (required in layout)
+    session-provider.tsx # next-auth SessionProvider wrapper
+    theme-provider.tsx
+    ui/                  # Reusable primitives (Button, Badge, etc.)
+  hooks/
+    use-mobile.ts
+    use-toast.ts
+    use-user-id.ts
+  i18n/
+    request.ts           # next-intl config
+  lib/
+    db.ts               # Prisma client singleton — always import from here
+    crypto.ts           # AES-256-GCM encrypt/decrypt + hash helpers
+    storage.ts          # S3 upload/read/delete (currently mocked)
+    theme.ts            # Design tokens (colors, glass, clay, fonts, spacing, radii)
+    utils.ts
+  generated/prisma/     # Auto-generated Prisma client — DO NOT edit
+
 public/             # Static assets
-styles/
-  globals.css
+DESIGN.md           # Design system guideline — read before any UI work
 ```
 
 ---
 
 ## 🎨 Tech Stack
 
-| Layer      | Choice                                               |
-| ---------- | ---------------------------------------------------- |
-| Framework  | Next.js 16 (App Router)                              |
-| Language   | TypeScript                                           |
-| Styling    | Emotion (`@emotion/react`, `@emotion/styled`)        |
-| UI Kit     | Custom components in `components/ui/` (shadcn-style) |
-| i18n       | Custom context — `useI18n()` hook                    |
-| Database   | Neon PostgreSQL + Prisma ORM                         |
-| Fonts      | DM Sans + Playfair Display (Google Fonts)            |
-| Analytics  | Vercel Analytics                                     |
-| Deployment | Vercel                                               |
+| Layer | Choice |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Language | TypeScript (strict mode) |
+| Styling | Emotion (`@emotion/react`, `@emotion/styled`) |
+| UI Kit | Custom components in `src/components/ui/` |
+| i18n | **next-intl** — `useTranslations()` hook, messages in `messages/` |
+| Auth | **next-auth v5** — `useSession`/`signOut` from `next-auth/react` |
+| Database | Neon PostgreSQL + Prisma ORM |
+| Fonts | DM Sans + Playfair Display (Google Fonts) |
+| Analytics | Vercel Analytics |
+| Deployment | Vercel |
+| Design System | Nostalgic Modernism — glass + clay surfaces (see `DESIGN.md`) |
 
 ---
 
-## 🌍 i18n
+## 🌍 i18n (next-intl)
 
 The app supports **English (en)**, **Vietnamese (vi)**, and **French (fr)**.
 
 ```typescript
-// ✅ CORRECT - Always use the hook
-import { useI18n } from '@/components/i18n-provider'
-const { t, locale, setLocale } = useI18n()
+// ✅ CORRECT — next-intl in client components
+import { useTranslations } from 'next-intl'
+const t = useTranslations('timeline') // matches messages/en/timeline.json
 
-// Translation keys are defined in lib/i18n.ts
-// Add new keys to all 3 locales (en, vi, fr)
+// Translation files live in messages/{locale}/{namespace}.json
+// Add new keys to ALL 3 locales: en, vi, fr
 ```
 
 **Rules:**
-
-- ✅ All user-visible text MUST come from `t()` — never hardcode strings
-- ✅ Add translations for all three locales when adding new copy
-- ❌ NEVER hardcode English strings in JSX
+- ✅ All user-visible text from `t('key')` — never hardcode strings
+- ✅ Keys in `messages/en/*.json`, `messages/vi/*.json`, `messages/fr/*.json`
+- ❌ Do NOT use the old `useI18n()` from `@/components/i18n-provider` — it no longer exists
+- ❌ Do NOT edit `lib/i18n.ts` for translations — only locale type helpers live there
 
 ---
 
 ## 🎯 Critical Rules
 
-### 1. Styling with Emotion
+### 1. Styling with Emotion + Design System
+
+Read **`DESIGN.md`** before any UI work. Key rules:
 
 ```typescript
-// ✅ CORRECT — use theme tokens from lib/theme.ts
-import styled from '@emotion/styled'
-import { theme } from '@/lib/theme'
-
-const Wrapper = styled.div({
-  padding: theme.spacing[8],
-  borderRadius: theme.radius.xl,
-  color: theme.colors.foreground,
-  fontFamily: theme.fonts.serif,
+// ✅ CORRECT — glass surface for cards (the standard)
+const Card = styled.div({
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
+  borderRadius: theme.radius['2xl'],
 })
 
-// ❌ WRONG — hardcoded values
-const Wrapper = styled.div({
-  padding: '32px', // use theme.spacing[8]
-  borderRadius: '8px', // use theme.radius.md
-  color: '#1a1a1a', // use theme.colors.foreground
-})
+// ✅ CORRECT — hover only on pointer devices (never bare &:hover on cards)
+'@media (hover: hover)': {
+  '&:hover': { transform: 'translateY(-2px)' },
+},
+
+// ❌ WRONG — flat opaque card
+backgroundColor: theme.colors.card,
+
+// ❌ WRONG — hover fires on mobile touch
+'&:hover': { transform: 'translateY(-2px)' },
 ```
 
-**Available theme tokens** (from `lib/theme.ts`):
+**Token shortcuts:**
+- `theme.glass.*` — glass surface tokens
+- `theme.clay.*` — clay surface tokens (parent-facing primary actions only)
+- `theme.colors.*` — color CSS vars
+- `theme.spacing[N]`, `theme.radius.*`, `theme.transitions.*`, `theme.shadows.*`
 
-- `theme.colors.*` — CSS variable references (foreground, background, primary, muted, etc.)
-- `theme.fonts.sans` / `theme.fonts.serif` / `theme.fonts.mono`
-- `theme.spacing[0|1|2|3|4|5|6|8|10|12|14|16|20|24|32]`
-- `theme.radius.sm|md|lg|xl|2xl|3xl|full`
-- `theme.fontSize.*`
-- `theme.transitions.fast|normal|slow|verySlow`
-- `theme.shadows.sm|md|lg`
-
-### 2. Component Structure
+### 2. Component + File Structure
 
 ```typescript
-// ✅ CORRECT — 'use client' for all components using hooks/animations
-'use client';
+// App pages: styled components in .styles.ts, JSX in page.tsx
+// src/app/app/timeline/page.styles.ts  ← ALL styled components
+// src/app/app/timeline/page.tsx        ← imports from .styles.ts
 
-import styled from '@emotion/styled';
-import { theme } from '@/lib/theme';
-import { useI18n } from '@/components/i18n-provider';
+// ✅ CORRECT — 'use client' + next-intl
+'use client'
+import { useTranslations } from 'next-intl'
+import { Card, PageTitle } from './page.styles'
 
-// Define styled components at the top of the file (no separate .styles.ts needed for landing pages)
-const Section = styled.section({
-  padding: `${theme.spacing[32]} 0`,
-  backgroundColor: theme.colors.background,
-});
-
-export function MySection() {
-  const { t } = useI18n();
-  return <Section>{t('mySection.title')}</Section>;
+export default function TimelinePage() {
+  const t = useTranslations('timeline')
+  return <Card><PageTitle>{t('title')}</PageTitle></Card>
 }
 ```
 
 ### 3. Database with Prisma + Neon
 
-The database is **Neon PostgreSQL** accessed via **Prisma ORM**.
-
 ```typescript
 // ✅ CORRECT — always import the singleton
 import { db } from '@/lib/db'
 
-// In an API route (app/api/waitlist/route.ts):
+// In an API route (src/app/api/waitlist/route.ts):
 export async function POST(request: Request) {
   const { email, locale } = await request.json()
   const entry = await db.waitlistEntry.create({
@@ -211,46 +225,34 @@ export async function POST(request: Request) {
 
 // ❌ WRONG — never instantiate PrismaClient directly
 import { PrismaClient } from '@/generated/prisma'
-const prisma = new PrismaClient() // wrong — missing adapter, creates multiple connections!
+const prisma = new PrismaClient() // wrong — missing adapter!
 ```
 
 **Rules:**
-
-- ✅ Always use `db` from `lib/db.ts`
-- ✅ DB access only in `app/api/` routes — never in client components
+- ✅ Always use `db` from `src/lib/db.ts`
+- ✅ DB access only in `src/app/api/` routes — never in client components
 - ✅ Run `npx prisma generate` after every schema change
-- ✅ `DATABASE_URL` in `.env` (gitignored)
-- ❌ No server actions — use API routes
-- ❌ No React Query — plain `fetch` in client components is fine
+- ❌ No server actions — use API routes + `fetch` from client
 
 ### 4. Encryption (GDPR + Decree 13/2023/NĐ-CP)
 
-Fields marked `[ENCRYPTED]` in `prisma/schema.prisma` are personal/biometric data
-and must **never** be stored as plaintext.
-
 ```typescript
-import {
-  encrypt,
-  decrypt,
-  hashEmail,
-  hashToken,
-  encryptOptional,
-} from '@/lib/crypto'
+import { encrypt, decrypt, hashEmail, hashToken } from '@/lib/crypto'
 
-// ✅ CORRECT — encrypt before write, hash email for lookup
+// ✅ Encrypt before write, hash for lookup
 await db.user.create({
   data: {
     email: encrypt(rawEmail),
-    emailHash: hashEmail(rawEmail), // for WHERE lookups
+    emailHash: hashEmail(rawEmail),
     displayName: encrypt(name),
   },
 })
 
-// ✅ CORRECT — QR tokens: only hash stored, raw token goes in QR URL
+// ✅ QR tokens: only hash stored
 const rawToken = randomBytes(32).toString('hex')
 await db.parentSession.create({ data: { tokenHash: hashToken(rawToken) } })
 
-// ✅ CORRECT — S3 keys: encrypt before DB, pre-sign for client access
+// ✅ S3 keys: encrypt in DB, pre-sign for access
 const { key } = await uploadFile(file, 'audio')
 await db.memory.update({ data: { audioKey: encrypt(key) } })
 const url = await getFileUrl(decrypt(memory.audioKey!))
@@ -260,56 +262,49 @@ Encrypted fields: `User.email/displayName`, `Parent.name`,
 `Memory.audioKey/photoKey`, `Transcript.content`, `Reflection.content`,
 `Feedback.content/audioKey`.
 
-### 5. File Storage (S3 Mock → Real)
-
-All file operations use `lib/storage.ts`. Currently mocked — returns fake keys.
+### 5. Auth (next-auth v5)
 
 ```typescript
-import { uploadFile, getFileUrl, deleteFile } from '@/lib/storage'
+// Client component — read session
+import { useSession, signOut } from 'next-auth/react'
+const { data: session } = useSession()
+const name = session?.user?.name ?? 'You'
 
-const { key } = await uploadFile(blob, 'audio') // returns S3 object key
-const url = await getFileUrl(key) // returns pre-signed URL
-await deleteFile(key) // GDPR right to erasure
+// Auth config: src/auth.ts
+// SessionProvider: wrapped in src/components/session-provider.tsx → src/app/app/layout.tsx
 ```
 
-When replacing the mock with real S3: enable SSE-AES256 on the bucket,
-block all public access, and use `getSignedUrl` with 15-min expiry.
+Required env vars: `AUTH_SECRET`, `NEXTAUTH_URL`.
 
 ### 6. Environment Variables
 
-Use `process.env.NEXT_PUBLIC_*` for any client-visible env vars. Add them
-to `.env.local` for local dev and to Vercel for production.
-
-```typescript
-// ✅ OK for this simple project (no complex env validation needed)
-const analyticsId = process.env.NEXT_PUBLIC_ANALYTICS_ID
 ```
-
-Required server-side env vars:
-
-- `DATABASE_URL` — Neon PostgreSQL connection string
-- `ENCRYPTION_KEY` — 64-char hex (AES-256 key), generate: `openssl rand -hex 32`
-- `EMAIL_HASH_PEPPER` — 64-char hex (hash pepper), generate: `openssl rand -hex 32`
+DATABASE_URL=       # Neon PostgreSQL connection string
+ENCRYPTION_KEY=     # 64-char hex — openssl rand -hex 32
+EMAIL_HASH_PEPPER=  # 64-char hex — openssl rand -hex 32
+AUTH_SECRET=        # next-auth secret — openssl rand -base64 32
+NEXTAUTH_URL=       # http://localhost:3000 (local)
+```
 
 ### 7. Performance
 
-- ✅ Use `useEffect` + `IntersectionObserver` for scroll-triggered animations
-- ✅ Add `transitionDelay` per item index for staggered reveals
-- ✅ Use `will-change: transform` sparingly on animated elements
+- ✅ `IntersectionObserver` + CSS transitions for scroll animations
+- ✅ `willChange: 'transform, opacity'` on animated elements
+- ✅ `@media (hover: hover)` wrapper on all hover effects
 - ✅ Keep bundle small — avoid heavy libraries
 
 ---
 
 ## 📋 Instruction Files
 
-| File                                 | Applies To      | Content                     |
-| ------------------------------------ | --------------- | --------------------------- |
-| `01-architecture.instructions.md`    | `**/*`          | Project structure, sections |
-| `02-web-apps.instructions.md`        | `**/*.{ts,tsx}` | Next.js 16 + Emotion rules  |
-| `06-styling.instructions.md`         | `**/*.{ts,tsx}` | Emotion patterns            |
-| `09-testing.instructions.md`         | `**/*.test.*`   | Testing guidelines          |
-| `10-dev-workflow.instructions.md`    | `**/*`          | Dev commands, Git workflow  |
-| `14-common-pitfalls.instructions.md` | `**/*`          | Common mistakes to avoid    |
+| File | Applies To | Content |
+|---|---|---|
+| `01-architecture.instructions.md` | `**/*` | Full project structure |
+| `02-web-apps.instructions.md` | `**/*.{ts,tsx}` | Next.js + next-intl + auth patterns |
+| `06-styling.instructions.md` | `**/*.{ts,tsx}` | Emotion + glass/clay surfaces |
+| `09-testing.instructions.md` | `**/*.test.*` | Testing guidelines |
+| `10-dev-workflow.instructions.md` | `**/*` | Dev commands, Git workflow |
+| `14-common-pitfalls.instructions.md` | `**/*` | Common mistakes to avoid |
 
 ---
 
@@ -323,6 +318,6 @@ pnpm build
 
 # Commit using conventional commits
 git add .
-git commit -m "feat: add waitlist section"
+git commit -m "feat: add timeline albums tab"
 git push origin main
 ```

@@ -16,6 +16,7 @@ import {
 import { useTranslations } from 'next-intl'
 import { theme } from '@/lib/theme'
 import { useUserId } from '@/hooks/use-user-id'
+import { useSession } from 'next-auth/react'
 import {
   Page, Greeting, GreetingLabel, GreetingTitle, GreetingSubtitle,
   StatsGrid, StatCard, StatValue, StatLabel,
@@ -83,6 +84,8 @@ export default function DashboardPage() {
   const tFeedback = useTranslations('feedback')
   const tStudio = useTranslations('studio')
   const userId = useUserId()
+  const { data: session } = useSession()
+  const displayName = session?.user?.name?.split(' ')[0] ?? tApp('greetingName')
   const [loading, setLoading] = useState(true)
   const [parents, setParents] = useState<DashboardParent[]>([])
   const [recentMemories, setRecentMemories] = useState<DashboardMemory[]>([])
@@ -140,7 +143,7 @@ export default function DashboardPage() {
         <GreetingLabel>
           {tApp('greeting')} {timeOfDay} ☀️
         </GreetingLabel>
-        <GreetingTitle>Minh</GreetingTitle>
+        <GreetingTitle>{displayName}</GreetingTitle>
         <GreetingSubtitle>{t('subtitle')}</GreetingSubtitle>
       </Greeting>
 
@@ -152,8 +155,8 @@ export default function DashboardPage() {
           { value: loading ? '—' : String(stats?.totalParents ?? 0), label: t('stats.parents') },
           { value: loading ? '—' : String(stats?.totalSlots ?? 0), label: t('stats.albums') },
         ].map(({ value, label }, i) => (
-          <StatCard key={label} style={{ animationDelay: `${i * 0.04}s` }}>
-            <StatValue>{value}</StatValue>
+          <StatCard key={label} $hero={i === 0} style={{ animationDelay: `${i * 0.04}s` }}>
+            <StatValue $hero={i === 0}>{value}</StatValue>
             <StatLabel>{label}</StatLabel>
           </StatCard>
         ))}
@@ -188,6 +191,7 @@ export default function DashboardPage() {
               key={href}
               href={href}
               viewTransition
+              $featured={href === '/app/record'}
               style={{ animationDelay: `${i * 0.04}s` }}
             >
               <ActionIcon $color={color}>

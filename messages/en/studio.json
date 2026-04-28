@@ -24,6 +24,7 @@
   "saveReflection": "Save",
   "deleteMemory": "Delete memory",
   "confirmDelete": "Are you sure? This cannot be undone.",
+  "aiSummary": "AI Summary",
   "emptyState": "No memories in the studio yet. Go record one!",
   "heart": "Send \u2764\ufe0f",
   "hearted": "Sent \u2764\ufe0f"

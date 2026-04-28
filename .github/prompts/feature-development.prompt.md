@@ -1,5 +1,5 @@
 ﻿---
-description: Implement a new section or feature for the ROOTS landing page
+description: Implement a new section or feature for ROOTS (landing page or authenticated app)
 name: feature-development
 argument-hint: Describe the section or feature to implement
 agent: agent
@@ -9,75 +9,123 @@ tools: ['search', 'usages']
 
 # Feature Development Prompt
 
-Implement a new section or feature for the ROOTS (GỐC) landing page.
+Implement a new section or feature for ROOTS (GỐC).
 
 ## Context Files
 
 - #file:../.github/instructions/01-architecture.instructions.md - Project structure
-- #file:../.github/instructions/02-web-apps.instructions.md - Next.js patterns
-- #file:../.github/instructions/06-styling.instructions.md - Emotion styling
+- #file:../.github/instructions/02-web-apps.instructions.md - Next.js + auth + i18n
+- #file:../.github/instructions/06-styling.instructions.md - Emotion + glass/clay
 - #file:../.github/instructions/14-common-pitfalls.instructions.md - Avoid mistakes
-- #file:../lib/i18n.ts - Existing translation keys
-- #file:../lib/theme.ts - Design tokens
+- #file:../DESIGN.md - Design system (must read before any UI work)
+- #file:../src/lib/theme.ts - Design tokens
 
 ## Expected Output
 
 Deliver a complete, working feature with:
 
-1. **Section component** — `components/{name}-section.tsx` with `'use client'`
-2. **Translation keys** — Added to all 3 locales (en, vi, fr) in `lib/i18n.ts`
-3. **Page integration** — Imported and rendered in `app/page.tsx`
-4. **Scroll animations** — IntersectionObserver + staggered transitionDelay
+1. **For landing page sections**: `src/components/{name}-section.tsx` with `'use client'`
+2. **For app pages**: `src/app/app/{name}/page.tsx` + `src/app/app/{name}/page.styles.ts`
+3. **Translation keys** — Added to all 3 locales (`messages/en/`, `messages/vi/`, `messages/fr/`)
+4. **Glass surface** — All cards use glass pattern (not `theme.colors.card`)
+5. **Hover behavior** — All hover effects wrapped in `'@media (hover: hover)'`
 
 ## Task Steps
 
 ### 1. Research Phase
 
-- [ ] Review relevant instruction files
-- [ ] Check existing sections for patterns to follow
-- [ ] Check `lib/theme.ts` for available design tokens
-- [ ] Check `components/ui/` for reusable primitives (Button, Badge, etc.)
+- [ ] Read `DESIGN.md` — understand glass/clay surface rules
+- [ ] Check `src/lib/theme.ts` for available tokens (`theme.glass.*`, `theme.clay.*`)
+- [ ] Check `messages/en/*.json` for existing translation namespaces
+- [ ] Check `src/components/ui/` for reusable primitives (Button, Badge, etc.)
 
 ### 2. Translation Keys
 
-Add ALL translation strings to `lib/i18n.ts`:
+Add ALL translation strings to the appropriate `messages/{locale}/{namespace}.json`:
 
-- Add to `en`, `vi`, AND `fr` — never leave a locale incomplete
-- Follow existing naming conventions (`sectionName.key`)
+```json
+// messages/en/newFeature.json
+{ "title": "New Feature", "description": "..." }
+
+// messages/vi/newFeature.json  ← must add
+{ "title": "Tính năng mới", "description": "..." }
+
+// messages/fr/newFeature.json  ← must add
+{ "title": "Nouvelle fonctionnalité", "description": "..." }
+```
 
 ### 3. Component Implementation
 
+**App page template:**
 ```typescript
-'use client';
+// page.styles.ts
+import styled from '@emotion/styled'
+import { theme } from '@/lib/theme'
 
-import { useEffect, useRef, useState } from 'react';
-import styled from '@emotion/styled';
-import { theme } from '@/lib/theme';
-import { useI18n } from '@/components/i18n-provider';
+export const Card = styled.div({
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
+  borderRadius: theme.radius['2xl'],
+  willChange: 'transform, opacity',
+  '@media (hover: hover)': {
+    '&:hover': { transform: 'translateY(-2px)', boxShadow: `${theme.shadows.md}, var(--glass-inset)` },
+  },
+  '&:active': { transform: 'scale(0.98)', opacity: 0.8 },
+})
+
+// page.tsx
+'use client'
+import { useTranslations } from 'next-intl'
+import { Card } from './page.styles'
+
+export default function NewPage() {
+  const t = useTranslations('newFeature')
+  return <Card>{t('title')}</Card>
+}
+```
+
+**Landing page section template:**
+```typescript
+'use client'
+import { useEffect, useRef, useState } from 'react'
+import styled from '@emotion/styled'
+import { theme } from '@/lib/theme'
+import { useTranslations } from 'next-intl'
 
 export function NewSection() {
-  const { t } = useI18n();
-  const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const t = useTranslations('newFeature')
+  const [isVisible, setIsVisible] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
+      ([entry]) => { if (entry.isIntersecting) setIsVisible(true) },
+      { threshold: 0.1 },
+    )
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
 
-  return <Section ref={ref}>...</Section>;
+  return <section ref={ref}>{t('title')}</section>
 }
 ```
 
 ### 4. Integration
 
-Add to `app/page.tsx` in logical position within the page flow.
+- Landing page section: add to `src/app/page.tsx`
+- App page: add nav item to `src/components/app-shell.tsx` NAV_ITEMS
 
 ## Quality Checklist
+
+- [ ] No hardcoded strings — all via `t()`
+- [ ] No `theme.colors.card` on cards — use glass
+- [ ] No bare `'&:hover'` — use `'@media (hover: hover)'`
+- [ ] `willChange` on animated elements
+- [ ] Translations in all 3 locales
+- [ ] `pnpm build` passes
 
 - [ ] All strings use `t()` — no hardcoded text
 - [ ] All styled components use `theme.*` tokens — no raw values

@@ -70,7 +70,13 @@ export const ActionBtn = styled.button<{ $primary?: boolean }>(({ $primary }) =>
 export const TabBar = styled.div({
   display: 'flex',
   borderBottom: `1px solid ${theme.colors.border}`,
-  backgroundColor: theme.colors.card,
+  // Glass sticky tab bar
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(12px) saturate(1.3)',
+  WebkitBackdropFilter: 'blur(12px) saturate(1.3)',
+  position: 'sticky',
+  top: 0,
+  zIndex: 9,
   padding: `0 ${theme.spacing[4]}`,
   overflowX: 'auto',
   scrollbarWidth: 'none',
@@ -112,9 +118,11 @@ export const DecadeHeader = styled.div({
   position: 'sticky',
   top: 0,
   zIndex: 10,
-  backgroundColor: 'oklch(0.97 0.005 80 / 0.92)',
-  backdropFilter: 'blur(8px)',
-  WebkitBackdropFilter: 'blur(8px)',
+  // Glass sticky header
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(16px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(16px) saturate(1.4)',
+  borderBottom: '1px solid var(--glass-border)',
 })
 
 export const DecadeLabel = styled.div({
@@ -148,10 +156,12 @@ export const TimelineList = styled.div({
     content: '""',
     position: 'absolute',
     left: `calc(${theme.spacing[4]} + 1.375rem)`,
-    top: 0,
-    bottom: 0,
-    width: '1.5px',
-    backgroundColor: theme.colors.border,
+    top: '1rem',
+    bottom: '1rem',
+    width: '2px',
+    // Gradient spine: vivid at top, fades out at bottom
+    background: `linear-gradient(to bottom, ${theme.colors.primary}, oklch(0.60 0.08 155 / 0.4) 60%, transparent)`,
+    borderRadius: theme.radius.full,
   },
 })
 
@@ -168,8 +178,9 @@ export const TimelineDot = styled.div<{ $color: string }>(({ $color }) => ({
   height: '2.75rem',
   borderRadius: theme.radius.full,
   backgroundColor: $color,
-  border: `2px solid ${theme.colors.card}`,
-  boxShadow: theme.shadows.sm,
+  // Layered ring: card border + accent ring for visual depth
+  border: `3px solid var(--background, #f7f5f2)`,
+  boxShadow: `0 0 0 2px ${theme.colors.primary}, ${theme.shadows.md}`,
   flexShrink: 0,
   zIndex: 1,
   display: 'flex',
@@ -180,13 +191,22 @@ export const TimelineDot = styled.div<{ $color: string }>(({ $color }) => ({
 
 export const TimelineCard = styled.div({
   flex: 1,
-  backgroundColor: theme.colors.card,
-  border: `1px solid ${theme.colors.border}`,
+  // Glass surface on timeline cards
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(12px) saturate(1.3)',
+  WebkitBackdropFilter: 'blur(12px) saturate(1.3)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
   borderRadius: theme.radius['2xl'],
   overflow: 'hidden',
-  transition: `box-shadow ${theme.transitions.fast}`,
+  transition: `box-shadow ${theme.transitions.fast}, transform ${theme.transitions.fast}`,
   cursor: 'pointer',
-  '&:hover': { boxShadow: theme.shadows.md },
+  '@media (hover: hover)': {
+    '&:hover': {
+      boxShadow: `${theme.shadows.md}, var(--glass-inset)`,
+      transform: 'translateX(2px)',
+    },
+  },
   '&:active': { opacity: 0.8 },
 })
 
@@ -249,15 +269,22 @@ export const AlbumsGrid = styled.div({
 })
 
 export const AlbumCard = styled.div({
-  backgroundColor: theme.colors.card,
-  border: `1px solid ${theme.colors.border}`,
+  // Glass surface
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(12px) saturate(1.3)',
+  WebkitBackdropFilter: 'blur(12px) saturate(1.3)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
   borderRadius: theme.radius['2xl'],
   overflow: 'hidden',
   cursor: 'pointer',
   transition: `all ${theme.transitions.fast}`,
   animation: `${scaleIn} 0.3s ease both`,
-  '&:hover': { boxShadow: theme.shadows.md, transform: 'translateY(-1px)' },
-  '&:active': { opacity: 0.8 },
+  willChange: 'transform, opacity',
+  '@media (hover: hover)': {
+    '&:hover': { boxShadow: theme.shadows.md, transform: 'translateY(-2px)' },
+  },
+  '&:active': { opacity: 0.8, transform: 'scale(0.98)' },
 })
 
 export const AlbumCover = styled.div<{ $color: string }>(({ $color }) => ({
@@ -329,11 +356,14 @@ export const TabLabel = styled.span({
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 export const SkeletonSection = styled.div({
-  backgroundColor: theme.colors.card,
-  borderRadius: '1.25rem',
-  border: `1px solid ${theme.colors.border}`,
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
+  borderRadius: theme.radius['2xl'],
   padding: '1.25rem',
-  marginBottom: '1rem',
+  margin: `${theme.spacing[4]} ${theme.spacing[4]} ${theme.spacing[3]}`,
 })
 
 export const SkeletonLine = styled.div<{ $width?: string; $height?: string; $marginBottom?: string }>(

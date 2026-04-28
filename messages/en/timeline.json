@@ -6,6 +6,7 @@
   "createAlbum": "Create",
   "emptyAlbum": "No memories in this album yet",
   "addToAlbum": "Add to album",
+  "albums": "Albums",
   "decades": {
     "title": "Decades",
     "unknown": "Timeless"

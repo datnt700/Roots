@@ -9,6 +9,7 @@
   "sendResponse": "Gửi",
   "markPlayed": "Đánh dấu đã nghe",
   "played": "Đã nghe",
+  "inResponseTo": "Phản hồi cho",
   "noFeedback": "Chưa có phản hồi. Hãy chia sẻ một ký ức để nhận phản hồi!",
   "respondedAt": "Đã phản hồi"
 }

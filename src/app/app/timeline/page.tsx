@@ -161,7 +161,7 @@ export default function TimelinePage() {
         >
           <TabLabel>
             <BookOpen />
-            Albums
+            {t('albums')}
           </TabLabel>
         </Tab>
       </TabBar>

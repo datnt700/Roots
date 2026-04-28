@@ -31,14 +31,16 @@ export const Page = styled.div({
   flexDirection: 'column',
   minHeight: 'calc(100dvh - 3.5rem)',
   backgroundColor: theme.colors.background,
+  overflowX: 'hidden',
 })
 
 export const ScrollArea = styled.div({
   flex: 1,
   overflowY: 'auto',
+  overflowX: 'hidden',
   padding: `${theme.spacing[4]} ${theme.spacing[4]}`,
   paddingBottom: theme.spacing[4],
-  maxWidth: '40rem',
+  maxWidth: '48rem',
   margin: '0 auto',
   width: '100%',
   '@media (min-width: 768px)': {
@@ -69,8 +71,12 @@ export const PageSubtitle = styled.p({
 // ─── Cards / Sections ─────────────────────────────────────────────────────────
 
 export const Card = styled.div({
-  backgroundColor: theme.colors.card,
-  border: `1px solid ${theme.colors.border}`,
+  // Glass surface — consistent with all other app cards
+  backgroundColor: 'var(--glass-bg)',
+  backdropFilter: 'blur(14px) saturate(1.4)',
+  WebkitBackdropFilter: 'blur(14px) saturate(1.4)',
+  border: '1px solid var(--glass-border)',
+  boxShadow: 'var(--glass-shadow), var(--glass-inset)',
   borderRadius: theme.radius['2xl'],
   padding: theme.spacing[4],
   marginBottom: theme.spacing[4],
@@ -342,7 +348,8 @@ export const PlaybackBtn = styled.button({
   width: '2.5rem',
   height: '2.5rem',
   borderRadius: theme.radius.full,
-  backgroundColor: theme.colors.primary,
+  // Mild clay for playback controls
+  background: 'linear-gradient(145deg, oklch(0.52 0.12 155), oklch(0.40 0.12 155))',
   border: 'none',
   cursor: 'pointer',
   display: 'flex',
@@ -350,6 +357,21 @@ export const PlaybackBtn = styled.button({
   justifyContent: 'center',
   color: '#fff',
   flexShrink: 0,
+  boxShadow: [
+    '3px 3px 8px var(--clay-depth)',
+    '-2px -2px 5px var(--clay-highlight)',
+    'inset 1px 1px 3px var(--clay-highlight)',
+    'inset -2px -2px 4px var(--clay-depth)',
+  ].join(', '),
+  transition: `all ${theme.transitions.fast}`,
+  '&:active': {
+    transform: 'scale(0.94)',
+    boxShadow: [
+      '1px 1px 4px rgba(0,0,0,0.12)',
+      'inset 3px 3px 6px var(--clay-depth)',
+      'inset -1px -1px 3px var(--clay-highlight)',
+    ].join(', '),
+  },
   '& svg': { width: '1rem', height: '1rem' },
 })
 

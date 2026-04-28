@@ -22,20 +22,31 @@ Generate a concise one-line conventional commit message for ROOTS (GỐC).
 
 ## Quick Scope Reference
 
-| Changed file                         | Scope         |
-| ------------------------------------ | ------------- |
-| `components/hero-section.tsx`        | `hero`        |
-| `components/navbar.tsx`              | `navbar`      |
-| `components/problem-section.tsx`     | `problem`     |
-| `components/solution-section.tsx`    | `solution`    |
-| `components/competitive-section.tsx` | `competitive` |
-| `components/tech-section.tsx`        | `tech`        |
-| `components/final-cta-section.tsx`   | `cta`         |
-| `components/footer.tsx`              | `footer`      |
-| `lib/i18n.ts`                        | `i18n`        |
-| `lib/theme.ts`                       | `theme`       |
-| `components/ui/**`                   | `ui`          |
-| `package.json`                       | `deps`        |
+| Changed file / area                          | Scope         |
+| -------------------------------------------- | ------------- |
+| `src/components/hero-section.tsx`            | `hero`        |
+| `src/components/navbar.tsx`                  | `navbar`      |
+| `src/components/problem-section.tsx`         | `problem`     |
+| `src/components/solution-section.tsx`        | `solution`    |
+| `src/components/competitive-section.tsx`     | `competitive` |
+| `src/components/tech-section.tsx`            | `tech`        |
+| `src/components/final-cta-section.tsx`       | `cta`         |
+| `src/components/footer.tsx`                  | `footer`      |
+| `src/app/app/page.tsx`                       | `dashboard`   |
+| `src/app/app/timeline/`                      | `timeline`    |
+| `src/app/app/studio/`                        | `studio`      |
+| `src/app/app/feedback/`                      | `feedback`    |
+| `src/app/app/parents/`                       | `parents`     |
+| `src/app/app/record/`                        | `record`      |
+| `src/app/parent/`                            | `parent`      |
+| `src/components/app-shell.tsx`               | `app-shell`   |
+| `src/auth.ts`, `src/app/login/`              | `auth`        |
+| `messages/{locale}/*.json`                   | `i18n`        |
+| `src/lib/theme.ts`                           | `theme`       |
+| `src/components/ui/**`                       | `ui`          |
+| `src/app/api/`                               | `api`         |
+| `prisma/schema.prisma`                       | `db`          |
+| `package.json`                               | `deps`        |
 
 ## Examples
 
@@ -44,4 +55,7 @@ feat(hero): add scroll-triggered headline animation
 fix(i18n): add missing fr translations for tech section
 style(navbar): increase logo font size on desktop
 chore(deps): bump @emotion/styled to 11.14.1
+feat(studio): add reflection editing with autosave
+fix(parent): bump font sizes to 1.125rem for readability
+style(dashboard): convert bento cards to glass surface
 ```

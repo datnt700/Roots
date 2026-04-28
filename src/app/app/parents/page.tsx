@@ -12,6 +12,8 @@ import {
   ModalActions, ActionBtn, EmptyState,
   StickerPhotoGroup, StickerHiddenInput, StickerPhotoRow, StickerPhotoImg, RemoveStickerPhotoBtn, AddStickerPhotoBtn,
   SkeletonSectionWrapper, SkeletonParentHeader, SkeletonParentInfo, SkeletonCircle, SkeletonLine, SkeletonSlotCard,
+  DeletePageBtn,
+  ConfirmOverlay, ConfirmPanel, ConfirmIcon, ConfirmTitle, ConfirmBody, ConfirmActions, ConfirmCancelBtn, ConfirmDeleteBtn,
   spin,
 } from './page.styles'
 import { useTranslations } from 'next-intl'
@@ -29,6 +31,8 @@ import {
   Check,
   Mic,
   ImagePlus,
+  Trash2,
+  AlertTriangle,
 } from 'lucide-react'
 
 // --- Types --------------------------------------------------------------------
@@ -87,10 +91,12 @@ function QRModal({
   modal,
   onClose,
   onSlotUpdated,
+  onSlotDeleted,
 }: {
   modal: ModalState
   onClose: () => void
   onSlotUpdated: (slotId: string, title: string, prompt: string) => void
+  onSlotDeleted: (slotId: string) => void
 }) {
   const t = useTranslations('parents')
   const router = useRouter()
@@ -99,6 +105,8 @@ function QRModal({
   const [saved, setSaved] = useState(false)
   const [stickerPhoto, setStickerPhoto] = useState<string | null>(null)
   const photoInputRef = useRef<HTMLInputElement>(null)
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [deleting, setDeleting] = useState(false)
 
   const handleSave = async () => {
     setSaving(true)
@@ -117,6 +125,20 @@ function QRModal({
       setTimeout(() => setSaved(false), 2000)
     } finally {
       setSaving(false)
+    }
+  }
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    try {
+      const res = await fetch(`/api/slots?slotId=${modal.slotId}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error('Failed')
+      onSlotDeleted(modal.slotId)
+      onClose()
+    } catch {
+      alert(t('modal.deleteError'))
+      setDeleting(false)
+      setConfirmDelete(false)
     }
   }
 
@@ -194,6 +216,7 @@ function QRModal({
   }
 
   return (
+    <>
     <ModalOverlay onClick={onClose}>
       <ModalPanel onClick={(e) => e.stopPropagation()}>
         <ModalClose onClick={onClose}>
@@ -320,8 +343,33 @@ function QRModal({
             {saved ? t('modal.saved') : t('modal.save')}
           </ActionBtn>
         </ModalActions>
+
+        <DeletePageBtn onClick={() => setConfirmDelete(true)}>
+          <Trash2 />
+          {t('modal.deletePage')}
+        </DeletePageBtn>
       </ModalPanel>
     </ModalOverlay>
+
+    {confirmDelete && (
+      <ConfirmOverlay>
+        <ConfirmPanel>
+          <ConfirmIcon><AlertTriangle /></ConfirmIcon>
+          <ConfirmTitle>{t('modal.deleteConfirmTitle')}</ConfirmTitle>
+          <ConfirmBody>{t('modal.deleteConfirmBody')}</ConfirmBody>
+          <ConfirmActions>
+            <ConfirmCancelBtn onClick={() => setConfirmDelete(false)} disabled={deleting}>
+              {t('modal.deleteConfirmNo')}
+            </ConfirmCancelBtn>
+            <ConfirmDeleteBtn $loading={deleting} onClick={handleDelete} disabled={deleting}>
+              {deleting ? <RefreshCw /> : <Trash2 />}
+              {t('modal.deleteConfirmYes')}
+            </ConfirmDeleteBtn>
+          </ConfirmActions>
+        </ConfirmPanel>
+      </ConfirmOverlay>
+    )}
+    </>
   )
 }
 
@@ -432,6 +480,10 @@ export default function ParentsPage() {
     },
     [],
   )
+
+  const handleSlotDeleted = useCallback((slotId: string) => {
+    setSlots((prev) => prev.filter((s) => s.id !== slotId))
+  }, [])
 
   const getEmoji = (rel: string) =>
     RELATIONSHIP_EMOJI[rel.toLowerCase()] ?? RELATIONSHIP_EMOJI.other
@@ -592,6 +644,7 @@ export default function ParentsPage() {
           modal={modal}
           onClose={() => setModal(null)}
           onSlotUpdated={handleSlotUpdated}
+          onSlotDeleted={handleSlotDeleted}
         />
       )}
     </Page>

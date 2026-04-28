@@ -6,84 +6,132 @@ applyTo: '**/*'
 
 ## What Is This Project?
 
-ROOTS (GỐC) is a **marketing landing page** for a digital family heritage app.
-It is the first digital museum for ancestral storytelling in Vietnam.
+ROOTS (GỐC) is a **digital family heritage platform** — the first digital
+museum for ancestral storytelling in Vietnam. It ships as a single Next.js app
+containing two surfaces:
 
-The landing page is a **single Next.js 16 app** with a PostgreSQL database
-(Neon) accessed via Prisma ORM — primarily for waitlist signups.
+1. **Marketing landing page** (`/`) — static sections (Hero, Problem, Solution,
+   Competitive, Tech, FinalCTA) promoting the product to visitors.
+2. **Family Heritage App** (`/app/*`) — authenticated dashboard where families
+   record stories, view timelines, and curate memories.
+
+The backend is a Neon PostgreSQL database accessed via Prisma ORM.
 
 ## Tech Stack
 
-- **Framework**: Next.js 16 (App Router, `'use client'` for interactive pages)
-- **Language**: TypeScript (strict mode via tsconfig.json)
+- **Framework**: Next.js 16 (App Router)
+- **Language**: TypeScript (strict mode)
 - **Styling**: Emotion (`@emotion/styled`, `@emotion/react`)
-- **UI Primitives**: Custom components in `components/ui/` (shadcn-style)
-- **i18n**: Custom React context — 3 locales: `en`, `vi`, `fr`
+- **UI Primitives**: Custom components in `src/components/ui/` (shadcn-style)
+- **i18n**: `next-intl` — messages in `messages/{locale}/*.json`, `useTranslations()` hook
+- **Auth**: next-auth v5 — config in `src/auth.ts`; `useSession` / `signOut` from `next-auth/react`
 - **Database**: Neon PostgreSQL + Prisma ORM
 - **Fonts**: DM Sans (sans-serif) + Playfair Display (serif) via Google Fonts
 - **Analytics**: Vercel Analytics (production only)
 - **Deployment**: Vercel
+- **Design System**: Nostalgic Modernism (glass + clay surfaces) — see `DESIGN.md`
 
 ## Directory Structure
 
 ```
 prisma/
   schema.prisma       # Prisma schema — models and datasource config
-  migrations/         # Prisma migration history
-prisma.config.ts      # Prisma CLI config (datasource URL from env)
+  migrations/         # Migration history
+prisma.config.ts      # Prisma CLI config
 
-app/
-  layout.tsx          # Root layout — fonts, i18n provider, analytics
-  page.tsx            # Home page — assembles all sections
-  globals.css         # CSS custom properties (light/dark theme tokens)
-  api/
-    waitlist/
-      route.ts        # POST /api/waitlist — save email to DB
+messages/             # next-intl translation files
+  en/                 # English — one JSON per feature area
+    app.json, hero.json, navbar.json, problem.json, solution.json,
+    competitive.json, tech.json, finalCta.json, footer.json,
+    timeline.json, studio.json, feedback.json, parents.json,
+    record.json, dashboard.json
+  vi/                 # Vietnamese — same structure
+  fr/                 # French — same structure
 
-components/
-  navbar.tsx          # Fixed sticky navbar with language switcher + mobile menu
-  hero-section.tsx    # Full-viewport hero with parallax background + CTA
-  problem-section.tsx # Pain point cards with emotional quote
-  solution-section.tsx# Step-by-step solution with scroll progress
-  competitive-section.tsx # Side-by-side comparison with competitors
-  tech-section.tsx    # Technology features grid
-  final-cta-section.tsx # Closing call-to-action
-  footer.tsx          # Site footer
-  i18n-provider.tsx   # i18n context (locale state, t() function)
-  theme-provider.tsx  # Theme toggle provider
-  ui/                 # Primitive UI components (Button, Badge, Input, etc.)
+src/
+  auth.ts             # next-auth v5 config
+  proxy.ts            # Edge proxy (if needed)
 
-hooks/
-  use-mobile.ts       # Mobile breakpoint detection
-  use-toast.ts        # Toast notifications
+  app/
+    layout.tsx        # Root layout — fonts, providers, analytics
+    page.tsx          # Landing page — assembles all sections
+    globals.css       # CSS custom properties (light/dark theme tokens)
+    loading.tsx, error.tsx, not-found.tsx, forbidden.tsx
 
-lib/
-  db.ts               # Prisma client singleton — always import from here
-  crypto.ts           # AES-256-GCM encrypt/decrypt + hashEmail/hashToken/hashPassword
-  storage.ts          # S3 file upload/read/delete (currently mocked)
-  i18n.ts             # Locale types + all translation strings (en/vi/fr)
-  theme.ts            # Design tokens — colors, fonts, spacing, radii, shadows
-  utils.ts            # Utility functions (cn, etc.)
+    api/
+      waitlist/route.ts        # POST /api/waitlist
+      # ... other API routes
 
-src/generated/prisma/ # Auto-generated Prisma client — DO NOT edit manually
-public/               # Static assets (icons, images)
-styles/
-  globals.css         # Global styles
+    login/            # Auth login page
+    parent/           # Parent-facing capture session
+    app/              # Authenticated family dashboard
+      layout.tsx      # App shell (sidebar + main content)
+      page.tsx        # Dashboard (stats bento + quick actions)
+      page.styles.ts  # Dashboard styled components
+      timeline/       # Memory timeline page
+      studio/         # Memory studio (view + edit memories)
+      feedback/       # Family feedback feed
+      parents/        # Manage parent album slots
+      record/         # Recording session (QR → voice → transcript)
+
+  components/
+    app-shell.tsx        # AppShell layout — sidebar nav + main wrapper
+    app-shell.styles.ts  # All sidebar/layout styled components
+    navbar.tsx           # Landing page navbar
+    hero-section.tsx     # Hero section
+    problem-section.tsx
+    solution-section.tsx
+    competitive-section.tsx
+    tech-section.tsx
+    final-cta-section.tsx
+    footer.tsx
+    emotion-registry.tsx  # Emotion SSR registry (required)
+    session-provider.tsx  # next-auth SessionProvider wrapper
+    theme-provider.tsx    # Theme toggle
+    ui/                   # Reusable primitives (Button, Badge, Input, ...)
+
+  hooks/
+    use-mobile.ts        # Mobile breakpoint detection
+    use-toast.ts         # Toast notifications
+    use-user-id.ts       # Authenticated user ID helper
+
+  i18n/
+    request.ts           # next-intl config (locale detection)
+
+  lib/
+    db.ts                # Prisma client singleton — ALWAYS import from here
+    crypto.ts            # AES-256-GCM encrypt/decrypt + hash helpers
+    storage.ts           # S3 upload/read/delete (currently mocked)
+    theme.ts             # Design tokens — colors, glass, clay, fonts, spacing, radii, shadows
+    utils.ts             # Utility functions (cn, etc.)
+    email.ts             # Email helpers
+    logger.ts            # Logger singleton
+    recording-cache.ts   # Temp recording state cache
+    i18n.ts              # Locale type helpers (not translation data — data is in messages/)
+
+  generated/
+    prisma/              # Auto-generated Prisma client — DO NOT edit manually
+
+public/                  # Static assets
+DESIGN.md                # Design system guideline — read before any UI work
 ```
 
 ## Key Design Decisions
 
-1. **All sections are `'use client'`** — animations, scroll observers, and i18n
-   require browser APIs.
-2. **No server components in sections** — the page is essentially a static SPA.
-3. **Scroll-triggered animations** — `IntersectionObserver` + CSS transitions
-   with `transitionDelay` for stagger effects.
-4. **Design tokens in `lib/theme.ts`** — Never use raw values; always reference
-   `theme.*`.
-5. **CSS variables in `globals.css`** — Colors are CSS variables to support
-   light/dark mode; `theme.colors.*` references them.
-6. **Single Prisma client instance** — Always import `db` from `lib/db.ts`;
-   never instantiate `PrismaClient` directly in components or routes.
+1. **`'use client'`** on all interactive components — animations, auth hooks, i18n.
+2. **App pages live at `src/app/app/`** — protected by next-auth; layout.tsx wraps
+   them in `AppShell` (sidebar + `SessionProvider`).
+3. **Styled components split into `.styles.ts`** — every app page has `page.styles.ts`
+   alongside `page.tsx`. Do NOT define styled components inside `page.tsx`.
+4. **Design system**: Glass surfaces for reading/curator screens; Clay surfaces for
+   parent-facing primary actions. Documented fully in `DESIGN.md`.
+5. **CSS variables in `src/app/globals.css`** — `--glass-bg`, `--glass-border`,
+   `--glass-shadow`, `--glass-inset`, `--clay-highlight`, `--clay-depth`.
+6. **Design tokens in `src/lib/theme.ts`** — also has `theme.glass.*` and
+   `theme.clay.*` shorthand objects. Never hardcode hex or px values.
+7. **Single Prisma client** — always import `db` from `src/lib/db.ts`.
+8. **Encrypted PII** — fields marked `[ENCRYPTED]` in schema use `encrypt()`/
+   `hashEmail()` from `src/lib/crypto.ts` before DB write.
 
 ## Database Layer
 
@@ -91,13 +139,16 @@ Prisma connects to a **Neon PostgreSQL** database. The connection string lives
 in `.env` as `DATABASE_URL`.
 
 ```
-# .env
 DATABASE_URL="postgresql://user:password@ep-xxx.us-east-1.aws.neon.tech/neondb?sslmode=require"
+ENCRYPTION_KEY="<64-char hex>"
+EMAIL_HASH_PEPPER="<64-char hex>"
+AUTH_SECRET="<random secret for next-auth>"
 ```
 
 - Models are defined in `prisma/schema.prisma`
 - The generated client is in `src/generated/prisma/` (gitignored)
-- Always access the DB via the singleton in `lib/db.ts`
+- Always access the DB via the singleton in `src/lib/db.ts`
+- Fields marked `[ENCRYPTED]` must be encrypted before write; hashed for lookup
 - API routes in `app/api/` are the only place DB calls should live
 
 ## API Routes (DB Operations Only)
