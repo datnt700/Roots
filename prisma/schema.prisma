@@ -21,6 +21,7 @@ model WaitlistEntry {
   id        String   @id @default(cuid())
   email     String   @unique
   locale    String   @default("en")
+  shareMore String?
   createdAt DateTime @default(now())
 
   @@map("waitlist_entries")

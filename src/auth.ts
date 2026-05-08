@@ -31,9 +31,42 @@ import { db } from '@/lib/db'
 import { encrypt, hashEmail, decrypt } from '@/lib/crypto'
 import { logger } from '@/lib/logger'
 
+const googleClientId = process.env.AUTH_GOOGLE_ID
+const googleClientSecret = process.env.AUTH_GOOGLE_SECRET
+const facebookClientId = process.env.AUTH_FACEBOOK_ID
+const facebookClientSecret = process.env.AUTH_FACEBOOK_SECRET
+const appleClientId = process.env.AUTH_APPLE_ID
+const appleClientSecret = process.env.AUTH_APPLE_SECRET
+
+const oauthProviders = [
+  googleClientId && googleClientSecret
+    ? Google({
+        clientId: googleClientId,
+        clientSecret: googleClientSecret,
+        allowDangerousEmailAccountLinking: true,
+      })
+    : null,
+  facebookClientId && facebookClientSecret
+    ? Facebook({
+        clientId: facebookClientId,
+        clientSecret: facebookClientSecret,
+        allowDangerousEmailAccountLinking: true,
+      })
+    : null,
+  appleClientId && appleClientSecret
+    ? Apple({
+        clientId: appleClientId,
+        clientSecret: appleClientSecret,
+        allowDangerousEmailAccountLinking: true,
+      })
+    : null,
+].filter(Boolean)
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   // Use Prisma adapter for persistent sessions + OAuth account linking
   adapter: PrismaAdapter(db),
+
+  secret: process.env.AUTH_SECRET,
 
   // Use JWT strategy so client-side session works without extra DB round-trips
   session: { strategy: 'jwt' },
@@ -45,28 +78,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 
   providers: [
-    // ── 1. Google ──────────────────────────────────────────────────────────
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    }),
+    ...oauthProviders,
 
-    // ── 2. Facebook ────────────────────────────────────────────────────────
-    Facebook({
-      clientId: process.env.AUTH_FACEBOOK_ID,
-      clientSecret: process.env.AUTH_FACEBOOK_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    }),
-
-    // ── 3. Apple ───────────────────────────────────────────────────────────
-    Apple({
-      clientId: process.env.AUTH_APPLE_ID,
-      clientSecret: process.env.AUTH_APPLE_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    }),
-
-    // ── 4. Email + Password (fallback) ─────────────────────────────────────
+    // ── Email + Password (fallback) ─────────────────────────────────────
     Credentials({
       name: 'Email & Password',
       credentials: {
@@ -87,7 +101,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const user = await db.user.findUnique({ where: { emailHash } })
 
           if (!user || !user.passwordHash) {
-            logger.warn('auth', 'authorize: user not found or no password', { email })
+            logger.warn('auth', 'authorize: user not found or no password', {
+              email,
+            })
             return null
           }
 
@@ -95,7 +111,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           const derived = scryptSync(password, Buffer.from(saltHex, 'hex'), 32)
           const valid = timingSafeEqual(derived, Buffer.from(hashHex, 'hex'))
           if (!valid) {
-            logger.warn('auth', 'authorize: password mismatch', { userId: user.id })
+            logger.warn('auth', 'authorize: password mismatch', {
+              userId: user.id,
+            })
             return null
           }
 

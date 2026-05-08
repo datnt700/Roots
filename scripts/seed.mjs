@@ -8,27 +8,32 @@
  */
 
 import { createRequire } from 'module'
-import {
-  createCipheriv,
-  randomBytes,
-  createHash,
-  scryptSync,
-} from 'crypto'
+import { createCipheriv, randomBytes, createHash, scryptSync } from 'crypto'
 import { config } from 'dotenv'
 
 const require = createRequire(import.meta.url)
 
 // ── Load env ────────────────────────────────────────────────────────────────
-config()
+config({ path: ['.env.local', '.env'] })
 
-if (!process.env.DATABASE_URL) {
-  console.error('❌  DATABASE_URL is not set. Create a .env file first.')
+const DATABASE_URL =
+  process.env.DATABASE_URL ||
+  process.env.DEV_DATABASE_URL ||
+  process.env.PROD_DATABASE_URL
+
+if (!DATABASE_URL) {
+  console.error(
+    '❌  DATABASE_URL/DEV_DATABASE_URL/PROD_DATABASE_URL is not set. Create a .env file first.',
+  )
   process.exit(1)
 }
 if (!process.env.ENCRYPTION_KEY || !process.env.EMAIL_HASH_PEPPER) {
   console.error('❌  ENCRYPTION_KEY and EMAIL_HASH_PEPPER must be set in .env.')
   process.exit(1)
 }
+
+const SEED_DEV_EMAIL = process.env.SEED_DEV_EMAIL?.trim() || 'dev@roots.app'
+const SEED_DEV_PASSWORD = process.env.SEED_DEV_PASSWORD || 'password123'
 
 // ── Inline crypto helpers (mirrors lib/crypto.ts) ──────────────────────────
 const KEY = Buffer.from(process.env.ENCRYPTION_KEY, 'hex')
@@ -67,7 +72,7 @@ function hashPassword(password) {
 const { PrismaPg } = await import('@prisma/adapter-pg')
 const { PrismaClient } = await import('../src/generated/prisma/client.ts')
 
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+const adapter = new PrismaPg({ connectionString: DATABASE_URL })
 const db = new PrismaClient({ adapter })
 
 // ── Seed ────────────────────────────────────────────────────────────────────
@@ -75,21 +80,21 @@ async function main() {
   console.log('🌱  Seeding database...\n')
 
   // Clean existing seed data
-  await db.$executeRaw`DELETE FROM memory_slots WHERE TRUE`
-  await db.$executeRaw`DELETE FROM memories WHERE TRUE`
+  await db.memory.deleteMany({})
   await db.parent.deleteMany({})
   await db.account.deleteMany({})
-  await db.user.deleteMany({ where: { emailHash: hashEmail('dev@roots.app') } })
-  await db.user.deleteMany({ where: { id: 'demo-user' } })
+  await db.user.deleteMany({
+    where: { emailHash: hashEmail(SEED_DEV_EMAIL) },
+  })
 
   // Create dev user
-  const rawEmail = 'dev@roots.app'
+  const rawEmail = SEED_DEV_EMAIL
   const user = await db.user.create({
     data: {
       email: encrypt(rawEmail),
       emailHash: hashEmail(rawEmail),
       displayName: encrypt('Minh (Dev)'),
-      passwordHash: hashPassword('password123'),
+      passwordHash: hashPassword(SEED_DEV_PASSWORD),
       locale: 'vi',
     },
   })
@@ -155,8 +160,8 @@ async function main() {
 
   console.log('\n🎉  Seed complete!')
   console.log('\nDev credentials:')
-  console.log('  Email:    dev@roots.app')
-  console.log('  Password: password123')
+  console.log(`  Email:    ${SEED_DEV_EMAIL}`)
+  console.log(`  Password: ${SEED_DEV_PASSWORD}`)
 }
 
 main()

@@ -4,33 +4,23 @@
   "sectionDescription": "\"Bảo tàng số\" đầu tiên cho gia đình Việt",
   "features": [
     {
-      "title": "Sản phẩm kết nối",
-      "description": "Bộ bài 50 câu hỏi tâm lý kết hợp tính năng \"Câu hỏi của riêng con\". Đây là sản phẩm vật lý cao cấp giúp phá vỡ sự ngại ngùng. Con cái có thể tùy chỉnh câu hỏi trên App để in/gửi cho bố mẹ, biến mỗi bộ bài thành một phiên bản giới hạn của riêng gia đình đó.",
-      "status": "Mở đầu"
+      "title": "Cầu nối Phygital",
+      "description": "Bộ thẻ bài vật lý tinh tế tích hợp mã QR định danh trên từng thẻ, giúp cha mẹ dễ dàng kích hoạt ghi âm và kể chuyện trên Zalo Mini App chỉ với một cú chạm, xóa bỏ hoàn toàn rào cản thao tác công nghệ phức tạp.",
+      "status": "MVP"
     },
     {
-      "title": "Trợ lý AI",
-      "description": "Trợ lý AI thấu cảm giúp cá nhân hóa lộ trình kết nối. Dựa trên dữ liệu đã kể, AI chủ động gợi ý những câu hỏi sâu sắc tiếp theo hoặc kết nối với tin tức thời sự để 'mồi' câu chuyện tự nhiên nhất.",
-      "status": "Duy trì"
-    },
-    {
-      "title": "Biên tập ký ức",
-      "description": "Cung cấp quyền 'Tổng biên tập' cho người con kết hợp với AI Autopilot. Hệ thống tự động chuyển âm thanh thành văn bản, sửa lỗi chính tả, tóm tắt ý chính và đề xuất sắp xếp ký ức theo dòng thời gian (Chronological Order). Người con chỉ cần duyệt hoặc tinh chỉnh nhẹ để hoàn thiện cuốn hồi ký.",
+      "title": "Hệ thống Quản trị Ký ức",
+      "description": "Cung cấp quyền 'Tổng biên tập' cho người con để sắp xếp, gắn nhãn và thêm cảm xúc vào từng mảnh ghép ký ức của cha mẹ.",
       "status": "Core"
     },
     {
-      "title": "Hồi sinh ký ức",
-      "description": "Giao diện dòng thời gian trực quan, hiển thị ký ức theo cấu trúc 'Đa tầng': Ảnh phục chế (Thị giác) + Giọng kể lọc nhiễu (Thính giác) + Hồi ký biên tập (Ngôn ngữ). Tích hợp chế độ xem theo bản đồ địa danh và chủ đề cảm xúc.",
+      "title": "Legacy Timeline",
+      "description": "Giao diện dòng thời gian tùy chỉnh, ghép nối những đoạn kể chuyện rời rạc thành một mạch truyện xuyên suốt về gia tộc.",
       "status": "Core"
-    },
-    {
-      "title": "Bảo mật tuyệt đối",
-      "description": "Kiến trúc bảo mật tuyệt đối: Toàn bộ dữ liệu âm thanh và hình ảnh được mã hóa đầu cuối (E2EE). Ngay cả đội ngũ kỹ thuật của Roots cũng không có chìa khóa để giải mã, đảm bảo bí mật gia đình là bất khả xâm phạm.",
-      "status": "Security"
     },
     {
       "title": "Chế độ Chia sẻ Tương lai",
-      "description": "Thiết lập quyền kế thừa dữ liệu cho thế hệ mai sau (cháu, chắt). Khi một người con dừng sử dụng, di sản vẫn có cơ chế đóng gói (Export) hoặc chuyển giao quyền quản trị, đảm bảo câu chuyện của cha mẹ không bao giờ bị \"vị lai hóa\" hay mất đi.",
+      "description": "Thiết lập quyền truy cập cho thế hệ mai sau, biến ký ức thành một 'di chúc số' sống động cho con cháu ở bất cứ đâu.",
       "status": "Di sản"
     }
   ],

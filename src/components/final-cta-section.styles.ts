@@ -51,12 +51,14 @@ export const Container = styled.div({
   },
 })
 
-export const ContentWrapper = styled.div<{ $isVisible: boolean }>(({ $isVisible }) => ({
-  transition: `all 1s ease`,
-  opacity: $isVisible ? 1 : 0,
-  transform: $isVisible ? 'translateY(0)' : 'translateY(2rem)',
-  willChange: 'transform, opacity',
-}))
+export const ContentWrapper = styled.div<{ $isVisible: boolean }>(
+  ({ $isVisible }) => ({
+    transition: `all 1s ease`,
+    opacity: $isVisible ? 1 : 0,
+    transform: $isVisible ? 'translateY(0)' : 'translateY(2rem)',
+    willChange: 'transform, opacity',
+  }),
+)
 
 export const QuoteSection = styled.div({
   marginBottom: theme.spacing[12],
@@ -114,20 +116,30 @@ export const FormWrapper = styled.form({
   alignItems: 'center',
   justifyContent: 'center',
   gap: theme.spacing[4],
+  width: '100%',
   maxWidth: '38rem',
   margin: `0 auto ${theme.spacing[8]}`,
+})
+
+export const FormFields = styled.div({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: theme.spacing[4],
+  width: '100%',
   '@media (min-width: 640px)': {
-    flexDirection: 'row',
+    flex: 1,
+    gap: theme.spacing[5],
   },
 })
 
 export const InputWrapper = styled.div({
   position: 'relative',
   width: '100%',
-  '@media (min-width: 640px)': {
-    width: 'auto',
-    flex: 1,
-  },
+})
+
+export const TextareaWrapper = styled.div({
+  position: 'relative',
+  width: '100%',
 })
 
 export const MailIcon = styled(Mail)({
@@ -151,6 +163,37 @@ export const EmailInput = styled.input({
   color: theme.colors.background,
   fontSize: '1rem',
   outline: 'none',
+  transition: `all ${theme.transitions.fast}`,
+  '&::placeholder': {
+    color: 'oklch(0.97 0.01 85 / 0.4)',
+  },
+  '&:focus': {
+    borderColor: 'oklch(0.35 0.08 145 / 0.5)',
+    boxShadow: '0 0 0 3px oklch(0.35 0.08 145 / 0.2)',
+  },
+})
+
+export const ShareMoreLabel = styled.label({
+  display: 'block',
+  marginBottom: theme.spacing[2],
+  color: 'oklch(0.97 0.01 85 / 0.75)',
+  fontSize: '0.875rem',
+  fontWeight: 500,
+  textAlign: 'left',
+})
+
+export const ShareMoreInput = styled.textarea({
+  width: '100%',
+  minHeight: '6.5rem',
+  padding: `${theme.spacing[3]} ${theme.spacing[4]}`,
+  backgroundColor: 'oklch(0.97 0.01 85 / 0.1)',
+  border: '1px solid oklch(0.97 0.01 85 / 0.2)',
+  borderRadius: theme.radius['2xl'],
+  color: theme.colors.background,
+  fontSize: '1rem',
+  lineHeight: 1.5,
+  outline: 'none',
+  resize: 'vertical',
   transition: `all ${theme.transitions.fast}`,
   '&::placeholder': {
     color: 'oklch(0.97 0.01 85 / 0.4)',

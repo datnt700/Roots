@@ -1,45 +1,34 @@
 {
-  "sectionLabel": "Key Features",
-  "sectionTitle": "Family Heritage Connection Solution",
-  "sectionDescription": "The perfect blend of traditional physical albums and modern technology to fully preserve life stories.",
+  "sectionTitle": "Features",
+  "sectionDescription": "A solution to connect family heritage",
   "features": [
     {
       "title": "Phygital Bridge",
-      "description": "A set of 50 psychological questions combined with the \"Your Own Questions\" feature. This is a premium physical product that helps break the ice. Children can customize questions on the App to print/send to parents, making each deck a limited edition version unique to that family.",
-      "status": "Intro"
+      "description": "A set of elegant physical cards integrating an identification QR code on each card, allowing parents to easily activate recording and storytelling on the Zalo Mini App with a simple touch, completely eliminating barriers related to complex technology usage.",
+      "status": "MVP"
     },
     {
-      "title": "Empathetic AI Assistant",
-      "description": "An empathetic AI assistant that personalizes the connection journey. Based on the data already shared, the AI proactively suggests deeper follow-up questions or connects with current news to 'spark' the most natural storytelling.",
-      "status": "Sustain"
-    },
-    {
-      "title": "Memory Editing",
-      "description": "Provides 'Editor-in-Chief' rights to the child combined with an AI Autopilot. The system automatically transcribes audio to text, corrects typos, summarizes key points, and suggests arranging memories in Chronological Order. The child only needs to review or lightly tweak to complete the memoir.",
+      "title": "Memory Management System",
+      "description": "Provides 'Editor-in-Chief' rights to the child to organize, label, and add emotions to each fragment of their parents' memories.",
       "status": "Core"
     },
     {
-      "title": "Memory Revival",
-      "description": "An intuitive timeline interface that displays memories in a 'Multi-layered' structure: Restored photos (Visual) + Noise-filtered narration (Auditory) + Edited memoir (Linguistic). Integrates map view by location and emotional themes.",
+      "title": "Legacy Timeline",
+      "description": "Customizable timeline interface, connecting disparate storytelling fragments into a coherent narrative about the family.",
       "status": "Core"
-    },
-    {
-      "title": "Absolute Security",
-      "description": "An architecture of absolute security: All audio and image data is end-to-end encrypted (E2EE). Even Roots' technical team does not have the keys to decrypt, ensuring family secrets are inviolable.",
-      "status": "Security"
     },
     {
       "title": "Future Sharing Mode",
-      "description": "Set up data inheritance rights for future generations (grandchildren, great-grandchildren). When a child stops using it, the legacy still has mechanisms for exporting or transferring administrative rights, ensuring parents' stories are never 'futurized' or lost.",
+      "description": "Set access rights for future generations, transforming memories into a living 'digital will' for descendants wherever they are.",
       "status": "Legacy"
     }
   ],
-  "marketLabel": "Opportunity for the Expat Community",
-  "marketTitle": "Why the time to act is now",
+  "marketLabel": "Opportunity for the expatriate community",
+  "marketTitle": "Why now is the time to act",
   "metrics": [
-    { "value": "5M+", "label": "Vietnamese people abroad" },
-    { "value": "100%", "label": "Time cannot be reversed" },
-    { "value": "0", "label": "Reason to delay any longer" }
+    { "value": "5M+", "label": "Vietnamese abroad" },
+    { "value": "100%", "label": "Time cannot be recovered" },
+    { "value": "0", "label": "Reason to delay further" }
   ],
-  "marketText": "The Vietnamese expat community is growing and aging rapidly. Every day that passes is a family history page at risk of being lost forever. Don't let yourself say \"I wish I had\"."
+  "marketText": "The Vietnamese expatriate community is rapidly growing and aging. Each passing day is a page of family history at risk of being lost forever. Don't let yourself say 'If only'."
 }

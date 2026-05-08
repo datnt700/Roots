@@ -10,6 +10,7 @@ export async function joinWaitlist(
   formData: FormData,
 ): Promise<WaitlistActionState> {
   const email = formData.get('email')
+  const shareMore = formData.get('shareMore')
 
   if (typeof email !== 'string' || !EMAIL_REGEX.test(email)) {
     return {
@@ -20,6 +21,10 @@ export async function joinWaitlist(
   }
 
   const normalizedEmail = email.trim().toLowerCase()
+  const normalizedShareMore =
+    typeof shareMore === 'string' && shareMore.trim().length > 0
+      ? shareMore.trim()
+      : null
 
   try {
     const existing = await db.waitlistEntry.findUnique({
@@ -36,7 +41,10 @@ export async function joinWaitlist(
     }
 
     await db.waitlistEntry.create({
-      data: { email: normalizedEmail },
+      data: {
+        email: normalizedEmail,
+        shareMore: normalizedShareMore,
+      },
     })
 
     const count = await db.waitlistEntry.count()

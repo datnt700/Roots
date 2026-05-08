@@ -6,11 +6,33 @@ import { useTranslations } from 'next-intl'
 import { joinWaitlist } from '@/app/action'
 import { initialWaitlistState } from '@/lib/waitlist-action-state'
 import {
-  Section, BackgroundDecoration, DecorationCircle, Container, ContentWrapper,
-  QuoteSection, QuoteIcon, QuoteText, QuoteHighlight, VisionText,
-  FormWrapper, InputWrapper, MailIcon, EmailInput, SubmitButton,
-  SuccessCard, SuccessTitle, SuccessText, ErrorText,
-  SecondaryCTAs, SecondaryButton, Divider,
+  Section,
+  BackgroundDecoration,
+  DecorationCircle,
+  Container,
+  ContentWrapper,
+  QuoteSection,
+  QuoteIcon,
+  QuoteText,
+  QuoteHighlight,
+  VisionText,
+  FormWrapper,
+  FormFields,
+  InputWrapper,
+  TextareaWrapper,
+  MailIcon,
+  EmailInput,
+  ShareMoreLabel,
+  ShareMoreInput,
+  ShareMoreHint,
+  SubmitButton,
+  SuccessCard,
+  SuccessTitle,
+  SuccessText,
+  ErrorText,
+  SecondaryCTAs,
+  SecondaryButton,
+  Divider,
 } from './final-cta-section.styles'
 
 export function FinalCTASection() {
@@ -65,16 +87,30 @@ export function FinalCTASection() {
             <>
               {state.message ? <ErrorText>{state.message}</ErrorText> : null}
               <FormWrapper action={formAction}>
-                <InputWrapper>
-                  <MailIcon />
-                  <EmailInput
-                    name="email"
-                    type="email"
-                    placeholder={t('emailPlaceholder')}
-                    autoComplete="email"
-                    required
-                  />
-                </InputWrapper>
+                <FormFields>
+                  <InputWrapper>
+                    <MailIcon />
+                    <EmailInput
+                      name="email"
+                      type="email"
+                      placeholder={t('emailPlaceholder')}
+                      autoComplete="email"
+                      required
+                    />
+                  </InputWrapper>
+
+                  <TextareaWrapper>
+                    <ShareMoreLabel htmlFor="shareMore">
+                      {t('shareMoreLabel')}
+                    </ShareMoreLabel>
+                    <ShareMoreInput
+                      id="shareMore"
+                      name="shareMore"
+                      placeholder={t('shareMorePlaceholder')}
+                      rows={4}
+                    />
+                  </TextareaWrapper>
+                </FormFields>
                 <SubmitButton type="submit" size="lg" disabled={isPending}>
                   {t('submitButton')}
                   <ArrowRight
@@ -86,9 +122,7 @@ export function FinalCTASection() {
           ) : (
             <SuccessCard>
               <SuccessTitle>{t('successTitle')}</SuccessTitle>
-              <SuccessText>
-                {state.message || t('successText')}
-              </SuccessText>
+              <SuccessText>{state.message || t('successText')}</SuccessText>
             </SuccessCard>
           )}
 
